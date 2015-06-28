@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19F4B90E-0808-42E1-AC8E-DC46575DB03D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TqatProReportingTool</RootNamespace>
+    <AssemblyName>TqatProReportingTool</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>C:\Users\Ralph\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>D6EA26D741BDA44187B3AEF8244C4B21260A5D34</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TqatReportingTool_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TqatProReportingTool.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ats\Classes.cs" />
+    <Compile Include="Ats\Database\Database.cs" />
+    <Compile Include="Ats\Database\DatabaseException.cs" />
+    <Compile Include="Ats\Database\Query.cs" />
+    <Compile Include="Ats\Database\QueryException.cs" />
+    <Compile Include="Ats\Devices\Meitrack\MeitrackException.cs" />
+    <Compile Include="Ats\Devices\Meitrack\Meitrack.cs" />
+    <Compile Include="Ats\Devices\Meitrack\Mvt100.cs" />
+    <Compile Include="Ats\Extension\DataTableExtension.cs" />
+    <Compile Include="Ats\Map\Location.cs" />
+    <Compile Include="Ats\Map\MapTools.cs" />
+    <Compile Include="Ats\Helper\Export.cs" />
+    <Compile Include="Ats\Helper\Log.cs" />
+    <Compile Include="Ats\Report\HistoricalData.cs" />
+    <Compile Include="Ats\Session\Tracker.cs" />
+    <Compile Include="FormCellInformation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCellInformation.Designer.cs">
+      <DependentUpon>FormCellInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAdvanceSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAdvanceSettings.Designer.cs">
+      <DependentUpon>FormAdvanceSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormChart.Designer.cs">
+      <DependentUpon>FormChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ats\Helper\Converter.cs" />
+    <Compile Include="Ats\Helper\Cryptography.cs" />
+    <Compile Include="Ats\Helper\NetworkTools.cs" />
+    <Compile Include="Ats\Helper\StringValidator.cs" />
+    <Compile Include="Ats\Session\Account.cs" />
+    <Compile Include="DialogDatabaseConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogDatabaseConfiguration.Designer.cs">
+      <DependentUpon>DialogDatabaseConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogLogin.Designer.cs">
+      <DependentUpon>DialogLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMap.Designer.cs">
+      <DependentUpon>FormMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModalLoading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModalLoading.Designer.cs">
+      <DependentUpon>ModalLoading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormCellInformation.resx">
+      <DependentUpon>FormCellInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAdvanceSettings.resx">
+      <DependentUpon>FormAdvanceSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormChart.resx">
+      <DependentUpon>FormChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogDatabaseConfiguration.resx">
+      <DependentUpon>DialogDatabaseConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogLogin.resx">
+      <DependentUpon>DialogLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMap.resx">
+      <DependentUpon>FormMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModalLoading.resx">
+      <DependentUpon>ModalLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="TqatReportingTool_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading_002.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading_003.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading_004.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading_005.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_csv_001.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_excel_001.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_export_001.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_search_001.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_steprl_001.png" />
+    <None Include="Resources\icon_stepr_001.png" />
+    <None Include="Resources\icon_stepll_001.png" />
+    <None Include="Resources\icon_stepl_001.png" />
+    <None Include="Resources\icon_settingsadvanced_001.png" />
+    <None Include="Resources\icon_exit_001.png" />
+    <None Include="Resources\icon_ats_logo_001.png" />
+    <None Include="Resources\icon_social_twitter_001.png" />
+    <None Include="Resources\icon_social_instagram_001.png" />
+    <None Include="Resources\icon_social_googleplus_001.png" />
+    <None Include="Resources\icon_social_fb_001.png" />
+    <None Include="bin\Debug\logo.png" />
+    <Content Include="favicon.ico" />
+    <None Include="Resources\logo.jpeg" />
+    <None Include="Resources\logo_logo_002.jpg" />
+    <None Include="Resources\logo_logo_001.png" />
+    <None Include="Resources\icon_download_001.png" />
+    <None Include="Resources\image_background_002.jpg" />
+    <None Include="Resources\image_background_001.png" />
+    <None Include="Resources\image_background_001.jpg" />
+    <None Include="Resources\icon_print_001.png" />
+    <None Include="Resources\icon_csv_0011.png" />
+    <None Include="Resources\icon_chart_001.png" />
+    <None Include="Resources\icon_generate_001.png" />
+    <None Include="Resources\icon_resfresh_001.png" />
+    <None Include="Resources\icon_filter_001.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

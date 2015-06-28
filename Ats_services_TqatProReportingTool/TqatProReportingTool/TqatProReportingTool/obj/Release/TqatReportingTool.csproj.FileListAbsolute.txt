@@ -1,0 +1,24 @@
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.exe.config
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.exe.manifest
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.application
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.exe
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.pdb
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\itextsharp.dll
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\MySql.Data.dll
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\itextsharp.xml
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.csprojResolveAssemblyReference.cache
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.FormAdvanceSettings.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.FormChart.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.DialogDatabaseConfiguration.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.DialogLogin.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.ModalLoading.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.FormMain.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.Properties.Resources.resources
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.csproj.GenerateResource.Cache
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.exe.manifest
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.application
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.exe
+C:\Users\Ralph\Documents\Visual Studio 2013\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.pdb
+C:\Users\Ralph\Documents\GitHub\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\bin\Release\TqatReportingTool.exe.config
+C:\Users\Ralph\Documents\GitHub\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.exe
+C:\Users\Ralph\Documents\GitHub\Ats_services_TqatReportingTool\TqatReportingTool\TqatReportingTool\obj\Release\TqatReportingTool.pdb

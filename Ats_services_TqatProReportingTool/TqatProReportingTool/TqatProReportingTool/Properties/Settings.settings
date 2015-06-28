@@ -1,0 +1,69 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TqatPro.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DatabaseHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DatabaseUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DatabasePassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DatabaseName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserExportPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserLogoPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="accountRememberMe" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="accountUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="accountPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="accountCompany" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="accountCompanyUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="tableHistorical" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableRunning" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableIdle" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableGeofence" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableAcc" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableOverspeed" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="fuelLiterToKilometer" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="fuelLiterToCost" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="tableTrackers" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableTrackersGeofence" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
