@@ -111,6 +111,7 @@ namespace TqatProReportingTool {
         }
 
         public static DialogResult mainApplication(ref Account account) {
+
             FormMain formMain = new FormMain(ref account);
             return formMain.ShowDialog();
         }

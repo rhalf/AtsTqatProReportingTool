@@ -11,13 +11,13 @@ namespace Ats {
         IDLING,
         GEOFENCE,
         ACC,
+        EXTERNAL_POWER_CUT,
         OVERSPEED,
         TRACKERS,
         TRACKERS_GEOFENCE,
-        //EXTERNAL_POWER,
         //URGENT,
-        ALLCOMPANIES,
-        ALLTRACKERS
+        ALL_COMPANIES,
+        ALL_TRACKERS
     }
     public enum ExportFileType {
         TXT,

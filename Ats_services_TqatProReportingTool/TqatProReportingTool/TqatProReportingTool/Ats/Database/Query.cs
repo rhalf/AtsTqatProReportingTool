@@ -618,9 +618,9 @@ namespace Ats.Database {
                 dataTable.Columns.Add("Latitude", typeof(double));
                 dataTable.Columns.Add("Longitude", typeof(double));
                 dataTable.Columns.Add("Speed", typeof(int));
-                dataTable.Columns.Add("Mileage", typeof(float));
-                dataTable.Columns.Add("Fuel", typeof(double));
-                dataTable.Columns.Add("Cost", typeof(double));
+                dataTable.Columns.Add("Mileage", typeof(double));
+                //dataTable.Columns.Add("Fuel", typeof(double));
+                //dataTable.Columns.Add("Cost", typeof(double));
                 dataTable.Columns.Add("Altitude", typeof(int));
                 dataTable.Columns.Add("Degrees", typeof(int));
                 dataTable.Columns.Add("Direction", typeof(string));
@@ -630,10 +630,10 @@ namespace Ats.Database {
                 dataTable.Columns.Add("Geofence", typeof(string));
                 dataTable.Columns.Add("ACC", typeof(bool));
                 dataTable.Columns.Add("SOS", typeof(bool));
-                dataTable.Columns.Add("OS", typeof(bool));
-                dataTable.Columns.Add("Battery", typeof(float));
-                dataTable.Columns.Add("BatteryVolt", typeof(float));
-                dataTable.Columns.Add("ExternalVolt", typeof(float));
+                dataTable.Columns.Add("OverSpeed", typeof(bool));
+                dataTable.Columns.Add("Battery", typeof(double));
+                dataTable.Columns.Add("BatteryVoltage", typeof(double));
+                dataTable.Columns.Add("ExternalVoltage", typeof(double));
 
                 if (!mySqlDataReader.HasRows) {
                     //throw new QueryException(1, "Tracker data is empty.");
@@ -645,7 +645,7 @@ namespace Ats.Database {
 
                         DataRow dataRow = dataTable.NewRow();
                         dataRow["No"] = index;
-                        dataRow["DateTime"] = Converter.unixTimeStampToDateTime(float.Parse((string)mySqlDataReader["gm_time"]));
+                        dataRow["DateTime"] = Converter.unixTimeStampToDateTime(double.Parse((string)mySqlDataReader["gm_time"]));
 
                         double latitude = double.Parse((string)mySqlDataReader["gm_lat"]);
                         double longitude = double.Parse((string)mySqlDataReader["gm_lng"]);
@@ -653,16 +653,16 @@ namespace Ats.Database {
                         dataRow["Latitude"] = latitude;
                         dataRow["Longitude"] = longitude;
                         dataRow["Speed"] = int.Parse((string)mySqlDataReader["gm_speed"]);
-                        dataRow["Mileage"] = Math.Round(float.Parse((string)mySqlDataReader["gm_mileage"]), 2);
+                        dataRow["Mileage"] = Math.Round(double.Parse((string)mySqlDataReader["gm_mileage"]), 2);
 
-                        if ((float)dataRow["Mileage"] < 0) {
-                            dataRow["Mileage"] = ((float)dataRow["Mileage"]) * -1;
+                        if ((double)dataRow["Mileage"] < 0) {
+                            dataRow["Mileage"] = ((double)dataRow["Mileage"]) * -1;
                         }
 
-                        dataRow["Fuel"] = Math.Round(double.Parse((string)mySqlDataReader["gm_mileage"]) / Settings.Default.fuelLiterToKilometer, 2);
-                        dataRow["Cost"] = Math.Round(((double)dataRow["Fuel"]) * Settings.Default.fuelLiterToCost, 2);
+                        //dataRow["Fuel"] = Math.Round(double.Parse((string)mySqlDataReader["gm_mileage"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        //dataRow["Cost"] = Math.Round(((double)dataRow["Fuel"]) * Settings.Default.fuelLiterToCost, 2);
                         dataRow["Degrees"] = int.Parse((string)mySqlDataReader["gm_ori"]);
-                        dataRow["Direction"] = Converter.degreesToCardinalDetailed(float.Parse((string)mySqlDataReader["gm_ori"]));
+                        dataRow["Direction"] = Converter.degreesToCardinalDetailed(double.Parse((string)mySqlDataReader["gm_ori"]));
 
                         //1,			            //                                                          (0)
                         //35,			            //Event code(Decimal)
@@ -689,7 +689,7 @@ namespace Ats.Database {
 
                         dataRow["ACC"] = (int.Parse(data[18]) == 1) ? true : false;
                         dataRow["SOS"] = (int.Parse(data[17]) == 1) ? true : false;
-                        dataRow["OS"] = ((int)dataRow["Speed"] > tracker.speedLimit) ? true : false;
+                        dataRow["OverSpeed"] = ((int)dataRow["Speed"] > tracker.speedLimit) ? true : false;
                         //Geofence
                         Location location = new Location(latitude, longitude);
                         MapTools mapTools = new MapTools();
@@ -697,7 +697,6 @@ namespace Ats.Database {
                             if (mapTools.IsPointInPolygon(geofence, location)) {
                                 if (String.IsNullOrEmpty(geofence.Name)) {
                                     dataRow["Geofence"] = "";
-
                                 } else {
                                     dataRow["Geofence"] = geofence.Name;
                                 }
@@ -721,8 +720,8 @@ namespace Ats.Database {
                         externalVoltage = Math.Round(externalVoltage, 2);
 
                         dataRow["Battery"] = batteryStrength;
-                        dataRow["BatteryVolt"] = batteryVoltage;
-                        dataRow["ExternalVolt"] = externalVoltage;
+                        dataRow["BatteryVoltage"] = batteryVoltage;
+                        dataRow["ExternalVoltage"] = externalVoltage;
 
                         dataTable.Rows.Add(dataRow);
                     }
@@ -807,9 +806,8 @@ namespace Ats.Database {
                 string geofenceStatusNow = "";
                 string geofenceStatusBefore = "";
 
-                //EventCode eventCode = EventCode.TRACK_BY_TIME_INTERVAL;
                 bool acc = false;
-
+                
                 int index = 0;
 
                 double speed = 0;
@@ -822,53 +820,43 @@ namespace Ats.Database {
                 double distanceBefore = 0;
                 double distance = 0;
 
-                string geofence;
                 DateTime dateTimeGeofenceFrom = new DateTime();
                 DateTime dateTimeGeofenceTo = new DateTime();
 
                 TimeSpan timeSpan;
-                //string accumulatedIdleTime;
 
-                foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
-                    if ((int)dataRowNow["No"] == 1) {
-                        dateTimeGeofenceFrom = (DateTime)dataRowNow["DateTime"];
-                        distanceBefore = (double)(float)dataRowNow["Mileage"];
+                for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++ ) {
+                    if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
+                        dateTimeGeofenceFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        distanceBefore = (double)dataTableHistoricalData.Rows[no]["Mileage"];
                     }
 
-                    //if (!Convert.IsDBNull(dataRowNow["EventCode"])) {
-                    //    eventCode = (EventCode)Enum.Parse(typeof(EventCode), (string)dataRowNow["EventCode"], true);
-                    //} else {
-                    //    geofenceStatusNow = "";
-                    //}
+                    acc = (bool)dataTableHistoricalData.Rows[no]["ACC"];
 
-
-                    acc = (bool)dataRowNow["ACC"];
-
-                    speed = (int)dataRowNow["Speed"];
+                    speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     speedDivisor++;
                     speedAccumulator += speed;
                     if (speed > speedMax) {
                         speedMax = speed;
                     }
 
-                    object obj = dataRowNow["Geofence"].GetType();
 
-                    if (!Convert.IsDBNull(dataRowNow["Geofence"])) {
-                        geofenceStatusNow = (string)dataRowNow["Geofence"];
+                    if (!(dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value)) {
+                        geofenceStatusNow = (string)dataTableHistoricalData.Rows[no]["Geofence"];
                     } else {
                         geofenceStatusNow = "";
                     }
 
 
                     if (geofenceStatusBefore != geofenceStatusNow) {
-                        index++;
-                        geofenceStatusBefore = geofenceStatusNow;
-                        dateTimeGeofenceTo = (DateTime)dataRowNow["DateTime"];
-                        geofence = geofenceStatusNow;//(dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"];
+                        index++;  
+              
+                      
+                        dateTimeGeofenceTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                      
                         timeSpan = dateTimeGeofenceTo - dateTimeGeofenceFrom;
-                        distance = (double)(float)dataRowNow["Mileage"] - distanceBefore;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
                         distance = Math.Round(distance, 2);
-                        //accumulatedIdleTime = timeSpan.ToString(@"dd\ hh\:mm\:ss");
 
                         speedAverage = speedAccumulator / speedDivisor;
                         speedAverage = Math.Round(speedAverage, 2);
@@ -889,14 +877,56 @@ namespace Ats.Database {
                         dataRowGeofenceData["Cost"] = Math.Round(((double)dataRowGeofenceData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
 
 
-                        dataRowGeofenceData["Geofence"] = geofence;
+                        dataRowGeofenceData["Geofence"] = geofenceStatusBefore;
                         dataRowGeofenceData["SpeedMax"] = speedMax;
                         dataRowGeofenceData["SpeedAve"] = speedAverage;
-                        dataRowGeofenceData["Status"] = geofence == "" ? false : true;
+                        dataRowGeofenceData["Status"] = geofenceStatusBefore == "" ? false : true;
 
                         speedMax = 0;
                         distanceBefore = distance + distanceBefore;
                         dateTimeGeofenceFrom = dateTimeGeofenceTo;
+                        geofenceStatusBefore = geofenceStatusNow;
+                        dataTableGeofenceData.Rows.Add(dataRowGeofenceData);
+                    }
+
+                    if (no == dataTableHistoricalData.Rows.Count - 1) {
+                        index++;
+
+
+                        dateTimeGeofenceTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeGeofenceTo - dateTimeGeofenceFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowGeofenceData = dataTableGeofenceData.NewRow();
+                        dataRowGeofenceData["No"] = index;
+
+                        dataRowGeofenceData["DateTimeFrom"] = dateTimeGeofenceFrom;
+                        dataRowGeofenceData["DateTimeTo"] = dateTimeGeofenceTo;
+                        dataRowGeofenceData["Time"] = timeSpan;
+                        dataRowGeofenceData["Distance"] = distance;
+
+
+                        dataRowGeofenceData["Fuel"] = Math.Round(((double)dataRowGeofenceData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowGeofenceData["Cost"] = Math.Round(((double)dataRowGeofenceData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+
+                        dataRowGeofenceData["Geofence"] = geofenceStatusBefore;
+                        dataRowGeofenceData["SpeedMax"] = speedMax;
+                        dataRowGeofenceData["SpeedAve"] = speedAverage;
+                        dataRowGeofenceData["Status"] = geofenceStatusBefore == "" ? false : true;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeGeofenceFrom = dateTimeGeofenceTo;
+                        geofenceStatusBefore = geofenceStatusNow;
                         dataTableGeofenceData.Rows.Add(dataRowGeofenceData);
                     }
                 }
@@ -910,7 +940,7 @@ namespace Ats.Database {
             }
         }
 
-        public DataTable getTrackerIdleData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, ReportType reportType, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerIdlingData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, ReportType reportType, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, reportType, limit, offset, tracker);
             DataTable dataTableIdleData = new DataTable();
             dataTableIdleData.Columns.Add("No", typeof(int));
@@ -945,24 +975,26 @@ namespace Ats.Database {
                 double distanceBefore = 0;
                 double distance = 0;
 
-                string geofence;
+                StringBuilder geofence = new StringBuilder();
                 DateTime dateTimeIdleFrom = new DateTime();
                 DateTime dateTimeIdleTo = new DateTime();
 
                 TimeSpan timeSpan;
 
-                foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
-                    if ((int)dataRowNow["No"] == 1) {
-                        dateTimeIdleFrom = (DateTime)dataRowNow["DateTime"];
-                        distanceBefore = (double)(float)dataRowNow["Mileage"];
+                for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
+                    if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
+                        dateTimeIdleFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        distanceBefore = (double)dataTableHistoricalData.Rows[no]["Mileage"];
                     }
 
-                    eventCode = (dataRowNow["EventCode"] == System.DBNull.Value) ?
-                       EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataRowNow["EventCode"], true);
+                    eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
+                       EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
 
-                    acc = (bool)dataRowNow["ACC"];
+                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
 
-                    speed = (int)dataRowNow["Speed"];
+                    acc = (bool)dataTableHistoricalData.Rows[no]["ACC"];
+
+                    speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     speedDivisor++;
                     speedAccumulator += speed;
                     if (speed > speedMax) {
@@ -972,9 +1004,7 @@ namespace Ats.Database {
 
                     if (speed == 0 && acc == true) {
                         idleStatusNow = true;
-                    }
-
-                    if (speed > 0 && acc == false) {
+                    } else {
                         idleStatusNow = false;
                     }
 
@@ -982,10 +1012,46 @@ namespace Ats.Database {
                     if (idleStatusBefore != idleStatusNow) {
                         index++;
                         idleStatusBefore = idleStatusNow;
-                        dateTimeIdleTo = (DateTime)dataRowNow["DateTime"];
-                        geofence = (dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"];
+                        dateTimeIdleTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
                         timeSpan = dateTimeIdleTo - dateTimeIdleFrom;
-                        distance = (double)(float)dataRowNow["Mileage"] - distanceBefore;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowIdleData = dataTableIdleData.NewRow();
+                        dataRowIdleData["No"] = index;
+                        dataRowIdleData["Status"] = !idleStatusNow;
+                        dataRowIdleData["DateTimeFrom"] = dateTimeIdleFrom;
+                        dataRowIdleData["DateTimeTo"] = dateTimeIdleTo;
+                        dataRowIdleData["Time"] = timeSpan;
+                        dataRowIdleData["Distance"] = distance;
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        geofence.Clear();
+
+                        dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+                        dataRowIdleData["SpeedMax"] = speedMax;
+                        dataRowIdleData["SpeedAve"] = speedAverage;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeIdleFrom = dateTimeIdleTo;
+                        dataTableIdleData.Rows.Add(dataRowIdleData);
+                    }
+                    if (no == dataTableHistoricalData.Rows.Count - 1) {
+                        index++;
+                        idleStatusBefore = idleStatusNow;
+                        dateTimeIdleTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeIdleTo - dateTimeIdleFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
                         distance = Math.Round(distance, 2);
 
                         speedAverage = speedAccumulator / speedDivisor;
@@ -1001,7 +1067,8 @@ namespace Ats.Database {
                         dataRowIdleData["DateTimeTo"] = dateTimeIdleTo;
                         dataRowIdleData["Time"] = timeSpan;
                         dataRowIdleData["Distance"] = distance;
-                        dataRowIdleData["Geofence"] = geofence;
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        geofence.Clear();
 
                         dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
                         dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
@@ -1061,24 +1128,26 @@ namespace Ats.Database {
                 double distanceBefore = 0;
                 double distance = 0;
 
-                string geofence;
+                StringBuilder geofence = new StringBuilder();
                 DateTime dateTimeRunningFrom = new DateTime();
                 DateTime dateTimeRunningTo = new DateTime();
 
                 TimeSpan timeSpan;
 
-                foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
-                    if ((int)dataRowNow["No"] == 1) {
-                        dateTimeRunningFrom = (DateTime)dataRowNow["DateTime"];
-                        distanceBefore = (double)(float)dataRowNow["Mileage"];
+                for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
+                    if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
+                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        distanceBefore = (double)dataTableHistoricalData.Rows[no]["Mileage"];
                     }
 
-                    eventCode = (dataRowNow["EventCode"] == System.DBNull.Value) ?
-                       EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataRowNow["EventCode"], true);
+                    eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
+                       EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
 
-                    acc = (bool)dataRowNow["ACC"];
+                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
 
-                    speed = (int)dataRowNow["Speed"];
+                    acc = (bool)dataTableHistoricalData.Rows[no]["ACC"];
+
+                    speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     speedDivisor++;
                     speedAccumulator += speed;
                     if (speed > speedMax) {
@@ -1100,10 +1169,47 @@ namespace Ats.Database {
                     if (runningStatusBefore != runningStatusNow) {
                         runningStatusBefore = runningStatusNow;
                         index++;
-                        dateTimeRunningTo = (DateTime)dataRowNow["DateTime"];
-                        geofence = (dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"];
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
-                        distance = (double)(float)dataRowNow["Mileage"] - distanceBefore;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowIdleData = dataTableIdleData.NewRow();
+                        dataRowIdleData["No"] = index;
+                        dataRowIdleData["Status"] = !runningStatusNow;
+                        dataRowIdleData["DateTimeFrom"] = dateTimeRunningFrom;
+                        dataRowIdleData["DateTimeTo"] = dateTimeRunningTo;
+                        dataRowIdleData["Time"] = timeSpan;
+                        dataRowIdleData["Distance"] = distance;
+
+                        dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        geofence.Clear();
+                        dataRowIdleData["SpeedMax"] = speedMax;
+                        dataRowIdleData["SpeedAve"] = speedAverage;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeRunningFrom = dateTimeRunningTo;
+                        dataTableIdleData.Rows.Add(dataRowIdleData);
+                    }
+                    if (no == dataTableHistoricalData.Rows.Count - 1) {
+                        runningStatusBefore = runningStatusNow;
+                        index++;
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
                         distance = Math.Round(distance, 2);
 
 
@@ -1124,7 +1230,8 @@ namespace Ats.Database {
                         dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
                         dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
 
-                        dataRowIdleData["Geofence"] = geofence;
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        geofence.Clear();
                         dataRowIdleData["SpeedMax"] = speedMax;
                         dataRowIdleData["SpeedAve"] = speedAverage;
 
@@ -1177,22 +1284,24 @@ namespace Ats.Database {
                 double distanceBefore = 0;
                 double distance = 0;
 
-                string geofence;
+                StringBuilder geofence = new StringBuilder();
                 DateTime dateTimeRunningFrom = new DateTime();
                 DateTime dateTimeRunningTo = new DateTime();
 
                 TimeSpan timeSpan;
 
 
-                foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
-                    if ((int)dataRowNow["No"] == 1) {
-                        dateTimeRunningFrom = (DateTime)dataRowNow["DateTime"];
-                        distanceBefore = (double)(float)dataRowNow["Mileage"];
+                for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
+                    if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
+                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        distanceBefore = (double)dataTableHistoricalData.Rows[no]["Mileage"];
                     }
 
-                    accStatusNow = (bool)dataRowNow["ACC"];
+                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
 
-                    speed = (int)dataRowNow["Speed"];
+                    accStatusNow = (bool)dataTableHistoricalData.Rows[no]["ACC"];
+
+                    speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     speedDivisor++;
                     speedAccumulator += speed;
                     if (speed > speedMax) {
@@ -1204,10 +1313,10 @@ namespace Ats.Database {
                     if (accStatusBefore != accStatusNow) {
                         accStatusBefore = accStatusNow;
                         index++;
-                        dateTimeRunningTo = (DateTime)dataRowNow["DateTime"];
-                        geofence = (dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"];
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
-                        distance = (double)(float)dataRowNow["Mileage"] - distanceBefore;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
                         distance = Math.Round(distance, 2);
 
 
@@ -1229,6 +1338,44 @@ namespace Ats.Database {
                         dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
 
                         dataRowIdleData["Geofence"] = geofence;
+                        geofence.Clear();
+                        dataRowIdleData["SpeedMax"] = speedMax;
+                        dataRowIdleData["SpeedAve"] = speedAverage;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeRunningFrom = dateTimeRunningTo;
+                        dataTableIdleData.Rows.Add(dataRowIdleData);
+                    }
+                    if (no == dataTableHistoricalData.Rows.Count - 1) {
+                        accStatusBefore = accStatusNow;
+                        index++;
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowIdleData = dataTableIdleData.NewRow();
+                        dataRowIdleData["No"] = index;
+                        dataRowIdleData["Status"] = accStatusNow;
+                        dataRowIdleData["DateTimeFrom"] = dateTimeRunningFrom;
+                        dataRowIdleData["DateTimeTo"] = dateTimeRunningTo;
+                        dataRowIdleData["Time"] = timeSpan;
+                        dataRowIdleData["Distance"] = distance;
+
+                        dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+                        dataRowIdleData["Geofence"] = geofence;
+                        geofence.Clear();
                         dataRowIdleData["SpeedMax"] = speedMax;
                         dataRowIdleData["SpeedAve"] = speedAverage;
 
@@ -1248,33 +1395,186 @@ namespace Ats.Database {
             return dataTableIdleData;
         }
 
+        public DataTable getTrackerExternalPowerCutData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, ReportType reportType, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, reportType, limit, offset, tracker);
+            DataTable dataTableIdleData = new DataTable();
+            dataTableIdleData.Columns.Add("No", typeof(int));
+            dataTableIdleData.Columns.Add("Status", typeof(bool));
+            dataTableIdleData.Columns.Add("DateTimeFrom", typeof(DateTime));
+            dataTableIdleData.Columns.Add("DateTimeTo", typeof(DateTime));
+            dataTableIdleData.Columns.Add("Time", typeof(TimeSpan));
+            dataTableIdleData.Columns.Add("SpeedMax", typeof(double));
+            dataTableIdleData.Columns.Add("SpeedAve", typeof(double));
+            dataTableIdleData.Columns.Add("Distance", typeof(double));
+            dataTableIdleData.Columns.Add("Fuel", typeof(double));
+            dataTableIdleData.Columns.Add("Cost", typeof(double));
+            dataTableIdleData.Columns.Add("Geofence", typeof(string));
+
+            try {
+
+                bool externalPowerStatusNow = false;
+                bool externalPowerStatusBefore = false;
+
+                EventCode eventCode = EventCode.TRACK_BY_TIME_INTERVAL;
+
+                int index = 0;
+
+                double speed = 0;
+                double speedDivisor = 0;
+                double speedAccumulator = 0;
+                double speedMax = 0;
+                double speedAverage = 0;
+
+
+                double distanceBefore = 0;
+                double distance = 0;
+
+                StringBuilder geofence = new StringBuilder();
+                DateTime dateTimeRunningFrom = new DateTime();
+                DateTime dateTimeRunningTo = new DateTime();
+
+                TimeSpan timeSpan;
+
+
+                for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
+                    if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
+                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        distanceBefore = (double)dataTableHistoricalData.Rows[no]["Mileage"];
+                    }
+
+                    eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
+                     EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
+
+                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
+
+                    double externalVolt = (double)dataTableHistoricalData.Rows[no]["ExternalVoltage"];
+
+                    if (eventCode == EventCode.EXTERNAL_BATTERY_CUT || externalVolt < 12) {
+                        externalPowerStatusNow = true;
+                    }
+                    if (eventCode == EventCode.EXTERNAL_BATTERY_ON || externalVolt >= 12) {
+                        externalPowerStatusNow = false;
+                    }
+
+                    speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
+                    speedDivisor++;
+                    speedAccumulator += speed;
+                    if (speed > speedMax) {
+                        speedMax = speed;
+                    }
+
+                    if (externalPowerStatusBefore != externalPowerStatusNow) {
+                        externalPowerStatusBefore = externalPowerStatusNow;
+                        index++;
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowIdleData = dataTableIdleData.NewRow();
+                        dataRowIdleData["No"] = index;
+                        dataRowIdleData["Status"] = !externalPowerStatusNow;
+                        dataRowIdleData["DateTimeFrom"] = dateTimeRunningFrom;
+                        dataRowIdleData["DateTimeTo"] = dateTimeRunningTo;
+                        dataRowIdleData["Time"] = timeSpan;
+                        dataRowIdleData["Distance"] = distance;
+
+                        dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        dataRowIdleData["SpeedMax"] = speedMax;
+                        dataRowIdleData["SpeedAve"] = speedAverage;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeRunningFrom = dateTimeRunningTo;
+                        dataTableIdleData.Rows.Add(dataRowIdleData);
+                        geofence.Clear();
+                    }
+                    if (no == dataTableHistoricalData.Rows.Count - 1) {
+                        index++;
+                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+
+                        timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
+                        distance = (double)dataTableHistoricalData.Rows[no]["Mileage"] - distanceBefore;
+                        distance = Math.Round(distance, 2);
+
+
+                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = Math.Round(speedAverage, 2);
+                        speedAccumulator = 0;
+                        speedDivisor = 0;
+
+
+                        DataRow dataRowIdleData = dataTableIdleData.NewRow();
+                        dataRowIdleData["No"] = index;
+                        dataRowIdleData["Status"] = externalPowerStatusNow;
+                        dataRowIdleData["DateTimeFrom"] = dateTimeRunningFrom;
+                        dataRowIdleData["DateTimeTo"] = dateTimeRunningTo;
+                        dataRowIdleData["Time"] = timeSpan;
+                        dataRowIdleData["Distance"] = distance;
+
+                        dataRowIdleData["Fuel"] = Math.Round(((double)dataRowIdleData["Distance"]) / Settings.Default.fuelLiterToKilometer, 2);
+                        dataRowIdleData["Cost"] = Math.Round(((double)dataRowIdleData["Fuel"]) / Settings.Default.fuelLiterToCost, 2);
+
+                        dataRowIdleData["Geofence"] = geofence.ToString();
+                        dataRowIdleData["SpeedMax"] = speedMax;
+                        dataRowIdleData["SpeedAve"] = speedAverage;
+
+                        speedMax = 0;
+                        distanceBefore = distance + distanceBefore;
+                        dateTimeRunningFrom = dateTimeRunningTo;
+                        dataTableIdleData.Rows.Add(dataRowIdleData);
+                        geofence.Clear();
+                    }
+                }
+            } catch (QueryException queryException) {
+                throw queryException;
+            } catch (Exception exception) {
+                throw new QueryException(1, exception.Message);
+            } finally {
+
+            }
+            return dataTableIdleData;
+        }
+
         public DataTable getTrackerOverSpeedData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, ReportType reportType, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, reportType, limit, offset, tracker);
             DataTable dataTableOverSpeedData = new DataTable();
             dataTableOverSpeedData.Columns.Add("No", typeof(int));
             dataTableOverSpeedData.Columns.Add("Status", typeof(bool));
             dataTableOverSpeedData.Columns.Add("DateTime", typeof(DateTime));
-            dataTableOverSpeedData.Columns.Add("Latitude", typeof(Double));
-            dataTableOverSpeedData.Columns.Add("Longitude", typeof(Double));
+            dataTableOverSpeedData.Columns.Add("Latitude", typeof(double));
+            dataTableOverSpeedData.Columns.Add("Longitude", typeof(double));
             dataTableOverSpeedData.Columns.Add("Speed", typeof(int));
-            dataTableOverSpeedData.Columns.Add("Mileage", typeof(float));
+            dataTableOverSpeedData.Columns.Add("Mileage", typeof(double));
             dataTableOverSpeedData.Columns.Add("Geofence", typeof(string));
 
             try {
 
                 bool overSpeedStatusNow = false;
                 int index = 0;
-                string geofence;
+                StringBuilder geofence = new StringBuilder();
 
 
                 foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
 
-                    overSpeedStatusNow = (bool)dataRowNow["OS"];
+                    overSpeedStatusNow = (bool)dataRowNow["OverSpeed"];
 
                     if (overSpeedStatusNow) {
 
                         index++;
-                        geofence = (dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"];
+
+                        geofence.Append((dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"] + " | ");
 
 
                         DataRow dataRowOverspeedData = dataTableOverSpeedData.NewRow();
@@ -1284,9 +1584,9 @@ namespace Ats.Database {
                         dataRowOverspeedData["Latitude"] = (double)dataRowNow["Latitude"];
                         dataRowOverspeedData["Longitude"] = (double)dataRowNow["Longitude"];
                         dataRowOverspeedData["Speed"] = (int)dataRowNow["Speed"];
-                        dataRowOverspeedData["Mileage"] = (float)dataRowNow["Mileage"];
-                        dataRowOverspeedData["Geofence"] = geofence;
-                        ;
+                        dataRowOverspeedData["Mileage"] = (double)dataRowNow["Mileage"];
+                        dataRowOverspeedData["Geofence"] = geofence.ToString();
+                        geofence.Clear();
                         dataTableOverSpeedData.Rows.Add(dataRowOverspeedData);
                     }
                 }

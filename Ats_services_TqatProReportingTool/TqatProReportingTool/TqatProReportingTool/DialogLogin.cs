@@ -89,7 +89,7 @@ namespace TqatProReportingTool {
             database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
 
 
-            pictureBoxLoading.BeginInvoke(new MethodInvoker(delegate {
+            pictureBoxLoading.Invoke(new MethodInvoker(delegate {
                 pictureBoxLoading.Visible = true;
             }));
 
@@ -108,29 +108,23 @@ namespace TqatProReportingTool {
                 }
 
 
-                this.BeginInvoke(new MethodInvoker(delegate {
-                    //modalLoading.Close();
-                    this.DialogResult = DialogResult.OK;
+                this.Invoke(new MethodInvoker(delegate {
                     Settings.Default.accountRememberMe = account.rememberMe;
                     Settings.Default.accountCompanyUsername = account.companyUsername;
                     Settings.Default.accountUsername = account.username;
                     Settings.Default.accountPassword = account.password;
                     Settings.Default.Save();
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                 }));
             } catch (QueryException queryException) {
-                if (this.InvokeRequired) {
+                this.Invoke(new MethodInvoker(delegate {
+                    MessageBox.Show(this, queryException.Message, "Query Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                    this.BeginInvoke(new MethodInvoker(delegate {
-                        this.Enabled = true;
-                        //modalLoading.Close();
-                        MessageBox.Show(this, queryException.Message, "Query Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                        string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
-                        log.write(logData);
-                    }));
-                }
+                    Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
+                    string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
+                    log.write(logData);
+                }));
             } finally {
                 try {
                     pictureBoxLoading.Invoke(new MethodInvoker(delegate {

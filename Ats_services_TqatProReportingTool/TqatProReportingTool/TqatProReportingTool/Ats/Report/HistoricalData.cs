@@ -97,6 +97,14 @@ namespace Ats.Report {
             get;
             set;
         }
+        public string summaryTotalExternalPowerCutTime{
+            get;
+            set;
+        }
+        public string summaryTotalUrgentTime{
+            get;
+            set;
+        }
   
     }
 }

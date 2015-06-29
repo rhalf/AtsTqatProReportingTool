@@ -274,5 +274,17 @@ namespace TqatProReportingTool.Properties {
                 this["tableTrackersGeofence"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4294967295")]
+        public uint tableExternalPowerCut {
+            get {
+                return ((uint)(this["tableExternalPowerCut"]));
+            }
+            set {
+                this["tableExternalPowerCut"] = value;
+            }
+        }
     }
 }

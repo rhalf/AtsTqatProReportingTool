@@ -41,6 +41,7 @@
             this.comboBoxAccount = new System.Windows.Forms.ComboBox();
             this.comboBoxTrackersBound = new System.Windows.Forms.ComboBox();
             this.groupBoxDateTime = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.comboBoxDateShortCut = new System.Windows.Forms.ComboBox();
             this.labelDateShortCut = new System.Windows.Forms.Label();
             this.dateTimePickerDateTo = new System.Windows.Forms.DateTimePicker();
@@ -309,9 +310,9 @@
             this.labelType.AutoSize = true;
             this.labelType.Location = new System.Drawing.Point(7, 75);
             this.labelType.Name = "labelType";
-            this.labelType.Size = new System.Drawing.Size(37, 13);
+            this.labelType.Size = new System.Drawing.Size(45, 13);
             this.labelType.TabIndex = 4;
-            this.labelType.Text = "Type :";
+            this.labelType.Text = "Report :";
             // 
             // comboBoxReportType
             // 
@@ -375,6 +376,7 @@
             // groupBoxDateTime
             // 
             this.groupBoxDateTime.BackColor = System.Drawing.Color.AliceBlue;
+            this.groupBoxDateTime.Controls.Add(this.label8);
             this.groupBoxDateTime.Controls.Add(this.comboBoxDateShortCut);
             this.groupBoxDateTime.Controls.Add(this.labelDateShortCut);
             this.groupBoxDateTime.Controls.Add(this.dateTimePickerDateTo);
@@ -387,6 +389,15 @@
             this.groupBoxDateTime.TabIndex = 6;
             this.groupBoxDateTime.TabStop = false;
             this.groupBoxDateTime.Text = "Date and Time";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(29, 74);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(195, 13);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "(Year/Month/Day Hour:Minute:Second)";
             // 
             // comboBoxDateShortCut
             // 
@@ -413,7 +424,7 @@
             // 
             // dateTimePickerDateTo
             // 
-            this.dateTimePickerDateTo.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            this.dateTimePickerDateTo.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePickerDateTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePickerDateTo.Location = new System.Drawing.Point(67, 44);
             this.dateTimePickerDateTo.Name = "dateTimePickerDateTo";
@@ -423,7 +434,7 @@
             // 
             // dateTimePickerDateFrom
             // 
-            this.dateTimePickerDateFrom.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            this.dateTimePickerDateFrom.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePickerDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePickerDateFrom.Location = new System.Drawing.Point(67, 15);
             this.dateTimePickerDateFrom.Name = "dateTimePickerDateFrom";
@@ -1488,5 +1499,6 @@
         private System.Windows.Forms.GroupBox groupBoxTrackers;
         private System.Windows.Forms.Button buttonSettingsAdvance;
         private System.Windows.Forms.Label labelTotalTabPages;
+        private System.Windows.Forms.Label label8;
     }
 }

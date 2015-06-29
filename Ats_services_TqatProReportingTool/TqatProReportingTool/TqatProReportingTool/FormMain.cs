@@ -86,16 +86,21 @@ namespace TqatProReportingTool {
             comboBoxReportType.Items.Clear();
             comboBoxReportType.Items.AddRange(Enum.GetNames(typeof(ReportType)));
             if (account.accessLevel > 1) {
-                comboBoxReportType.Items.Remove("ALLCOMPANIES");
-                comboBoxReportType.Items.Remove("ALLTRACKERS");
+                comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_COMPANIES));
+                comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_TRACKERS));
             }
 
             comboBoxTrackersBound.SelectedItem = comboBoxTrackersBound.Items[0];
             comboBoxReportType.SelectedItem = comboBoxReportType.Items[0];
 
             //Date and Time
+            dateTimePickerDateTo.Format = DateTimePickerFormat.Custom;
+            dateTimePickerDateTo.CustomFormat = "yyyy/MM/dd HH:mm:ss";
+            dateTimePickerDateFrom.Format = DateTimePickerFormat.Custom;
+            dateTimePickerDateFrom.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             dateTimePickerDateTo.Value = (DateTime.Today.AddDays(-1));
             dateTimePickerDateFrom.Value = (DateTime.Today);
+
 
             comboBoxAccount.SelectedIndexChanged += comboBoxAccount_SelectedIndexChanged;
             comboBoxTrackersBound.SelectedIndexChanged += comboBoxTrackersBound_SelectedIndexChanged;
@@ -110,7 +115,7 @@ namespace TqatProReportingTool {
 
             //Limit
             comboBoxLimit.Items.Clear();
-            comboBoxLimit.Items.AddRange(new string[] { "10", "50", "100", "200", "400", "500" });
+            comboBoxLimit.Items.AddRange(new string[] { "10", "50", "100", "200", "300", "400" });
             comboBoxLimit.SelectedItem = comboBoxLimit.Items[2];
 
 
@@ -312,7 +317,7 @@ namespace TqatProReportingTool {
                             pagingStatus = true;
                             break;
                         case ReportType.IDLING:
-                            dataTableDetails = query.getTrackerIdleData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.RUNNING:
@@ -331,6 +336,10 @@ namespace TqatProReportingTool {
                             dataTableDetails = query.getTrackerAccData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
+                        case ReportType.EXTERNAL_POWER_CUT:
+                            dataTableDetails = query.getTrackerExternalPowerCutData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataCount = dataTableDetails.Rows.Count;
+                            break;
                         case ReportType.OVERSPEED:
                             dataTableDetails = query.getTrackerOverSpeedData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
@@ -339,11 +348,11 @@ namespace TqatProReportingTool {
                             dataTableDetails = query.getTrackersGeofence(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, trackerList);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
-                        case ReportType.ALLCOMPANIES:
+                        case ReportType.ALL_COMPANIES:
                             dataTableDetails = query.getAllCompanies();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
-                        case ReportType.ALLTRACKERS:
+                        case ReportType.ALL_TRACKERS:
                             dataTableDetails = query.getAllTrackers();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
@@ -411,13 +420,13 @@ namespace TqatProReportingTool {
                         listViewItemsDetail[7].SubItems.Add(tracker.simNumber);
 
                         listViewItemsDetail[8].Text = "Vehicle Created";
-                        listViewItemsDetail[8].SubItems.Add(tracker.dateCreated.ToShortDateString());
+                        listViewItemsDetail[8].SubItems.Add(tracker.dateCreated.ToString("yyyy/MM/dd HH:mm:ss"));
 
                         listViewItemsDetail[9].Text = "Vehicle Expiry";
-                        listViewItemsDetail[9].SubItems.Add(tracker.vehicleRegistrationExpiry.ToShortDateString());
+                        listViewItemsDetail[9].SubItems.Add(tracker.vehicleRegistrationExpiry.ToString("yyyy/MM/dd HH:mm:ss"));
 
                         listViewItemsDetail[10].Text = "Device Expiry";
-                        listViewItemsDetail[10].SubItems.Add(tracker.dateExpired.ToShortDateString());
+                        listViewItemsDetail[10].SubItems.Add(tracker.dateExpired.ToString("yyyy/MM/dd HH:mm:ss"));
                     }
 
                     ListView listViewDetails = new ListView();
@@ -443,20 +452,30 @@ namespace TqatProReportingTool {
 
 
                     listViewItemsSummary[0].Text = "DateTime From";
-                    listViewItemsSummary[0].SubItems.Add(dateTimeFrom.ToString());
+                    listViewItemsSummary[0].SubItems.Add(dateTimeFrom.ToString("yyyy/MM/dd HH:mm:ss"));
 
                     listViewItemsSummary[1].Text = "DateTime To";
-                    listViewItemsSummary[1].SubItems.Add(dateTimeTo.ToString());
+                    listViewItemsSummary[1].SubItems.Add(dateTimeTo.ToString("yyyy/MM/dd HH:mm:ss"));
 
-                    if (reportType == ReportType.RUNNING || reportType == ReportType.IDLING || reportType == ReportType.ACC || reportType == ReportType.GEOFENCE || reportType == ReportType.TRACKERS_GEOFENCE) {
+                    if (reportType == ReportType.RUNNING ||
+                        reportType == ReportType.IDLING ||
+                        reportType == ReportType.ACC ||
+                        reportType == ReportType.GEOFENCE ||
+                        reportType == ReportType.TRACKERS_GEOFENCE ||
+                        reportType == ReportType.EXTERNAL_POWER_CUT) {
                         listViewItemsSummary[2].Text = "Total Distance";
-                        listViewItemsSummary[2].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Distance").ToString());
+                        listViewItemsSummary[2].SubItems.Add(Converter.dataTableColumnSumValueIfTrue(dataTableDetails, "Distance").ToString() + " Km");
                         listViewItemsSummary[3].Text = "Total Fuel";
-                        listViewItemsSummary[3].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Fuel").ToString());
+                        listViewItemsSummary[3].SubItems.Add(Converter.dataTableColumnSumValueIfTrue(dataTableDetails, "Fuel").ToString() + " L");
                         listViewItemsSummary[4].Text = "Total Cost";
-                        listViewItemsSummary[4].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Cost").ToString());
+                        listViewItemsSummary[4].SubItems.Add(Converter.dataTableColumnSumValueIfTrue(dataTableDetails, "Cost").ToString() + " Qr");
                     }
-                    if (reportType == ReportType.RUNNING || reportType == ReportType.IDLING || reportType == ReportType.ACC || reportType == ReportType.GEOFENCE) {
+                    if (reportType == ReportType.RUNNING ||
+                        reportType == ReportType.IDLING ||
+                        reportType == ReportType.ACC ||
+                        reportType == ReportType.GEOFENCE ||
+                        reportType == ReportType.EXTERNAL_POWER_CUT) {
+
                         if (reportType == ReportType.RUNNING) {
                             listViewItemsSummary[5].Text = "Total Running Time";
                         } else if (reportType == ReportType.IDLING) {
@@ -465,8 +484,10 @@ namespace TqatProReportingTool {
                             listViewItemsSummary[5].Text = "Total Geofence Active Time";
                         } else if (reportType == ReportType.ACC) {
                             listViewItemsSummary[5].Text = "Total ACC Active Time";
+                        } else if (reportType == ReportType.EXTERNAL_POWER_CUT) {
+                            listViewItemsSummary[5].Text = "Total ExternalPower Cut Time";
                         }
-                        listViewItemsSummary[5].SubItems.Add(Converter.dataTableColumnSumTimeSpan(dataTableDetails, "Time").ToString());
+                        listViewItemsSummary[5].SubItems.Add(Converter.dataTableColumnSumTimeSpanIfTrue(dataTableDetails, "Time").ToString(@"dd\.hh\:mm\:ss"));
                     }
 
                     ListView listViewSummary = new ListView();
@@ -594,7 +615,7 @@ namespace TqatProReportingTool {
                     #region tabPageAndTabControls
                     TabPage tabPage = new TabPage(tabPageName);
                     tabPage.Name = reportItemName;
-                 
+
 
                     tabPage.Tag = hashTable;
                     tabPage.Controls.Add(tableLayoutInformationParent);
@@ -655,11 +676,11 @@ namespace TqatProReportingTool {
             }
             #endregion
         }
-        
+
         void tabControl_Click(object sender, EventArgs e) {
             TabPage tabPage = (TabPage)tabControl.SelectedTab;
             for (int index = 0; index < checkedListBoxTrackers.Items.Count; index++) {
-                DataRowView dataRowView =(DataRowView) checkedListBoxTrackers.Items[index];
+                DataRowView dataRowView = (DataRowView)checkedListBoxTrackers.Items[index];
                 string trackerItem = (string)checkedListBoxTrackers.GetItemText((object)checkedListBoxTrackers.Items[index]);
                 //string trackerItem = (string) dataRowView[fieldName];
                 string[] trackerName = tabPage.Text.Split(' ');
@@ -670,10 +691,6 @@ namespace TqatProReportingTool {
 
             }
 
-        }
-
-        void tabPage_Click(object sender, EventArgs e) {
-           
         }
 
 
@@ -706,7 +723,7 @@ namespace TqatProReportingTool {
                         dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
                         break;
                     case ReportType.IDLING:
-                        dataTableDetails = query.getTrackerIdleData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
                         break;
                     case ReportType.RUNNING:
                         dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
@@ -717,10 +734,10 @@ namespace TqatProReportingTool {
                     case ReportType.TRACKERS:
                         //dataTableDetails = query.getTrackers(this.account, userId);
                         break;
-                    case ReportType.ALLCOMPANIES:
+                    case ReportType.ALL_COMPANIES:
                         //dataTableDetails = query.getAllCompanies();
                         break;
-                    case ReportType.ALLTRACKERS:
+                    case ReportType.ALL_TRACKERS:
                         //dataTableDetails = query.getAllTrackers();
                         break;
 
@@ -941,6 +958,12 @@ namespace TqatProReportingTool {
                         dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
+                case ReportType.EXTERNAL_POWER_CUT:
+                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
+                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
             }
 
 
@@ -950,6 +973,18 @@ namespace TqatProReportingTool {
                 }
             }
 
+            foreach (DataGridViewColumn dataGridViewColumn in dataGridView.Columns) {
+                if (dataGridViewColumn.ValueType == typeof(DateTime)) {
+                    DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
+                    dataGridViewCellStyle.Format = ("yyyy/MM/dd HH:mm:ss");
+                    dataGridViewColumn.DefaultCellStyle = dataGridViewCellStyle;
+                }
+                if (dataGridViewColumn.ValueType == typeof(TimeSpan)) {
+                    DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
+                    dataGridViewCellStyle.Format = (@"dd\.hh\:mm\:ss");
+                    dataGridViewColumn.DefaultCellStyle = dataGridViewCellStyle;
+                }
+            }
 
 
         }
@@ -1083,9 +1118,7 @@ namespace TqatProReportingTool {
 
         }
 
-        private void checkedListBoxTrackers_MouseUp(object sender, MouseEventArgs e) {
-            //labelTotalCheckedTrackers.Text = "Total Checked Trackers : " + checkedListBoxTrackers.CheckedItems.Count.ToString();
-        }
+     
 
         void checkedListBoxTrackers_ItemCheck(object sender, ItemCheckEventArgs e) {
             int count = this.checkedListBoxTrackers.CheckedItems.Count;
@@ -1155,7 +1188,7 @@ namespace TqatProReportingTool {
                 return;
             }
 
-            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALLCOMPANIES || reportType == ReportType.ALLTRACKERS) {
+            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS) {
 
             } else {
                 CheckedListBox.CheckedItemCollection checkedItemCollection = checkedListBoxTrackers.CheckedItems;
@@ -1189,7 +1222,7 @@ namespace TqatProReportingTool {
             progressBarStatus.Value = 1;
             labelTotalTabPages.Text = "Total TabPages : 0";
 
-            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALLCOMPANIES || reportType == ReportType.ALLTRACKERS || reportType == ReportType.TRACKERS_GEOFENCE) {
+            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS || reportType == ReportType.TRACKERS_GEOFENCE) {
                 workerThreadCount = 0;
                 workerThreadFinished = 0;
                 progressBarStatus.Value = 10;

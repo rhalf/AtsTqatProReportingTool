@@ -36,11 +36,30 @@ namespace TqatProReportingTool {
 
             comboBoxReportType.Items.AddRange(Enum.GetNames(typeof(ReportType)));
             if (account.accessLevel > 1) {
-                comboBoxReportType.Items.Remove("ALLCOMPANIES");
-                comboBoxReportType.Items.Remove("ALLTRACKERS");
+                comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_COMPANIES));
+                comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_TRACKERS));
                 tabControlAdvancedSettings.TabPages.RemoveAt(tabControlAdvancedSettings.TabPages.IndexOfKey("tabPage2"));
             }
 
+            ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+            ToolStripMenuItem toolStripMenuItemCheckAll = (ToolStripMenuItem)contextMenuStrip.Items.Add("Check All");
+            toolStripMenuItemCheckAll.Click += toolStripMenuItemCheckAll_Click;
+            ToolStripMenuItem toolStripMenuItemUncheckAll = (ToolStripMenuItem)contextMenuStrip.Items.Add("Uncheck All");
+            toolStripMenuItemUncheckAll.Click += toolStripMenuItemUncheckAll_Click;
+
+            checkedListBoxColumnName.ContextMenuStrip = contextMenuStrip;
+        }
+
+        void toolStripMenuItemUncheckAll_Click(object sender, EventArgs e) {
+            for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                checkedListBoxColumnName.SetItemChecked(index, false);
+            }
+        }
+
+        void toolStripMenuItemCheckAll_Click(object sender, EventArgs e) {
+            for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                checkedListBoxColumnName.SetItemChecked(index, true);
+            }
         }
 
         private void comboBoxReportType_SelectedIndexChanged(object sender, EventArgs e) {
@@ -72,14 +91,18 @@ namespace TqatProReportingTool {
                 case ReportType.OVERSPEED:
                     overspeed();
                     break;
+                case ReportType.EXTERNAL_POWER_CUT:
+                    externalPowerCut();
+                    break;
                 case ReportType.TRACKERS:
                     trackers();
                     break;
-                case ReportType.ALLCOMPANIES:
+                case ReportType.ALL_COMPANIES:
                     break;
-                case ReportType.ALLTRACKERS:
+                case ReportType.ALL_TRACKERS:
                     break;
             }
+
 
             checkedListBoxColumnNameUpdate();
         }
@@ -171,8 +194,8 @@ namespace TqatProReportingTool {
                 "Longitude",  
                 "Speed", 
                 "Mileage",  
-                "Fuel",  
-                "Cost",  
+                //"Fuel",  
+                //"Cost",  
                 "Altitude", 
                 "Degrees", 
                 "Direction",  
@@ -182,7 +205,7 @@ namespace TqatProReportingTool {
                 "Geofence",  
                 "ACC",  
                 "SOS",  
-                "OS",  
+                "OverSpeed",  
                 "Battery",  
                 "BatteryVolt",  
                 "ExternalVolt"
@@ -201,7 +224,7 @@ namespace TqatProReportingTool {
 
         private void acc() {
             string[] acc = new string[]{
-                  "No", 
+                "No", 
                 "Status",
                 "DateTimeFrom", 
                 "DateTimeTo", 
@@ -246,6 +269,28 @@ namespace TqatProReportingTool {
             }
 
         }
+        private void externalPowerCut() {
+            string[] externalPowerCut = new string[]{
+                "No", 
+                "Status",
+                "DateTime",
+                "Latitude",  
+                "Longitude",  
+                "Speed", 
+                "Mileage",  
+                "Geofence"
+              };
+
+            checkedListBoxColumnName.Items.AddRange(externalPowerCut);
+            int totalItems = externalPowerCut.ToList().Count;
+            for (int index = 0; index < totalItems; index++) {
+                uint status = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
+                bool flag = (status == 1) ? true : false;
+                checkedListBoxColumnName.SetItemChecked(index, flag);
+
+            }
+
+        }
         private void trackers() {
             checkedListBoxColumnName.Items.AddRange(new string[]{
              "id",
@@ -280,9 +325,7 @@ namespace TqatProReportingTool {
         }
 
         private void checkBoxSelectAll_CheckedChanged(object sender, EventArgs e) {
-            for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
-                checkedListBoxColumnName.SetItemChecked(index, checkBoxSelectAll.Checked);
-            }
+
         }
 
         private void buttonColumnApply_Click(object sender, EventArgs e) {
@@ -331,6 +374,13 @@ namespace TqatProReportingTool {
                         Settings.Default.Save();
                     }
                     break;
+                case ReportType.EXTERNAL_POWER_CUT:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableOverspeed = Converter.setBit(Settings.Default.tableExternalPowerCut, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
 
             }
 
@@ -343,16 +393,50 @@ namespace TqatProReportingTool {
 
                         if (dataGridViewInformation.Name == comboBoxReportType.Text) {
 
-                            foreach (DataGridViewColumn dataGridViewColumn in dataGridViewInformation.Columns) {
-
-                                for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
-                                    bool status = checkedListBoxColumnName.GetItemChecked(index);
-
-                                    if (dataGridViewColumn.Name == checkedListBoxColumnName.GetItemText(checkedListBoxColumnName.Items[index])) {
-                                        dataGridViewColumn.Visible = status;
+                            switch (reportType) {
+                                case ReportType.HISTORICAL:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableHistorical, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.RUNNING:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableRunning, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                                     }
 
-                                }
+                                    break;
+                                case ReportType.IDLING:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableIdle, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.GEOFENCE:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableGeofence, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.ACC:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableAcc, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.OVERSPEED:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableOverspeed, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.EXTERNAL_POWER_CUT:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
                             }
                         }
 
@@ -385,6 +469,14 @@ namespace TqatProReportingTool {
                 log.write(logData);
                 MessageBox.Show(this, "Wrong Format! Please try again. Ex. '10.00'", "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void checkBoxSelectAll_Click(object sender, EventArgs e) {
+
+        }
+
+        private void checkedListBoxColumnName_ItemCheck(object sender, ItemCheckEventArgs e) {
+
         }
     }
 }

@@ -28,8 +28,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.checkedListBoxColumnName = new System.Windows.Forms.CheckedListBox();
             this.labelReportType = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBoxSelectAll = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBoxReportType = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -50,7 +48,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tabControlAdvancedSettings.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -72,7 +69,6 @@
             // 
             this.tabPage1.Controls.Add(this.checkedListBoxColumnName);
             this.tabPage1.Controls.Add(this.labelReportType);
-            this.tabPage1.Controls.Add(this.tableLayoutPanel2);
             this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.buttonColumnApply);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -87,10 +83,11 @@
             // 
             this.checkedListBoxColumnName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.checkedListBoxColumnName.FormattingEnabled = true;
-            this.checkedListBoxColumnName.Location = new System.Drawing.Point(3, 63);
+            this.checkedListBoxColumnName.Location = new System.Drawing.Point(3, 33);
             this.checkedListBoxColumnName.Name = "checkedListBoxColumnName";
-            this.checkedListBoxColumnName.Size = new System.Drawing.Size(275, 145);
+            this.checkedListBoxColumnName.Size = new System.Drawing.Size(275, 175);
             this.checkedListBoxColumnName.TabIndex = 7;
+            this.checkedListBoxColumnName.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBoxColumnName_ItemCheck);
             // 
             // labelReportType
             // 
@@ -102,33 +99,6 @@
             this.labelReportType.TabIndex = 6;
             this.labelReportType.Text = "Columns : ";
             this.labelReportType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.07018F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.85965F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.07018F));
-            this.tableLayoutPanel2.Controls.Add(this.checkBoxSelectAll, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 33);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(275, 30);
-            this.tableLayoutPanel2.TabIndex = 5;
-            // 
-            // checkBoxSelectAll
-            // 
-            this.checkBoxSelectAll.AutoSize = true;
-            this.checkBoxSelectAll.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBoxSelectAll.Location = new System.Drawing.Point(80, 3);
-            this.checkBoxSelectAll.Name = "checkBoxSelectAll";
-            this.checkBoxSelectAll.Size = new System.Drawing.Size(114, 24);
-            this.checkBoxSelectAll.TabIndex = 0;
-            this.checkBoxSelectAll.Text = "Select All";
-            this.checkBoxSelectAll.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAll.CheckedChanged += new System.EventHandler(this.checkBoxSelectAll_CheckedChanged);
             // 
             // tableLayoutPanel1
             // 
@@ -333,8 +303,6 @@
             this.tabControlAdvancedSettings.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
@@ -351,8 +319,6 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.CheckedListBox checkedListBoxColumnName;
         private System.Windows.Forms.Label labelReportType;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.CheckBox checkBoxSelectAll;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ComboBox comboBoxReportType;
         private System.Windows.Forms.Label label1;

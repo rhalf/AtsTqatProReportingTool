@@ -128,8 +128,6 @@ namespace Ats.Helper {
             this.reportType = reportType;
         }
 
-
-
         public bool dataTable(DataTable dataTable, bool openTheFile) {
 
             this.path = this.path + "\\" + parentDirectory;
@@ -161,40 +159,6 @@ namespace Ats.Helper {
             return true;
         }
 
-        public bool dataGridView(DataGridView dataGridView) {
-
-            this.path = this.path + "\\" + parentDirectory;
-
-            if (!Directory.Exists(this.path))
-                Directory.CreateDirectory(this.path);
-
-            this.fileName = this.path + "\\" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + " " + this.title + "." + Enum.GetName(typeof(ExportFileType), exportFileType);
-
-            try {
-                if (File.Exists(this.fileName))
-                    File.Delete(this.fileName);
-            } catch (Exception exception) {
-                Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t Exception \t\t" + exception.Message;
-                log.write(logData);
-                return false;
-            }
-
-            switch (this.exportFileType) {
-                case ExportFileType.CSV:
-                    //dataTableToCsv(dataTable, this.fileName);
-                    break;
-                case ExportFileType.TXT:
-                    //dataTableToText(dataTable, this.fileName);
-                    break;
-                case ExportFileType.PDF:
-                    //dataGridViewToPdf(dataGridView, this.fileName);
-                    break;
-            }
-
-            System.Diagnostics.Process.Start(this.fileName);
-            return true;
-        }
 
         public void dataTableToCsv(DataTable dataTable, string fileName) {
             StreamWriter streamWriter;
@@ -209,7 +173,8 @@ namespace Ats.Helper {
                     this.reportType == ReportType.IDLING ||
                     this.reportType == ReportType.GEOFENCE ||
                     this.reportType == ReportType.ACC ||
-                    this.reportType == ReportType.OVERSPEED
+                    this.reportType == ReportType.OVERSPEED ||
+                    this.reportType == ReportType.EXTERNAL_POWER_CUT
                     ) {
 
                     streamWriter.Write("VehicleRegistration," + reportInformation.trackerVehicleReg + "\n");
@@ -244,11 +209,18 @@ namespace Ats.Helper {
                         streamWriter.Write("Total Cost,,," + reportInformation.summaryTotalCost + "\n");
                         streamWriter.Write("Total ACC Active Time,,," + reportInformation.summaryTotalAccActiveTime + "\n");
                         break;
+                    case ReportType.EXTERNAL_POWER_CUT:
+                        streamWriter.Write("Total Distance,,," + reportInformation.summaryTotalDistance + "\n");
+                        streamWriter.Write("Total Fuel,,," + reportInformation.summaryTotalFuel + "\n");
+                        streamWriter.Write("Total Cost,,," + reportInformation.summaryTotalCost + "\n");
+                        streamWriter.Write("Total ExternalPower Cut Time,,," + reportInformation.summaryTotalExternalPowerCutTime + "\n");
+                        break;
                     case ReportType.TRACKERS_GEOFENCE:
                         streamWriter.Write("Total Distance,,," + reportInformation.summaryTotalDistance + "\n");
                         streamWriter.Write("Total Fuel,,," + reportInformation.summaryTotalFuel + "\n");
                         streamWriter.Write("Total Cost,,," + reportInformation.summaryTotalCost + "\n");
                         break;
+
                 }
 
                 if (
@@ -257,7 +229,8 @@ namespace Ats.Helper {
                   this.reportType == ReportType.IDLING ||
                   this.reportType == ReportType.GEOFENCE ||
                   this.reportType == ReportType.ACC ||
-                  this.reportType == ReportType.OVERSPEED
+                  this.reportType == ReportType.OVERSPEED ||
+                  this.reportType == ReportType.EXTERNAL_POWER_CUT
                   ) {
                     streamWriter.Write("DateTime From,,," + reportInformation.summaryDateTimeFrom + "\n");
                     streamWriter.Write("DateTime To,,," + reportInformation.summaryDateTimeTo + "\n");
@@ -288,6 +261,7 @@ namespace Ats.Helper {
             }
 
         }
+
         public void dataTableToText(DataTable dataTable, string fileName) {
             StreamWriter streamWriter;
             streamWriter = new StreamWriter(fileName, true);
@@ -302,7 +276,8 @@ namespace Ats.Helper {
                     this.reportType == ReportType.IDLING ||
                     this.reportType == ReportType.GEOFENCE ||
                     this.reportType == ReportType.ACC ||
-                    this.reportType == ReportType.OVERSPEED
+                    this.reportType == ReportType.OVERSPEED ||
+                    this.reportType == ReportType.EXTERNAL_POWER_CUT
                     ) {
 
                     streamWriter.Write("VehicleRegistration\t" + reportInformation.trackerVehicleReg + "\r\n");
@@ -337,6 +312,12 @@ namespace Ats.Helper {
                         streamWriter.Write("Total Cosl\t\t\t" + reportInformation.summaryTotalCost + "\r\n");
                         streamWriter.Write("Total ACC Active Time\t\t\t" + reportInformation.summaryTotalAccActiveTime + "\r\n");
                         break;
+                    case ReportType.EXTERNAL_POWER_CUT:
+                        streamWriter.Write("Total Distance\t\t\t" + reportInformation.summaryTotalDistance + "\r\n");
+                        streamWriter.Write("Total Fuel\t\t\t" + reportInformation.summaryTotalFuel + "\r\n");
+                        streamWriter.Write("Total Cosl\t\t\t" + reportInformation.summaryTotalCost + "\r\n");
+                        streamWriter.Write("Total ExternalPower Cut Time\t\t\t" + reportInformation.summaryTotalExternalPowerCutTime + "\r\n");
+                        break;
                     case ReportType.TRACKERS_GEOFENCE:
                         streamWriter.Write("Total Distance\t\t\t" + reportInformation.summaryTotalDistance + "\r\n");
                         streamWriter.Write("Total Fuel\t\t\t" + reportInformation.summaryTotalFuel + "\r\n");
@@ -349,7 +330,8 @@ namespace Ats.Helper {
                   this.reportType == ReportType.IDLING ||
                   this.reportType == ReportType.GEOFENCE ||
                   this.reportType == ReportType.ACC ||
-                  this.reportType == ReportType.OVERSPEED
+                  this.reportType == ReportType.OVERSPEED ||
+                  this.reportType == ReportType.EXTERNAL_POWER_CUT
                   ) {
                     streamWriter.Write("DateTime From\t\t\t" + reportInformation.summaryDateTimeFrom + "\r\n");
                     streamWriter.Write("DateTime To\t\t\t" + reportInformation.summaryDateTimeTo + "\r\n");
@@ -375,41 +357,6 @@ namespace Ats.Helper {
                 streamWriter.Close();
             }
         }
-
-        //public static void dataGridViewToPdf(DataGridView Dv, string FilePath) {
-        //    FontFactory.RegisterDirectories();
-        //    iTextSharp.text.Font myfont = FontFactory.GetFont("Tahoma", BaseFont.IDENTITY_H, 12, iTextSharp.text.Font.NORMAL, iTextSharp.text.BaseColor.BLACK);
-        //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 40f);
-
-        //    pdfDoc.Open();
-        //    PdfWriter wri = PdfWriter.GetInstance(pdfDoc, new FileStream(FilePath, FileMode.Create));
-        //    pdfDoc.Open();
-        //    PdfPTable _mytable = new PdfPTable(Dv.ColumnCount);
-
-        //    for (int j = 0; j < Dv.Columns.Count; ++j) {
-        //        Phrase p = new Phrase(Dv.Columns[j].HeaderText, myfont);
-        //        PdfPCell cell = new PdfPCell(p);
-        //        cell.HorizontalAlignment = Element.ALIGN_CENTER;
-        //        cell.RunDirection = PdfWriter.RUN_DIRECTION_RTL;
-        //        _mytable.AddCell(cell);
-        //    }
-        //    //-------------------------
-        //    for (int i = 0; i < Dv.Rows.Count - 1; ++i) {
-        //        for (int j = 0; j < Dv.Columns.Count; ++j) {
-
-        //            Phrase p = new Phrase(Dv.Rows[i].Cells[j].Value.ToString(), myfont);
-        //            PdfPCell cell = new PdfPCell(p);
-        //            cell.HorizontalAlignment = Element.ALIGN_CENTER;
-        //            cell.RunDirection = PdfWriter.RUN_DIRECTION_RTL;
-        //            _mytable.AddCell(cell);
-        //        }
-        //    }
-        //    //------------------------           
-        //    pdfDoc.Add(_mytable);
-        //    pdfDoc.Close();
-        //    System.Diagnostics.Process.Start(FilePath);
-        //}
-        //__________________ For DataTable To Pdf
 
 
         public void dataTableToPdf(System.Data.DataTable dataTable, string FilePath) {
@@ -448,7 +395,8 @@ namespace Ats.Helper {
                 reportType == ReportType.IDLING ||
                 reportType == ReportType.ACC ||
                 reportType == ReportType.GEOFENCE ||
-                reportType == ReportType.OVERSPEED
+                reportType == ReportType.OVERSPEED ||
+                reportType == ReportType.EXTERNAL_POWER_CUT
                 ) {
                 sbParagraph1.Append(
                     "Vehicle Reg\n" +
@@ -467,12 +415,13 @@ namespace Ats.Helper {
             }
 
             if (
-               reportType == ReportType.RUNNING ||
-               reportType == ReportType.IDLING ||
-               reportType == ReportType.ACC ||
-               reportType == ReportType.GEOFENCE ||
-               reportType == ReportType.OVERSPEED ||
-                reportType == ReportType.TRACKERS_GEOFENCE
+                reportType == ReportType.RUNNING ||
+                reportType == ReportType.IDLING ||
+                reportType == ReportType.ACC ||
+                reportType == ReportType.GEOFENCE ||
+                reportType == ReportType.OVERSPEED ||
+                reportType == ReportType.TRACKERS_GEOFENCE ||
+                reportType == ReportType.EXTERNAL_POWER_CUT
                ) {
 
                 sbParagraph3.Append(
@@ -493,6 +442,9 @@ namespace Ats.Helper {
                     case ReportType.ACC:
                         sbParagraph3.Append("Total ACC Active Time\n");
                         break;
+                    case ReportType.EXTERNAL_POWER_CUT:
+                        sbParagraph3.Append("Total ExternalPower Cut Time\n");
+                        break;
                 }
 
 
@@ -512,6 +464,9 @@ namespace Ats.Helper {
                     case ReportType.ACC:
                         sbParagraph4.Append(": " + reportInformation.summaryTotalAccActiveTime + "\n");
                         break;
+                    case ReportType.EXTERNAL_POWER_CUT:
+                        sbParagraph4.Append(": " + reportInformation.summaryTotalExternalPowerCutTime + "\n");
+                        break;
                 }
             }
 
@@ -521,7 +476,8 @@ namespace Ats.Helper {
                reportType == ReportType.IDLING ||
                reportType == ReportType.ACC ||
                reportType == ReportType.GEOFENCE ||
-               reportType == ReportType.OVERSPEED
+               reportType == ReportType.OVERSPEED ||
+                reportType == ReportType.EXTERNAL_POWER_CUT
                ) {
                 sbParagraph5.Append("DateTime From\n");
                 sbParagraph5.Append("DateTime To\n");
@@ -535,7 +491,9 @@ namespace Ats.Helper {
                reportType == ReportType.IDLING ||
                reportType == ReportType.ACC ||
                reportType == ReportType.GEOFENCE ||
-               reportType == ReportType.OVERSPEED
+               reportType == ReportType.OVERSPEED ||
+                reportType == ReportType.EXTERNAL_POWER_CUT
+
                ) {
                 sbParagraph6.Append(": " + reportInformation.summaryDateTimeFrom + "\n");
                 sbParagraph6.Append(": " + reportInformation.summaryDateTimeTo + "\n");

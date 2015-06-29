@@ -97,7 +97,27 @@ namespace Ats.Helper {
             }
             return Math.Round(summation,4);
         }
-        public static TimeSpan dataTableColumnSumTimeSpan(DataTable dataTable, DataColumn dataColumn) {
+
+        public static double dataTableColumnSumValueIfTrue(DataTable dataTable, DataColumn dataColumn) {
+            double summation = 0;
+            foreach (DataRow dataRow in dataTable.Rows) {
+                if ((bool)dataRow["Status"] == true) {
+                    summation += (double)dataRow[dataColumn.ColumnName];
+                }
+            }
+            return Math.Round(summation, 4);
+        }
+        public static double dataTableColumnSumValueIfTrue(DataTable dataTable, string column) {
+            DataColumn dataColumn = new DataColumn(column);
+            double summation = 0;
+            foreach (DataRow dataRow in dataTable.Rows) {
+                if ((bool)dataRow["Status"] == true) {
+                    summation += (double)dataRow[dataColumn.ColumnName];
+                }
+            }
+            return Math.Round(summation, 4);
+        }
+        public static TimeSpan dataTableColumnSumTimeSpanIfTrue(DataTable dataTable, DataColumn dataColumn) {
             TimeSpan summationTimespan = new TimeSpan();
             foreach (DataRow dataRow in dataTable.Rows) {
                 if ((bool)dataRow["Status"] == true) {
@@ -106,7 +126,7 @@ namespace Ats.Helper {
             }
             return summationTimespan;
         }
-        public static TimeSpan dataTableColumnSumTimeSpan(DataTable dataTable, string column) {
+        public static TimeSpan dataTableColumnSumTimeSpanIfTrue(DataTable dataTable, string column) {
             TimeSpan summationTimespan = new TimeSpan();
             foreach (DataRow dataRow in dataTable.Rows) {
                 if ((bool)dataRow["Status"] == true) {
