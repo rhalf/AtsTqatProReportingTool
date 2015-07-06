@@ -461,7 +461,6 @@ namespace TqatProReportingTool {
                         reportType == ReportType.IDLING ||
                         reportType == ReportType.ACC ||
                         reportType == ReportType.GEOFENCE ||
-                        reportType == ReportType.TRACKERS_GEOFENCE ||
                         reportType == ReportType.EXTERNAL_POWER_CUT) {
                         listViewItemsSummary[2].Text = "Total Distance";
                         listViewItemsSummary[2].SubItems.Add(Converter.dataTableColumnSumValueIfTrue(dataTableDetails, "Distance").ToString() + " Km");
@@ -470,6 +469,15 @@ namespace TqatProReportingTool {
                         listViewItemsSummary[4].Text = "Total Cost";
                         listViewItemsSummary[4].SubItems.Add(Converter.dataTableColumnSumValueIfTrue(dataTableDetails, "Cost").ToString() + " Qr");
                     }
+                    if (reportType == ReportType.TRACKERS_GEOFENCE) {
+                        listViewItemsSummary[2].Text = "Total Distance";
+                        listViewItemsSummary[2].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Distance").ToString() + " Km");
+                        listViewItemsSummary[3].Text = "Total Fuel";
+                        listViewItemsSummary[3].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Fuel").ToString() + " L");
+                        listViewItemsSummary[4].Text = "Total Cost";
+                        listViewItemsSummary[4].SubItems.Add(Converter.dataTableColumnSumValue(dataTableDetails, "Cost").ToString() + " Qr");
+                    }
+
                     if (reportType == ReportType.RUNNING ||
                         reportType == ReportType.IDLING ||
                         reportType == ReportType.ACC ||
@@ -661,7 +669,12 @@ namespace TqatProReportingTool {
                     }
                 } catch (Exception exception) {
                     Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                    string logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.vehicleRegistration + " : " + exception.Message;
+                    string logData = "";
+                    if (tracker != null) {
+                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.vehicleRegistration + " : " + exception.Message;
+                    } else {
+                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + exception.Message;
+                    }
                     log.write(logData);
                     break;
                 }
@@ -1118,7 +1131,7 @@ namespace TqatProReportingTool {
 
         }
 
-     
+
 
         void checkedListBoxTrackers_ItemCheck(object sender, ItemCheckEventArgs e) {
             int count = this.checkedListBoxTrackers.CheckedItems.Count;
