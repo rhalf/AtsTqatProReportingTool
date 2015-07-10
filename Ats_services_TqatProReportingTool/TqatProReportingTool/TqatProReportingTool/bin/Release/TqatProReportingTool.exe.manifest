@@ -67,14 +67,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="912856">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1003992">
       <assemblyIdentity name="TqatProReportingTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>RW+xS+yL4LBKc8zed6lMRTlk9P8=</dsig:DigestValue>
+        <dsig:DigestValue>lkYOLBk/4vB3ku2MWtdC9maH5FM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -87,13 +87,22 @@
       <dsig:DigestValue>YC5vmoydfK+AzGkpOCO4ATGP0mY=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TqatProReportingTool.exe.config" size="8200">
+  <file name="html\locate.html" size="3996">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>WaoyQBLRYKTtvW1Q9JPSI4zVUHU=</dsig:DigestValue>
+      <dsig:DigestValue>cdBdNW9biBm5OBagLljbeSOcdWM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="TqatProReportingTool.exe.config" size="8613">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>5dxf5AwRtHKIL4O1Rqj2P6kg7Ac=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

@@ -108,7 +108,7 @@ namespace TqatProReportingTool {
 
             comboBoxDateShortCut.Items.Clear();
             comboBoxDateShortCut.Items.AddRange(new string[] { 
-                "Yesterday", "2 days ago", "3 days ago", "5 days ago", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago"
+                "Today","Yesterday", "2 days ago", "3 days ago", "5 days ago", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago"
             //,"1 day later", "2 days later", "3 days later", "5 days later", "1 week later", "2 weeks later", "3 weeks later", "1 month later",
             });
             comboBoxDateShortCut.SelectedItem = comboBoxDateShortCut.Items[0];
@@ -1048,7 +1048,7 @@ namespace TqatProReportingTool {
                     dataGridViewColumn.Name != "Longitude" &&
                     dataGridViewColumn.Name != "LatitudeTo" &&
                     dataGridViewColumn.Name != "LongitudeTo" &&
-                    dataGridViewColumn.Name != "LatitudeFrom" &&  
+                    dataGridViewColumn.Name != "LatitudeFrom" &&
                     dataGridViewColumn.Name != "LongitudeFrom") && dataGridViewColumn.ValueType == typeof(double)) {
                     DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
                     dataGridViewCellStyle.Format = ("0.00");
@@ -1260,7 +1260,7 @@ namespace TqatProReportingTool {
             TimeSpan timeSpan = dateTimePickerDateTo.Value.Subtract(dateTimePickerDateFrom.Value);
             if (reportType == ReportType.TRACKERS_HISTORICAL) {
                 if (timeSpan.Hours > 1 || timeSpan.Days > 0) {
-                    MessageBox.Show(this, "For TRACKERS_HISTORICAL Report, \"DateTime From\" should be maximum of 5 minutes difference from the \"Date To\".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "For TRACKERS_HISTORICAL Report, \"DateTime From\" should be maximum of 1 hour difference from the \"Date To\".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             } else {
@@ -1882,10 +1882,12 @@ namespace TqatProReportingTool {
 
             DateTime dateTime = dateTimePickerDateTo.Value;
 
+            dateTimePickerDateFrom.Value = DateTime.Today;
+            dateTimePickerDateTo.Value = DateTime.Today.AddDays(1);
+
             switch (comboBoxDateShortCut.SelectedIndex) {
                 case 0:
-                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-1);
-                    dateTimePickerDateTo.Value = DateTime.Today;
+
                     break;
                 case 1:
                     dateTimePickerDateFrom.Value = dateTime.AddDays(-2);
@@ -1908,32 +1910,8 @@ namespace TqatProReportingTool {
                 case 7:
                     dateTimePickerDateFrom.Value = dateTime.AddDays(-30);
                     break;
-                //Positive
-                case 8:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(1);
-                    break;
-                case 9:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(2);
-                    break;
-                case 10:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(3);
-                    break;
-                case 11:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(5);
-                    break;
-                case 12:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(7);
-                    break;
-                case 13:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(14);
-                    break;
-                case 14:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(21);
-                    break;
-                case 15:
-                    dateTimePickerDateTo.Value = dateTimePickerDateFrom.Value.AddDays(30);
-                    break;
             }
+
         }
         #endregion
 
