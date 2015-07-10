@@ -286,5 +286,41 @@ namespace TqatProReportingTool.Properties {
                 this["tableExternalPowerCut"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4294967295")]
+        public uint tableTrackersHistorical {
+            get {
+                return ((uint)(this["tableTrackersHistorical"]));
+            }
+            set {
+                this["tableTrackersHistorical"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4294967295")]
+        public uint tableAllTrackers {
+            get {
+                return ((uint)(this["tableAllTrackers"]));
+            }
+            set {
+                this["tableAllTrackers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4294967295")]
+        public uint tableAllCompanies {
+            get {
+                return ((uint)(this["tableAllCompanies"]));
+            }
+            set {
+                this["tableAllCompanies"] = value;
+            }
+        }
     }
 }

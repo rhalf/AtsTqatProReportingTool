@@ -15,6 +15,7 @@ namespace Ats {
         OVERSPEED,
         TRACKERS,
         TRACKERS_GEOFENCE,
+        TRACKERS_HISTORICAL,
         //URGENT,
         ALL_COMPANIES,
         ALL_TRACKERS

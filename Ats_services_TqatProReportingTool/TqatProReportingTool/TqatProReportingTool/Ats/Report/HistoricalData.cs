@@ -11,32 +11,26 @@ namespace Ats.Report {
             get;
             set;
         }
-
         public string userName{
             get;
             set;
         }
-
         public string trackerVehicleReg {
             get;
             set;
         }
-
         public string trackerVehicleModel {
             get;
             set;
         }
-
         public string trackerOwnerName {
             get;
             set;
         }
-
         public string trackerDriverName {
             get;
             set;
         }
-
         public string trackerSimNumber{
             get;
             set;
@@ -45,22 +39,18 @@ namespace Ats.Report {
             get;
             set;
         }
-
         public string trackerVehicleCreated {
             get;
             set;
         }
-
         public string trackerDeviceExpiry {
             get;
             set;
         }
-
         public string trackerVehicleExpiry {
             get;
             set;
         }
-
         public string summaryDateTimeFrom {
             get;
             set;

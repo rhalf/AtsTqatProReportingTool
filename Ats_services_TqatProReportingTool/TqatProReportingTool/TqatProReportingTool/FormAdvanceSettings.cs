@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using Ats;
 using Ats.Helper;
 using Ats.Session;
+using Ats.Database;
+
 using TqatProReportingTool.Properties;
 
 namespace TqatProReportingTool {
@@ -72,37 +74,61 @@ namespace TqatProReportingTool {
             ReportType reportType = (ReportType)Enum.Parse(typeof(ReportType), comboBoxReportType.Text);
 
 
+
+            Database database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword, 30);
+            Query query = new Query(database);
+            DataTable dataTable = query.getReportTable(reportType);
+            foreach (DataColumn dataColumn in dataTable.Columns) {
+                checkedListBoxColumnName.Items.Add(dataColumn.ColumnName);
+            }
+
+            uint setting = 0;
             switch (reportType) {
                 case ReportType.HISTORICAL:
-                    historical();
+                    setting = Settings.Default.tableHistorical;
                     break;
                 case ReportType.RUNNING:
-                    running();
+                    setting = Settings.Default.tableRunning;
                     break;
                 case ReportType.IDLING:
-                    idle();
-                    break;
-                case ReportType.GEOFENCE:
-                    geofence();
+                    setting = Settings.Default.tableIdle;
                     break;
                 case ReportType.ACC:
-                    acc();
+                    setting = Settings.Default.tableAcc;
+                    break;
+                case ReportType.GEOFENCE:
+                    setting = Settings.Default.tableGeofence;
                     break;
                 case ReportType.OVERSPEED:
-                    overspeed();
+                    setting = Settings.Default.tableOverspeed;
                     break;
                 case ReportType.EXTERNAL_POWER_CUT:
-                    externalPowerCut();
+                    setting = Settings.Default.tableExternalPowerCut;
                     break;
                 case ReportType.TRACKERS:
-                    trackers();
+                    setting = Settings.Default.tableTrackers;
                     break;
-                case ReportType.ALL_COMPANIES:
+                case ReportType.TRACKERS_GEOFENCE:
+                    setting = Settings.Default.tableTrackersGeofence;
+                    break;
+                case ReportType.TRACKERS_HISTORICAL:
+                    setting = Settings.Default.tableTrackersHistorical;
                     break;
                 case ReportType.ALL_TRACKERS:
+                    setting = Settings.Default.tableAllTrackers;
+                    break;
+                case ReportType.ALL_COMPANIES:
+                    setting = Settings.Default.tableAllCompanies;
                     break;
             }
 
+            int totalItems = dataTable.Columns.Count;
+            for (int index = 0; index < totalItems; index++) {
+                uint status = Converter.getBit(setting, index);
+                bool flag = (status == 1) ? true : false;
+                checkedListBoxColumnName.SetItemChecked(index, flag);
+
+            }
 
             checkedListBoxColumnNameUpdate();
         }
@@ -114,214 +140,6 @@ namespace TqatProReportingTool {
             //    checkedListBoxColumnName.SetItemChecked(index, checkBoxSelectAll.Checked);
 
             labelReportType.Text = "Columns : " + checkListBoxColumnCount;
-        }
-
-        private void running() {
-            string[] running = new string[]{
-                "No", 
-                "Status",
-                "DateTimeFrom", 
-                "DateTimeTo", 
-                "Time", 
-                "SpeedMax",
-                "SpeedAve",
-                "Distance",
-                "Fuel",  
-                "Cost",  
-                "Geofence"
-              };
-            checkedListBoxColumnName.Items.AddRange(running);
-            int totalItems = running.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableRunning, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-        }
-        private void geofence() {
-            string[] geofence = new string[]{
-                "No",
-                "Status",
-                "DateTimeFrom", 
-                "DateTimeTo",
-                "Time",
-                "SpeedMax", 
-                "SpeedAve", 
-                "Distance",
-                "Fuel",  
-                "Cost",  
-                "Geofence"
-              };
-            checkedListBoxColumnName.Items.AddRange(geofence);
-            int totalItems = geofence.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableGeofence, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-        }
-        private void idle() {
-            string[] idle = new string[]{
-                "No", 
-                "Status",
-                "DateTimeFrom", 
-                "DateTimeTo", 
-                "Time", 
-                "SpeedMax",
-                "SpeedAve",
-                "Distance",
-                "Fuel",  
-                "Cost",  
-                "Geofence"
-              };
-
-            checkedListBoxColumnName.Items.AddRange(idle);
-            int totalItems = idle.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableIdle, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-        }
-        private void historical() {
-            string[] historical = new string[]{
-                "No", 
-                "DateTime", 
-                "Latitude",  
-                "Longitude",  
-                "Speed", 
-                "Mileage",  
-                //"Fuel",  
-                //"Cost",  
-                "Altitude", 
-                "Degrees", 
-                "Direction",  
-                "GpsSatellites", 
-                "GsmSignal", 
-                "EventCode",  
-                "Geofence",  
-                "ACC",  
-                "SOS",  
-                "OverSpeed",  
-                "Battery",  
-                "BatteryVolt",  
-                "ExternalVolt"
-              };
-
-            checkedListBoxColumnName.Items.AddRange(historical);
-            int totalItems = historical.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableHistorical, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-
-        }
-
-        private void acc() {
-            string[] acc = new string[]{
-                "No", 
-                "Status",
-                "DateTimeFrom", 
-                "DateTimeTo", 
-                "Time", 
-                "SpeedMax",
-                "SpeedAve",
-                "Distance",
-                "Fuel",  
-                "Cost",  
-                "Geofence"
-              };
-
-            checkedListBoxColumnName.Items.AddRange(acc);
-            int totalItems = acc.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableAcc, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-
-        }
-        private void overspeed() {
-            string[] overspeed = new string[]{
-                "No", 
-                "Status",
-                "DateTime",
-                "Latitude",  
-                "Longitude",  
-                "Speed", 
-                "Mileage",  
-                "Geofence"
-              };
-
-            checkedListBoxColumnName.Items.AddRange(overspeed);
-            int totalItems = overspeed.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableOverspeed, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-
-        }
-        private void externalPowerCut() {
-            string[] externalPowerCut = new string[]{
-                "No", 
-                "Status",
-                "DateTime",
-                "Latitude",  
-                "Longitude",  
-                "Speed", 
-                "Mileage",  
-                "Geofence"
-              };
-
-            checkedListBoxColumnName.Items.AddRange(externalPowerCut);
-            int totalItems = externalPowerCut.ToList().Count;
-            for (int index = 0; index < totalItems; index++) {
-                uint status = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
-                bool flag = (status == 1) ? true : false;
-                checkedListBoxColumnName.SetItemChecked(index, flag);
-
-            }
-
-        }
-        private void trackers() {
-            checkedListBoxColumnName.Items.AddRange(new string[]{
-             "id",
-             "vehicleRegistration",
-             "vehicleModel",
-             "ownerName",
-             "driverName",
-             "simImei", 
-             "simNumber",
-            "mobileDataProvider",
-            "deviceImei",
-            "devicePassword",
-            "deviceType",
-            "emails",
-            "users", 
-            "mileageInitial",
-            "mileageLimit",
-            "speedLimit", 
-            "idlingTime",
-            "inputs",
-            "imageNumber",        
-            "note", 
-            "collections",
-            "companyDatabaseName",
-            "databaseHost",
-            "dataDatabaseName",
-            "httpHost",
-            "dateCreated",
-            "dateExpired"
-            });
-
         }
 
         private void checkBoxSelectAll_CheckedChanged(object sender, EventArgs e) {
@@ -377,7 +195,43 @@ namespace TqatProReportingTool {
                 case ReportType.EXTERNAL_POWER_CUT:
                     for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
                         bool flag = checkedListBoxColumnName.GetItemChecked(index);
-                        Settings.Default.tableOverspeed = Converter.setBit(Settings.Default.tableExternalPowerCut, index, flag);
+                        Settings.Default.tableExternalPowerCut = Converter.setBit(Settings.Default.tableExternalPowerCut, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
+                case ReportType.TRACKERS:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableTrackers = Converter.setBit(Settings.Default.tableTrackers, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
+                case ReportType.TRACKERS_GEOFENCE:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableTrackersGeofence = Converter.setBit(Settings.Default.tableTrackersGeofence, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
+                case ReportType.TRACKERS_HISTORICAL:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableTrackersHistorical = Converter.setBit(Settings.Default.tableTrackersHistorical, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
+
+                case ReportType.ALL_TRACKERS:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableAllTrackers = Converter.setBit(Settings.Default.tableAllTrackers, index, flag);
+                        Settings.Default.Save();
+                    }
+                    break;
+                case ReportType.ALL_COMPANIES:
+                    for (int index = 0; index < checkedListBoxColumnName.Items.Count; index++) {
+                        bool flag = checkedListBoxColumnName.GetItemChecked(index);
+                        Settings.Default.tableAllCompanies = Converter.setBit(Settings.Default.tableAllCompanies, index, flag);
                         Settings.Default.Save();
                     }
                     break;
@@ -434,6 +288,36 @@ namespace TqatProReportingTool {
                                 case ReportType.EXTERNAL_POWER_CUT:
                                     for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                                         uint flag = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.TRACKERS:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableTrackers, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.TRACKERS_GEOFENCE:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableTrackersGeofence, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.TRACKERS_HISTORICAL:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableTrackersHistorical, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.ALL_TRACKERS:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableAllTrackers, index);
+                                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                                    }
+                                    break;
+                                case ReportType.ALL_COMPANIES:
+                                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                                        uint flag = Converter.getBit(Settings.Default.tableAllCompanies, index);
                                         dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                                     }
                                     break;

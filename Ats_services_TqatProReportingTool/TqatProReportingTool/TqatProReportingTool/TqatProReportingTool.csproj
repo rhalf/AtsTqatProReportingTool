@@ -259,6 +259,9 @@
     <None Include="Resources\icon_social_googleplus_001.png" />
     <None Include="Resources\icon_social_fb_001.png" />
     <None Include="bin\Debug\logo.png" />
+    <Content Include="html\locate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="favicon.ico" />
     <None Include="Resources\logo.jpeg" />
     <None Include="Resources\logo_logo_002.jpg" />

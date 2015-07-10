@@ -22,16 +22,13 @@ namespace Ats.Helper {
 
     class Log {
         string _path, _parentDirectory, _fileName, _identifier;
-
         LogFileType _logFileType;
         LogType _logType;
-
         public Log(LogFileType logFileType, LogType logType) {
           
             this._logFileType = logFileType;
             this._logType = logType;
         }
-
         public string path {
             get {
                 return this._path;
@@ -40,7 +37,6 @@ namespace Ats.Helper {
                 this._path = value;
             }
         }
-
         public string parentDirectory {
             get {
                 return this._parentDirectory;
@@ -57,8 +53,6 @@ namespace Ats.Helper {
                 this._identifier = value;
             }
         }
-
-
         public void write(string logMessage) {
 
             this._path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\TqatProReportingTool\\logs";

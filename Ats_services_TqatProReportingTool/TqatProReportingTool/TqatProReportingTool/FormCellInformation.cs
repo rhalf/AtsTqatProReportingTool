@@ -10,55 +10,95 @@ using System.Collections;
 
 using Ats;
 using Ats.Database;
+using Ats.Helper;
 
 namespace TqatProReportingTool {
     public partial class FormCellInformation : Form {
-        string[,] itemCollection = null;
+        Hashtable hashtable = null;
         string formName = "";
         ReportType reportType;
         double latitude = 0;
         double longitude = 0;
 
-        public FormCellInformation(String formName, string[,] itemCollection) {
+        double latitudeFrom = 0;
+        double longitudeFrom = 0;
+        double latitudeTo = 0;
+        double longitudeTo = 0;
+        List<string> keys;
+
+        bool isApoint = false;
+        bool isAline = false;
+
+        public FormCellInformation(String formName, Hashtable hashtable) {
             //this.reportType = reportType;
-            this.itemCollection = itemCollection;
+            this.hashtable = hashtable;
             this.formName = formName;
             InitializeComponent();
         }
 
         private void FormCellInformation_Load(object sender, EventArgs e) {
-            // for (int index = 0; index < hashtableInformation.Count; index++ ) {
-            this.Text = formName;
+            try {
 
-            this.reportType = (ReportType)Enum.Parse(typeof(ReportType), itemCollection[0, 1], true);
+                this.Text = formName;
+
+                this.reportType = (ReportType)hashtable["ReportType"];
+                this.keys = (List<string>)hashtable["Keys"];
 
 
+                if (reportType == ReportType.HISTORICAL || reportType == ReportType.TRACKERS_HISTORICAL || reportType == ReportType.OVERSPEED) {
+                    buttonViewOnMap.Visible = true;
+                    this.latitude = (double)hashtable["Latitude"];
+                    this.longitude = (double)hashtable["Longitude"];
+                    this.isApoint = true;
+                } else if (reportType == ReportType.RUNNING || reportType == ReportType.IDLING || reportType == ReportType.EXTERNAL_POWER_CUT || reportType == ReportType.ACC || reportType == ReportType.GEOFENCE) {
+                    this.latitudeFrom = (double)hashtable["LatitudeFrom"];
+                    this.longitudeFrom = (double)hashtable["LongitudeFrom"];
+                    this.latitudeTo = (double)hashtable["LatitudeTo"];
+                    this.longitudeTo = (double)hashtable["LongitudeTo"];
+                    buttonViewOnMap.Visible = true;
+                    this.isAline = true;
 
-            if (reportType == ReportType.HISTORICAL) {
-                buttonViewOnMap.Visible = true;
-                this.latitude = double.Parse(itemCollection[2, 1]);
-                this.longitude = double.Parse(itemCollection[3, 1]);
-            }else if (reportType == ReportType.OVERSPEED) {
-                buttonViewOnMap.Visible = true;
-                this.latitude = double.Parse(itemCollection[3, 1]);
-                this.longitude = double.Parse(itemCollection[4, 1]);
-            }
-            for (int index = 0; index < 32; index++) {
-                string attribute = itemCollection[index, 0];
-                string data = itemCollection[index, 1];
+                }
 
-                if (String.IsNullOrEmpty(attribute))
-                    return;
 
-                ListViewItem listViewItem = new ListViewItem(new string[] { attribute, data });
-                listViewInformation.Items.Add(listViewItem);
+                for (int index = 0; index < keys.Count; index++) {
+                    string key = keys[index];
+                    if (String.IsNullOrEmpty(key))
+                        return;
+
+                    object obj = hashtable[key];
+
+                    if (obj.GetType() == typeof(double)) {
+                        if (!
+                            (key == "Latitude" &&
+                            key == "Longitude" &&
+                            key == "LatitudeFrom" &&
+                            key == "LongitudeFrom" &&
+                            key == "LatitudeTo" &&
+                            key == "LongitudeTo")) {
+                            obj = (object)Converter.round((double)obj);
+                        }
+                    }
+
+                    string data = (string)obj.ToString();
+
+
+                    ListViewItem listViewItem = new ListViewItem(new string[] { key, data });
+                    listViewInformation.Items.Add(listViewItem);
+                }
+            } catch {
+                this.Close();
             }
 
         }
 
         private void buttonViewOnMap_Click(object sender, EventArgs e) {
-            if (reportType == ReportType.HISTORICAL || reportType == ReportType.OVERSPEED) {
+            if (isApoint) {
                 FormMap formMap = new FormMap(this.latitude, this.longitude, this.Text);
+                formMap.Show();
+                this.Close();
+            } else if (isAline) {
+                FormMap formMap = new FormMap(this.latitudeFrom, this.longitudeFrom,this.latitudeTo,this.longitudeTo, this.Text);
                 formMap.Show();
                 this.Close();
             }

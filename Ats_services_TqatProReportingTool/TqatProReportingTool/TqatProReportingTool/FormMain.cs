@@ -311,21 +311,21 @@ namespace TqatProReportingTool {
                     #region querySelection
                     switch (reportType) {
                         case ReportType.HISTORICAL:
-                            dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, reportType, limit, offset, tracker);
-                            dataCount = query.getTrackerHistoricalDataCount(this.account, dateTimeFrom, dateTimeTo, reportType, tracker);
+                            dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, limit, offset, tracker);
+                            dataCount = query.getTrackerHistoricalDataCount(this.account, dateTimeFrom, dateTimeTo, tracker);
                             //dataTableDetails.writeToCsvFile(Directory.GetCurrentDirectory());
                             pagingStatus = true;
                             break;
                         case ReportType.IDLING:
-                            dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.RUNNING:
-                            dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.GEOFENCE:
-                            dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.TRACKERS:
@@ -333,19 +333,23 @@ namespace TqatProReportingTool {
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ACC:
-                            dataTableDetails = query.getTrackerAccData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerAccData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.EXTERNAL_POWER_CUT:
-                            dataTableDetails = query.getTrackerExternalPowerCutData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerExternalPowerCutData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.OVERSPEED:
-                            dataTableDetails = query.getTrackerOverSpeedData(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerOverSpeedData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.TRACKERS_GEOFENCE:
-                            dataTableDetails = query.getTrackersGeofence(this.account, dateTimeFrom, dateTimeTo, reportType, 1000000, 0, trackerList);
+                            dataTableDetails = query.getTrackersGeofence(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, trackerList);
+                            dataCount = dataTableDetails.Rows.Count;
+                            break;
+                        case ReportType.TRACKERS_HISTORICAL:
+                            dataTableDetails = query.getTrackersHistorical(this.account, dateTimeFrom, dateTimeTo, 500, 0, trackerList);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ALL_COMPANIES:
@@ -378,6 +382,7 @@ namespace TqatProReportingTool {
                     dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dataGridView.DataBindingComplete += dataGridView_DataBindingComplete;
                     dataGridView.CellDoubleClick += dataGridView_CellDoubleClick;
+                    dataGridView.MouseHover += dataGridView_MouseHover;
 
 
                     ContextMenuStrip contextMenuStripDataGridView = new ContextMenuStrip();
@@ -414,7 +419,7 @@ namespace TqatProReportingTool {
                         listViewItemsDetail[5].SubItems.Add(tracker.driverName);
 
                         listViewItemsDetail[6].Text = "Device Imei";
-                        listViewItemsDetail[6].SubItems.Add(tracker.deviceImei);
+                        listViewItemsDetail[6].SubItems.Add(tracker.trackerImei);
 
                         listViewItemsDetail[7].Text = "Sim Number";
                         listViewItemsDetail[7].SubItems.Add(tracker.simNumber);
@@ -690,6 +695,8 @@ namespace TqatProReportingTool {
             #endregion
         }
 
+
+
         void tabControl_Click(object sender, EventArgs e) {
             TabPage tabPage = (TabPage)tabControl.SelectedTab;
             for (int index = 0; index < checkedListBoxTrackers.Items.Count; index++) {
@@ -733,16 +740,16 @@ namespace TqatProReportingTool {
                 #region querySelection
                 switch (reportType) {
                     case ReportType.HISTORICAL:
-                        dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.IDLING:
-                        dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.RUNNING:
-                        dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.GEOFENCE:
-                        dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, reportType, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.TRACKERS:
                         //dataTableDetails = query.getTrackers(this.account, userId);
@@ -898,95 +905,135 @@ namespace TqatProReportingTool {
             TabPage tabPage = (TabPage)tableLayoutPanel.Parent;
 
             Hashtable hashtableInformation = new Hashtable();
+            List<string> keys = new List<string>();
 
-            string[,] itemCollection = new string[32, 2];
             ReportType reportType = (ReportType)Enum.Parse(typeof(ReportType), dataGridView.Name, true);
 
-            itemCollection[0, 0] = "ReportType";
-            itemCollection[0, 1] = dataGridView.Name;
+            hashtableInformation.Add("ReportType", reportType);
+            keys.Add("ReportType");
 
-            for (int index = 1; index < dataGridView.Columns.Count; index++) {
+            foreach (DataGridViewColumn dataGridViewColumn in dataGridView.Columns) {
                 DataGridViewRow dataGridViewRow = dataGridView.CurrentRow;
-                itemCollection[index, 0] = dataGridView.Columns[index].Name;
-                itemCollection[index, 1] = dataGridViewRow.Cells[dataGridView.Columns[index].Name].Value.ToString();
+                hashtableInformation.Add(dataGridViewColumn.Name, dataGridViewRow.Cells[dataGridViewColumn.Name].Value);
+                keys.Add(dataGridViewColumn.Name);
             }
+            hashtableInformation.Add("Keys", keys);
 
-
-            FormCellInformation formCellInformation = new FormCellInformation(tabPage.Text, itemCollection);
+            FormCellInformation formCellInformation = new FormCellInformation(tabPage.Text, hashtableInformation);
             formCellInformation.Show();
         }
-
-        void dataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) {
+        void dataGridView_MouseHover(object sender, EventArgs e) {
             DataGridView dataGridView = (DataGridView)sender;
             if (dataGridView == null) {
                 return;
             }
 
-            dataGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
-            dataGridView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            GC.Collect();
+            //dataGridView.Refresh();
+        }
+        void dataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) {
+            DataGridView dataGridViewInformation = (DataGridView)sender;
+            if (dataGridViewInformation == null) {
+                return;
+            }
+
+            GC.Collect();
+
+            dataGridViewInformation.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
+            dataGridViewInformation.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewInformation.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             //dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView.ColumnHeadersDefaultCellStyle.Font, FontStyle.Bold);
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView.ColumnHeadersDefaultCellStyle.Font.FontFamily, 9.0f);
+            dataGridViewInformation.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridViewInformation.ColumnHeadersDefaultCellStyle.Font.FontFamily, 9.0f);
 
-            dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            dataGridViewInformation.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
-            ReportType reportType = (ReportType)Enum.Parse(typeof(ReportType), dataGridView.Name, true);
+            ReportType reportType = (ReportType)Enum.Parse(typeof(ReportType), dataGridViewInformation.Name, true);
 
 
             switch (reportType) {
                 case ReportType.HISTORICAL:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableHistorical, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
                 case ReportType.RUNNING:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableRunning, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
 
                     break;
                 case ReportType.IDLING:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableIdle, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
                 case ReportType.GEOFENCE:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableGeofence, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
                 case ReportType.ACC:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableAcc, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
                 case ReportType.OVERSPEED:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableOverspeed, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
                 case ReportType.EXTERNAL_POWER_CUT:
-                    for (int index = 0; index < dataGridView.ColumnCount; index++) {
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
                         uint flag = Converter.getBit(Settings.Default.tableExternalPowerCut, index);
-                        dataGridView.Columns[index].Visible = (flag == 1) ? true : false;
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
+                case ReportType.TRACKERS:
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableTrackers, index);
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
+                case ReportType.TRACKERS_GEOFENCE:
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableTrackersGeofence, index);
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
+                case ReportType.TRACKERS_HISTORICAL:
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableTrackersHistorical, index);
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
+                case ReportType.ALL_TRACKERS:
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableAllTrackers, index);
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
+                    }
+                    break;
+                case ReportType.ALL_COMPANIES:
+                    for (int index = 0; index < dataGridViewInformation.ColumnCount; index++) {
+                        uint flag = Converter.getBit(Settings.Default.tableAllCompanies, index);
+                        dataGridViewInformation.Columns[index].Visible = (flag == 1) ? true : false;
                     }
                     break;
             }
 
 
-            foreach (DataGridViewRow dataGridViewRow in dataGridView.Rows) {
+            foreach (DataGridViewRow dataGridViewRow in dataGridViewInformation.Rows) {
                 if ((dataGridViewRow.Index % 2) == 0) {
                     dataGridViewRow.DefaultCellStyle.BackColor = Color.AliceBlue;//Color.Lavender;
                 }
             }
 
-            foreach (DataGridViewColumn dataGridViewColumn in dataGridView.Columns) {
+            foreach (DataGridViewColumn dataGridViewColumn in dataGridViewInformation.Columns) {
                 if (dataGridViewColumn.ValueType == typeof(DateTime)) {
                     DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
                     dataGridViewCellStyle.Format = ("yyyy/MM/dd HH:mm:ss");
@@ -997,8 +1044,24 @@ namespace TqatProReportingTool {
                     dataGridViewCellStyle.Format = (@"dd\.hh\:mm\:ss");
                     dataGridViewColumn.DefaultCellStyle = dataGridViewCellStyle;
                 }
+                if ((dataGridViewColumn.Name != "Latitude" &&
+                    dataGridViewColumn.Name != "Longitude" &&
+                    dataGridViewColumn.Name != "LatitudeTo" &&
+                    dataGridViewColumn.Name != "LongitudeTo" &&
+                    dataGridViewColumn.Name != "LatitudeFrom" &&  
+                    dataGridViewColumn.Name != "LongitudeFrom") && dataGridViewColumn.ValueType == typeof(double)) {
+                    DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
+                    dataGridViewCellStyle.Format = ("0.00");
+                    dataGridViewCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dataGridViewColumn.DefaultCellStyle = dataGridViewCellStyle;
+                }
+                if (dataGridViewColumn.ValueType == typeof(int)) {
+                    DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle();
+                    dataGridViewCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dataGridViewColumn.DefaultCellStyle = dataGridViewCellStyle;
+                }
+                dataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
-
 
         }
 
@@ -1195,10 +1258,16 @@ namespace TqatProReportingTool {
 
 
             TimeSpan timeSpan = dateTimePickerDateTo.Value.Subtract(dateTimePickerDateFrom.Value);
-
-            if (timeSpan.Days > 31) {
-                MessageBox.Show(this, "Data \"Date From\" should be maximum of one month difference from the \"Date To\".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+            if (reportType == ReportType.TRACKERS_HISTORICAL) {
+                if (timeSpan.Hours > 1 || timeSpan.Days > 0) {
+                    MessageBox.Show(this, "For TRACKERS_HISTORICAL Report, \"DateTime From\" should be maximum of 5 minutes difference from the \"Date To\".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            } else {
+                if (timeSpan.Days > 31) {
+                    MessageBox.Show(this, "For this Report, \"Date From\" should be maximum of one month difference from the \"Date To\".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
             if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS) {
@@ -1235,7 +1304,7 @@ namespace TqatProReportingTool {
             progressBarStatus.Value = 1;
             labelTotalTabPages.Text = "Total TabPages : 0";
 
-            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS || reportType == ReportType.TRACKERS_GEOFENCE) {
+            if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS || reportType == ReportType.TRACKERS_GEOFENCE || reportType == ReportType.TRACKERS_HISTORICAL) {
                 workerThreadCount = 0;
                 workerThreadFinished = 0;
                 progressBarStatus.Value = 10;
@@ -1254,7 +1323,7 @@ namespace TqatProReportingTool {
                     tracker.dataDatabaseName = (string)dataRowView["dataDatabaseName"];
                     tracker.dateCreated = (DateTime)dataRowView["dateCreated"];
                     tracker.dateExpired = (DateTime)dataRowView["dateExpired"];
-                    tracker.deviceImei = (string)dataRowView["deviceImei"];
+                    tracker.trackerImei = (string)dataRowView["deviceImei"];
                     tracker.devicePassword = (string)dataRowView["devicePassword"];
                     tracker.deviceType = (int)dataRowView["deviceType"];
                     tracker.driverName = (string)dataRowView["driverName"];
@@ -1306,7 +1375,7 @@ namespace TqatProReportingTool {
                     tracker.dataDatabaseName = (string)dataRowView["dataDatabaseName"];
                     tracker.dateCreated = (DateTime)dataRowView["dateCreated"];
                     tracker.dateExpired = (DateTime)dataRowView["dateExpired"];
-                    tracker.deviceImei = (string)dataRowView["deviceImei"];
+                    tracker.trackerImei = (string)dataRowView["deviceImei"];
                     tracker.devicePassword = (string)dataRowView["devicePassword"];
                     tracker.deviceType = (int)dataRowView["deviceType"];
                     tracker.driverName = (string)dataRowView["driverName"];
@@ -1955,6 +2024,10 @@ namespace TqatProReportingTool {
         #endregion
         #region prepareExport
         public void prepareExport(TabPage tabPage, bool openTheFile) {
+
+            if (String.IsNullOrEmpty(comboBoxExportFileType.Text))
+                return;
+
             if (tabPage == null)
                 return;
 

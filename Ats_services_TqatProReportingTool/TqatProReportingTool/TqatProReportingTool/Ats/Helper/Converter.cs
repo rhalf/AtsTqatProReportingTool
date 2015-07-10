@@ -15,24 +15,19 @@ namespace Ats.Helper {
             dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dateTime;
         }
-
         public static double dateTimeToUnixTimestamp(DateTime dateTime) {
             return (dateTime - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds;
         }
-
         public static string degreesToCardinal(double degrees) {
             string[] caridnals = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
-            return caridnals[(int)Math.Round(((double)degrees % 360) / 45)];
+            return caridnals[(int)Converter.round(((double)degrees % 360) / 45)];
         }
-
         public static string degreesToCardinalDetailed(double degrees) {
             degrees *= 10;
 
             string[] caridnals = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N" };
-            return caridnals[(int)Math.Round(((double)degrees % 3600) / 225)];
+            return caridnals[(int)Converter.round(((double)degrees % 3600) / 225)];
         }
-
-
         public static DateTime subStandardDateTimeToDateTime(string dateTime) {
             DateTime parsedDateTime;
 
@@ -65,11 +60,9 @@ namespace Ats.Helper {
 
             return parsedDateTime;
         }
-
         public static uint getBit(uint value, int index) {
             return (value >> index) & 1;
         }
-
         public static uint setBit(uint value, int index, bool bit) {
             uint flag = (uint)(bit ? 1 : 0);
             uint constBit = 1;
@@ -78,16 +71,14 @@ namespace Ats.Helper {
             } else {
                 value &= ~(constBit << index);
             }
-
             return value;
         }
-
         public static double dataTableColumnSumValue(DataTable dataTable, DataColumn dataColumn) {
             double summation = 0;
             foreach (DataRow dataRow in dataTable.Rows) {
                 summation += (double)dataRow[dataColumn.ColumnName];
             }
-            return Math.Round(summation, 4);
+            return Converter.round(summation);
         }
         public static double dataTableColumnSumValue(DataTable dataTable, string column) {
             DataColumn dataColumn = new DataColumn(column);
@@ -95,9 +86,8 @@ namespace Ats.Helper {
             foreach (DataRow dataRow in dataTable.Rows) {
                 summation += (double)dataRow[dataColumn.ColumnName];
             }
-            return Math.Round(summation,4);
+            return Converter.round(summation);
         }
-
         public static double dataTableColumnSumValueIfTrue(DataTable dataTable, DataColumn dataColumn) {
             double summation = 0;
             foreach (DataRow dataRow in dataTable.Rows) {
@@ -105,7 +95,7 @@ namespace Ats.Helper {
                     summation += (double)dataRow[dataColumn.ColumnName];
                 }
             }
-            return Math.Round(summation, 4);
+            return Converter.round(summation);
         }
         public static double dataTableColumnSumValueIfTrue(DataTable dataTable, string column) {
             DataColumn dataColumn = new DataColumn(column);
@@ -115,7 +105,7 @@ namespace Ats.Helper {
                     summation += (double)dataRow[dataColumn.ColumnName];
                 }
             }
-            return Math.Round(summation, 4);
+            return Converter.round(summation);
         }
         public static TimeSpan dataTableColumnSumTimeSpanIfTrue(DataTable dataTable, DataColumn dataColumn) {
             TimeSpan summationTimespan = new TimeSpan();
@@ -136,8 +126,25 @@ namespace Ats.Helper {
             }
             return summationTimespan;
         }
-
         public static string dataTableColumnAppend(DataTable dataTable, DataColumn dataColumn, string delimeter) {
+            string data = "";
+            foreach (DataRow dataRow in dataTable.Rows) {
+                string geofence = "";
+
+                if (!Convert.IsDBNull(dataRow[dataColumn.ColumnName])) {
+                    geofence = (string)dataRow[dataColumn.ColumnName];
+                }
+
+                string rowString = geofence;
+                if (!String.IsNullOrEmpty(rowString))
+                    data += rowString + " " + delimeter + " ";
+            }
+            if (data.Length > 0)
+                data = data.Substring(0, data.Length - 2);
+            return data;
+        }
+        public static string dataTableColumnAppend(DataTable dataTable, DataColumn dataColumn) {
+            string delimeter = " , ";
             string data = "";
             foreach (DataRow dataRow in dataTable.Rows) {
                 string geofence = "";
@@ -162,7 +169,14 @@ namespace Ats.Helper {
                     maxValue = value;
                 }
             }
-            return Math.Round(maxValue, 4);
+            return Converter.round(maxValue);
+        }
+        public static double round(double number) {
+            double result = Math.Round(number, 4);
+            if (Double.IsNaN(result)) {
+                return 0;
+            }
+            return result;
         }
     }
 }

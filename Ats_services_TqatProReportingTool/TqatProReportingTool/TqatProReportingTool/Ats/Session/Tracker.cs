@@ -44,7 +44,7 @@ namespace Ats.Session {
             get;
             set;
         }
-        public string deviceImei{
+        public string trackerImei{
             get;
             set;
         }

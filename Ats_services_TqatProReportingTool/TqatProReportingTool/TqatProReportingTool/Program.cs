@@ -46,7 +46,7 @@ namespace TqatProReportingTool {
             //1 = DevelopersMode 
             //2 = Static Ip
             int appMode = 2;
-            int appServer = 2;
+            int appServer = 1;
 
             if (appMode == 0) {
                 Settings.Default.Reset();

@@ -68,5 +68,14 @@
     <Setting Name="tableExternalPowerCut" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">4294967295</Value>
     </Setting>
+    <Setting Name="tableTrackersHistorical" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableAllTrackers" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
+    <Setting Name="tableAllCompanies" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">4294967295</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

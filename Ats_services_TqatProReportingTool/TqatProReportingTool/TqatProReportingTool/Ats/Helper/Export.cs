@@ -34,7 +34,6 @@ namespace Ats.Helper {
 
         BaseFont baseFont = null;
 
-
         public override void OnOpenDocument(PdfWriter writer, Document document) {
             try {
 
@@ -51,7 +50,6 @@ namespace Ats.Helper {
                 log.write(logData);
             }
         }
-
         public override void OnEndPage(PdfWriter writer, Document document) {
             base.OnEndPage(writer, document);
 
@@ -73,7 +71,6 @@ namespace Ats.Helper {
             pdfContentByte.EndText();
 
         }
-
         public override void OnCloseDocument(PdfWriter writer, Document document) {
             base.OnEndPage(writer, document);
             pdfTemplate.BeginText();
@@ -85,17 +82,14 @@ namespace Ats.Helper {
     }
 
     class Export {
-
         public string logoPath {
             get;
             set;
         }
-
         public string path {
             get;
             set;
         }
-
         public string parentDirectory {
             get;
             set;
@@ -119,7 +113,6 @@ namespace Ats.Helper {
             set;
         }
 
-
         ExportFileType exportFileType;
         ReportType reportType;
 
@@ -127,7 +120,6 @@ namespace Ats.Helper {
             this.exportFileType = exportFileType;
             this.reportType = reportType;
         }
-
         public bool dataTable(DataTable dataTable, bool openTheFile) {
 
             this.path = this.path + "\\" + parentDirectory;
@@ -158,8 +150,6 @@ namespace Ats.Helper {
                 System.Diagnostics.Process.Start(this.fileName);
             return true;
         }
-
-
         public void dataTableToCsv(DataTable dataTable, string fileName) {
             StreamWriter streamWriter;
             streamWriter = new StreamWriter(fileName, true);
@@ -261,7 +251,6 @@ namespace Ats.Helper {
             }
 
         }
-
         public void dataTableToText(DataTable dataTable, string fileName) {
             StreamWriter streamWriter;
             streamWriter = new StreamWriter(fileName, true);
@@ -357,8 +346,6 @@ namespace Ats.Helper {
                 streamWriter.Close();
             }
         }
-
-
         public void dataTableToPdf(System.Data.DataTable dataTable, string FilePath) {
 
 
