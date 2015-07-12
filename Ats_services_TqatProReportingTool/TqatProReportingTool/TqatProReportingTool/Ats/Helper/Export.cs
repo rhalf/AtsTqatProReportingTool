@@ -122,6 +122,27 @@ namespace Ats.Helper {
         }
         public bool dataTable(DataTable dataTable, bool openTheFile) {
 
+            DataTable dataTableCloned = dataTable.Copy();
+
+
+            foreach (DataColumn dataColumn in dataTable.Columns) {
+                foreach (DataRow dataRow in dataTableCloned.Rows) {
+                    if (dataColumn.DataType == typeof(double)) {
+                        if (dataColumn.ColumnName != "Latitude" &&
+                            dataColumn.ColumnName != "Longitude" &&
+                            dataColumn.ColumnName != "LatitudeTo" &&
+                            dataColumn.ColumnName != "LongitudeTo" &&
+                            dataColumn.ColumnName != "LatitudeFrom" &&
+                            dataColumn.ColumnName != "LongitudeFrom") {
+                            if (dataRow[dataColumn.ColumnName] != System.DBNull.Value) {
+                                dataRow[dataColumn.ColumnName] = Math.Round((double)dataRow[dataColumn.ColumnName], 2);
+                            }
+                        }
+                    }
+                }
+            }
+
+
             this.path = this.path + "\\" + parentDirectory;
 
             if (!Directory.Exists(this.path))
@@ -136,13 +157,13 @@ namespace Ats.Helper {
 
             switch (this.exportFileType) {
                 case ExportFileType.CSV:
-                    dataTableToCsv(dataTable, this.fileName);
+                    dataTableToCsv(dataTableCloned, this.fileName);
                     break;
                 case ExportFileType.TXT:
-                    dataTableToText(dataTable, this.fileName);
+                    dataTableToText(dataTableCloned, this.fileName);
                     break;
                 case ExportFileType.PDF:
-                    dataTableToPdf(dataTable, this.fileName);
+                    dataTableToPdf(dataTableCloned, this.fileName);
                     break;
             }
 
@@ -594,6 +615,16 @@ namespace Ats.Helper {
                             TimeSpan timeSpan = (TimeSpan)dataTable.Rows[i][j];
                             data = timeSpan.ToString(@"dd\ hh\:mm\:ss");
                         }
+
+                        //if (dataTable.Rows[i][j].GetType() == typeof(double)) {
+                        //    double number = (double)dataTable.Rows[i][j];
+                        //    data = Converter.round(number).ToString();
+                        //}
+                        //if (dataTable.Rows[i][j].GetType() == typeof(TimeSpan)) {
+                        //    TimeSpan timeSpan = (TimeSpan)dataTable.Rows[i][j];
+                        //    data = timeSpan.ToString(@"dd\ hh\:mm\:ss");
+                        //}
+
                         Phrase phrase = new Phrase(data, font);
                         PdfPCell cell = new PdfPCell(phrase);
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
