@@ -1009,7 +1009,7 @@ namespace Ats.Database {
 
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
-                        dateTimeIdleTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeIdleTo = dateTimeDateTo;//= (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
