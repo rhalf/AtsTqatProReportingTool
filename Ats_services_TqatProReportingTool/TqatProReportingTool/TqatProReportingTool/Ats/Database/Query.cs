@@ -839,13 +839,13 @@ namespace Ats.Database {
                     }
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
-                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningTo = dateTimeDateTo;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
@@ -1015,7 +1015,7 @@ namespace Ats.Database {
 
                         timeSpan = dateTimeIdleTo - dateTimeIdleFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
@@ -1175,13 +1175,13 @@ namespace Ats.Database {
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
 
-                        dateTimeGeofenceTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeGeofenceTo = dateTimeDateTo;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
                         timeSpan = dateTimeGeofenceTo - dateTimeGeofenceFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
@@ -1297,7 +1297,7 @@ namespace Ats.Database {
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
@@ -1336,13 +1336,13 @@ namespace Ats.Database {
                     }
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
-                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningTo = dateTimeDateTo;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
@@ -1507,13 +1507,13 @@ namespace Ats.Database {
                     }
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
-                        dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningTo = dateTimeDateTo;// (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
-                        speedAverage = speedAccumulator / speedDivisor;
+                        speedAverage = speedAccumulator / 1;
                         speedAccumulator = 0;
                         speedDivisor = 0;
 
