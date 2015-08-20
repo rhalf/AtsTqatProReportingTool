@@ -514,6 +514,8 @@ namespace Ats.Database {
             }
         }
 
+
+        //Based Reports
         public int getTrackerHistoricalDataCount(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
             DataTable dataTable = new DataTable();
             try {
@@ -732,6 +734,8 @@ namespace Ats.Database {
 
         }
 
+
+        //Processed Reports
         public DataTable getTrackerRunningData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableRunningData = this.getReportTable(ReportType.RUNNING);
@@ -787,7 +791,7 @@ namespace Ats.Database {
 
                     //One time
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
-                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
 
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
@@ -954,7 +958,7 @@ namespace Ats.Database {
 
                     //One Time
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
-                        dateTimeIdleFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeIdleFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
                         idleStatusBefore = idleStatusNow;
@@ -1119,7 +1123,7 @@ namespace Ats.Database {
 
                     //OneTime
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
-                        dateTimeGeofenceFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeGeofenceFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
                         geofenceStatusBefore = geofenceStatusNow;
@@ -1283,7 +1287,7 @@ namespace Ats.Database {
 
                     //OneTime
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
-                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
                         accStatusBefore = accStatusNow;
@@ -1455,7 +1459,7 @@ namespace Ats.Database {
 
                     //OneTime
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
-                        dateTimeRunningFrom = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
+                        dateTimeRunningFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
 
