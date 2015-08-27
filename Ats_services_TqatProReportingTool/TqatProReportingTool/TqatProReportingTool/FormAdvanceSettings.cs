@@ -18,9 +18,9 @@ using TqatProReportingTool.Properties;
 namespace TqatProReportingTool {
     public partial class FormAdvanceSettings : Form {
         TabControl tabControl;
-        Account account;
+        User account;
 
-        public FormAdvanceSettings(Account acount, TabControl tabControl) {
+        public FormAdvanceSettings(User acount, TabControl tabControl) {
             this.tabControl = tabControl;
             this.account = acount;
             InitializeComponent();
@@ -37,7 +37,7 @@ namespace TqatProReportingTool {
             textBoxValuesFuelToCost.Text = Settings.Default.fuelLiterToCost.ToString("0.00");
 
             comboBoxReportType.Items.AddRange(Enum.GetNames(typeof(ReportType)));
-            if (account.accessLevel > 1) {
+            if (account.AccessLevel > 1) {
                 comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_COMPANIES));
                 comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_TRACKERS));
                 tabControlAdvancedSettings.TabPages.RemoveAt(tabControlAdvancedSettings.TabPages.IndexOfKey("tabPage2"));
@@ -135,9 +135,6 @@ namespace TqatProReportingTool {
 
         private void checkedListBoxColumnNameUpdate() {
             int checkListBoxColumnCount = checkedListBoxColumnName.Items.Count;
-
-            //for (int index = 0; index < checkListBoxColumnCount; index++)
-            //    checkedListBoxColumnName.SetItemChecked(index, checkBoxSelectAll.Checked);
 
             labelReportType.Text = "Columns : " + checkListBoxColumnCount;
         }

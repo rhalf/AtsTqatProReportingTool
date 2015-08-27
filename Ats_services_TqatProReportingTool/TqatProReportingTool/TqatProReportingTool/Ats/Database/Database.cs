@@ -8,7 +8,7 @@ using Ats.Helper;
 using MySql.Data.MySqlClient;
 
 namespace Ats.Database {
-    class Database {
+    public class Database {
         private string databaseName = null;
         private string host = null;
         private string username = null;

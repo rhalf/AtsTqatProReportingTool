@@ -76,7 +76,9 @@
       <HintPath>..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="MySql.Data, Version=6.9.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -112,7 +114,13 @@
     <Compile Include="Ats\Map\MapTools.cs" />
     <Compile Include="Ats\Helper\Export.cs" />
     <Compile Include="Ats\Helper\Log.cs" />
+    <Compile Include="Ats\Parser\General.cs" />
     <Compile Include="Ats\Report\HistoricalData.cs" />
+    <Compile Include="Ats\Session\Collection.cs" />
+    <Compile Include="Ats\Session\Company.cs" />
+    <Compile Include="Ats\Session\Coordinate.cs" />
+    <Compile Include="Ats\Session\Geofence.cs" />
+    <Compile Include="Ats\Session\Poi.cs" />
     <Compile Include="Ats\Session\Tracker.cs" />
     <Compile Include="FormCellInformation.cs">
       <SubType>Form</SubType>
@@ -133,10 +141,9 @@
       <DependentUpon>FormChart.cs</DependentUpon>
     </Compile>
     <Compile Include="Ats\Helper\Converter.cs" />
-    <Compile Include="Ats\Helper\Cryptography.cs" />
     <Compile Include="Ats\Helper\NetworkTools.cs" />
     <Compile Include="Ats\Helper\StringValidator.cs" />
-    <Compile Include="Ats\Session\Account.cs" />
+    <Compile Include="Ats\Session\User.cs" />
     <Compile Include="DialogDatabaseConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>

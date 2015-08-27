@@ -6,127 +6,126 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Ats.Session {
-    class Tracker {
-        public int id {
+    public class Tracker {
+
+        public int Id {
             get;
             set;
         }
-        public string companyDatabaseName {
+        public string CompanyDatabaseName {
             get;
             set;
         }
-        public string vehicleRegistration {
+        public string VehicleRegistration {
             get;
             set;
         }
-        public string driverName {
+        public string DriverName {
             get;
             set;
         }
-        public string ownerName {
+        public string OwnerName {
             get;
             set;
         }
-        public string vehicleModel {
+        public string VehicleModel {
             get;
             set;
         }
-        public DateTime vehicleRegistrationExpiry {
+        public DateTime VehicleRegistrationExpiry {
+            get;
+            set;
+        }
+        public string SimNumber {
+            get;
+            set;
+        }
+        public string SimImei {
+            get;
+            set;
+        }
+        public string TrackerImei {
+            get;
+            set;
+        }
+        public int MobileDataProvider {
+            get;
+            set;
+        }
+        public int DeviceType {
+            get;
+            set;
+        }
+        public string DevicePassword {
+            get;
+            set;
+        }
+        public int ImageNumber {
+            get;
+            set;
+        }
+        public int DatabaseHost {
+            get;
+            set;
+        }
+        public int HttpHost {
+            get;
+            set;
+        }
+        public string DatabaseName {
+            get;
+            set;
+        }
+        public List<User> Users {
+            get;
+            set;
+        }
+       
+        public DateTime DateTimeCreated {
+            get;
+            set;
+        }
+        public DateTime DateTimeExpired {
+            get;
+            set;
+        }
+        public string Emails {
+            get;
+            set;
+        }
+        public int MileageInitial {
+            get;
+            set;
+        }
+        public int MileageLimit {
+            get;
+            set;
+        }
+        public int SpeedLimit {
+            get;
+            set;
+        }
+        public string Inputs {
+            get;
+            set;
+        }
+        public int IdlingTime {
+            get;
+            set;
+        }
+        public string Note {
             get;
             set;
         }
 
-        public string simNumber {
+        public List<Collection> Collections {
             get;
             set;
         }
-        public string simImei {
-            get;
-            set;
-        }
-        public string trackerImei{
-            get;
-            set;
-        }
-     
-        public int mobileDataProvider {
-            get;
-            set;
-        }
-        public int deviceType {
-            get;
-            set;
-        }
-        public string devicePassword {
-            get;
-            set;
-        }
-        public int imageNumber {
-            get;
-            set;
-        }
-        public int databaseHost {
-            get;
-            set;
-        }
-        public int httpHost {
-            get;
-            set;
-        }
-        public string dataDatabaseName {
-            get;
-            set;
-        }
-        public string users {
-            get;
-            set;
-        }
-        public string collections {
-            get;
-            set;
-        }
-
-        public DateTime dateCreated{
-            get;
-            set;
-        }
-        public DateTime dateExpired {
-            get;
-            set;
-        }
-        public string emails {
-            get;
-            set;
-        }
-
-        public int mileageInitial {
-            get;
-            set;
-        }
-
-        public int mileageLimit {
-            get;
-            set;
-        }
-        public int speedLimit {
-            get;
-            set;
-        }
-
-        public string inputs {
-            get;
-            set;
-        }
-
-        public int idlingTime {
-            get;
-            set;
-        }
-
-        public string note{
-            get;
-            set;
-        }
+        //public bool? IsChecked {
+        //    get;
+        //    set;
+        //}
 
     }
 }

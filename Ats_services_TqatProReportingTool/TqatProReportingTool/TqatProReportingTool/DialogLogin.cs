@@ -21,19 +21,18 @@ using Ats.Helper;
 namespace TqatProReportingTool {
     public partial class DialogLogin : Form {
 
-        Account account;
-        Database database;
+        User user = new User();
+        Company company = new Company();
 
-        //Hashtable hashTable = new Hashtable();
 
-        public DialogLogin(ref Account account) {
-            this.account = account;
+        Database database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
+
+        public DialogLogin() {
             InitializeComponent();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            Application.Exit();
         }
 
         private void buttonLogin_Click(object sender, EventArgs e) {
@@ -53,7 +52,6 @@ namespace TqatProReportingTool {
                 errorProviderDatabaseConfiguration.SetError(textBoxUsername, String.Empty);
             }
 
-
             if (String.IsNullOrEmpty(textBoxPassword.Text)) {
                 errorProviderDatabaseConfiguration.SetError(textBoxPassword, "Field is empty.");
             } else {
@@ -64,18 +62,15 @@ namespace TqatProReportingTool {
                 return;
             }
 
-            account.companyUsername = textBoxCompany.Text;
-            account.username = textBoxUsername.Text;
-            account.password = Cryptography.md5(textBoxPassword.Text);
-            account.rememberMe = checkBoxRememberMe.Checked;
-
             try {
-                database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
-                BackgroundWorker backgroundWorker = new BackgroundWorker();
-                backgroundWorker.DoWork += backgroundWorker_DoWork;
-                if (!backgroundWorker.IsBusy) {
-                    backgroundWorker.RunWorkerAsync();
-                }
+
+                company.Username = textBoxCompany.Text;
+                user.Username = textBoxUsername.Text;
+                user.Password = textBoxPassword.Text;
+                user.RememberMe = checkBoxRememberMe.Checked;
+
+                ThreadPool.QueueUserWorkItem(new WaitCallback(run), null);
+
             } catch (DatabaseException databaseException) {
                 MessageBox.Show(this, databaseException.Message, "Database Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
@@ -85,36 +80,53 @@ namespace TqatProReportingTool {
             }
         }
 
-        void backgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-            database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
-
-
+        void run(object state) {
             pictureBoxLoading.Invoke(new MethodInvoker(delegate {
                 pictureBoxLoading.Visible = true;
             }));
 
             try {
                 Query query = new Query(database);
-                query.checkLogin(account);
 
-                if (account.active == 0) {
-                    throw new QueryException(1, "Can't Login! This account is deactivated.");
-                }
+                query.getCompany(company);
+
+                if (!company.IsActive)
+                    throw new QueryException(1, "Company is inactive.");
+                if (company.DateTimeCreated.CompareTo(DateTime.Now) != -1)
+                    throw new QueryException(1, "Can't Login! This user is expired.");
+
+                query.getUser(company, user);
 
 
-                int result = account.dateTimeCreated.CompareTo(DateTime.Now);
-                if (result != -1) {
-                    throw new QueryException(1, "Can't Login! This account is expired.");
-                }
+                if (user.DateTimeCreated.CompareTo(DateTime.Now) != -1)
+                    throw new QueryException(1, "Can't Login! This user is expired.");
+                if (!user.IsActive)
+                    throw new QueryException(1, "User is inactive.");
+
+                //=============================Login successful
+
+                query.fillGeofences(company);
+
+                query.fillUsers(company, user);
+
+                query.fillCollection(company);
+
+                query.fillTrackers(company);
+
+                query.fillPois(company);
+
+
 
 
                 this.Invoke(new MethodInvoker(delegate {
-                    Settings.Default.accountRememberMe = account.rememberMe;
-                    Settings.Default.accountCompanyUsername = account.companyUsername;
-                    Settings.Default.accountUsername = account.username;
-                    Settings.Default.accountPassword = account.password;
+                    Settings.Default.accountRememberMe = (bool)user.RememberMe;
+                    Settings.Default.accountCompanyUsername = company.Username;
+                    Settings.Default.accountUsername = user.Username;
+                    Settings.Default.accountPassword = user.Password;
                     Settings.Default.Save();
-                    this.DialogResult = DialogResult.OK;
+
+                    FormMain formMain = new FormMain(company, user);
+                    formMain.Show();
                     this.Close();
                 }));
             } catch (QueryException queryException) {
@@ -150,24 +162,15 @@ namespace TqatProReportingTool {
 
             this.textBoxPassword.PasswordChar = '\u25CF';
             if (Settings.Default.accountRememberMe) {
-                account.companyUsername = Settings.Default.accountCompanyUsername;
-                account.username = Settings.Default.accountUsername;
-                account.password = Settings.Default.accountPassword;
-                account.rememberMe = Settings.Default.accountRememberMe;
-                try {
-                    database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
-                    BackgroundWorker backgroundWorker = new BackgroundWorker();
-                    backgroundWorker.DoWork += backgroundWorker_DoWork;
-                    if (!backgroundWorker.IsBusy) {
-                        backgroundWorker.RunWorkerAsync();
-                    }
-                } catch (DatabaseException databaseException) {
-                    MessageBox.Show(this, databaseException.Message, "Database Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                    string logData = DateTime.Now.ToString() + "\t\t databaseException \t\t" + databaseException.Message;
-                    log.write(logData);
-                } finally {
-                }
+                company.Username = Settings.Default.accountCompanyUsername;
+                user.Username = Settings.Default.accountUsername;
+                user.Password = Settings.Default.accountPassword;
+                user.RememberMe = Settings.Default.accountRememberMe;
+
+                textBoxCompany.Text = Settings.Default.accountCompanyUsername;
+                textBoxPassword.Text = Settings.Default.accountPassword;
+                textBoxUsername.Text = Settings.Default.accountUsername;
+                checkBoxRememberMe.Checked = Settings.Default.accountRememberMe;
             }
         }
 

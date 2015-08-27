@@ -19,28 +19,13 @@ namespace TqatProReportingTool {
         [STAThread]
 
         static void Main() {
+            //if (Debugger.IsAttached) {
+            //    Settings.Default.Reset();
+            //}
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            #region -validation
-
-            //DateTime dateTime = new DateTime(2015, 6, 1);
-            //int result = DateTime.Compare(DateTime.Now, dateTime);
-            //if (result == 1) {
-            //    //d2 is ahead of d1
-            //    MessageBox.Show("This application is expired.", "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-
-            //} else if (result == -1) {
-            //} else if (result == 0) {
-            //}
-
-            #endregion
-            #region -mode
-            //if (Debugger.IsAttached) {
-            //    Settings.Default.Reset();
-            //}
 
             //0 = ResetMode 
             //1 = DevelopersMode 
@@ -71,49 +56,10 @@ namespace TqatProReportingTool {
                 Settings.Default.Save();
             }
 
-            #endregion
-            #region -loop
-            while (true) {
-                Account account = new Account();
+            DialogLogin dialogLogin = new DialogLogin();
+            dialogLogin.Show();
 
-
-                if ((string.IsNullOrEmpty(Settings.Default.DatabaseHost) || string.IsNullOrEmpty(Settings.Default.DatabaseUsername) || string.IsNullOrEmpty(Settings.Default.DatabasePassword))) {
-                    DialogDatabaseConfiguration dialogDatabaseConfiguration = new DialogDatabaseConfiguration();
-                    if (dialogDatabaseConfiguration.ShowDialog() == DialogResult.OK) {
-                        if (login(ref account) == DialogResult.Cancel) {
-                            break;
-                        } else {
-                            DialogResult dialogResult = mainApplication(ref account);
-                            if (dialogResult == DialogResult.Cancel) {
-                                break;
-                            }
-                        }
-                    } else {
-                        break;
-                    }
-                } else {
-                    if (login(ref account) == DialogResult.Cancel) {
-                        break;
-                    } else {
-                        DialogResult dialogResult = mainApplication(ref account);
-                        if (dialogResult == DialogResult.Cancel) {
-                            break;
-                        }
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public static DialogResult login(ref Account account) {
-            DialogLogin dialogLogin = new DialogLogin(ref account);
-            return dialogLogin.ShowDialog();
-        }
-
-        public static DialogResult mainApplication(ref Account account) {
-
-            FormMain formMain = new FormMain(ref account);
-            return formMain.ShowDialog();
+            Application.Run();
         }
     }
 }

@@ -47,17 +47,19 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(108, 33);
+            this.label1.Location = new System.Drawing.Point(162, 51);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 13);
+            this.label1.Size = new System.Drawing.Size(249, 20);
             this.label1.TabIndex = 26;
             this.label1.Text = "Please enter your Account details.";
             // 
             // splitter1
             // 
             this.splitter1.Location = new System.Drawing.Point(0, 0);
+            this.splitter1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 220);
+            this.splitter1.Size = new System.Drawing.Size(4, 344);
             this.splitter1.TabIndex = 24;
             this.splitter1.TabStop = false;
             // 
@@ -65,9 +67,10 @@
             // 
             this.labelPassword.AutoSize = true;
             this.labelPassword.BackColor = System.Drawing.Color.Transparent;
-            this.labelPassword.Location = new System.Drawing.Point(63, 111);
+            this.labelPassword.Location = new System.Drawing.Point(94, 171);
+            this.labelPassword.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(53, 13);
+            this.labelPassword.Size = new System.Drawing.Size(78, 20);
             this.labelPassword.TabIndex = 20;
             this.labelPassword.Text = "Password";
             // 
@@ -75,9 +78,10 @@
             // 
             this.labelUsername.AutoSize = true;
             this.labelUsername.BackColor = System.Drawing.Color.Transparent;
-            this.labelUsername.Location = new System.Drawing.Point(63, 86);
+            this.labelUsername.Location = new System.Drawing.Point(94, 132);
+            this.labelUsername.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelUsername.Name = "labelUsername";
-            this.labelUsername.Size = new System.Drawing.Size(55, 13);
+            this.labelUsername.Size = new System.Drawing.Size(83, 20);
             this.labelUsername.TabIndex = 21;
             this.labelUsername.Text = "Username";
             // 
@@ -85,40 +89,45 @@
             // 
             this.labelHost.AutoSize = true;
             this.labelHost.BackColor = System.Drawing.Color.Transparent;
-            this.labelHost.Location = new System.Drawing.Point(63, 61);
+            this.labelHost.Location = new System.Drawing.Point(94, 94);
+            this.labelHost.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHost.Name = "labelHost";
-            this.labelHost.Size = new System.Drawing.Size(51, 13);
+            this.labelHost.Size = new System.Drawing.Size(76, 20);
             this.labelHost.TabIndex = 22;
             this.labelHost.Text = "Company";
             // 
             // textBoxPassword
             // 
-            this.textBoxPassword.Location = new System.Drawing.Point(122, 108);
+            this.textBoxPassword.Location = new System.Drawing.Point(183, 166);
+            this.textBoxPassword.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
-            this.textBoxPassword.Size = new System.Drawing.Size(194, 20);
+            this.textBoxPassword.Size = new System.Drawing.Size(289, 26);
             this.textBoxPassword.TabIndex = 3;
             this.textBoxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxPassword_KeyDown);
             // 
             // textBoxUsername
             // 
-            this.textBoxUsername.Location = new System.Drawing.Point(122, 83);
+            this.textBoxUsername.Location = new System.Drawing.Point(183, 128);
+            this.textBoxUsername.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(194, 20);
+            this.textBoxUsername.Size = new System.Drawing.Size(289, 26);
             this.textBoxUsername.TabIndex = 2;
             // 
             // textBoxCompany
             // 
-            this.textBoxCompany.Location = new System.Drawing.Point(122, 58);
+            this.textBoxCompany.Location = new System.Drawing.Point(183, 89);
+            this.textBoxCompany.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxCompany.Name = "textBoxCompany";
-            this.textBoxCompany.Size = new System.Drawing.Size(194, 20);
+            this.textBoxCompany.Size = new System.Drawing.Size(289, 26);
             this.textBoxCompany.TabIndex = 1;
             // 
             // buttonLogin
             // 
-            this.buttonLogin.Location = new System.Drawing.Point(195, 156);
+            this.buttonLogin.Location = new System.Drawing.Point(292, 240);
+            this.buttonLogin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonLogin.Name = "buttonLogin";
-            this.buttonLogin.Size = new System.Drawing.Size(121, 39);
+            this.buttonLogin.Size = new System.Drawing.Size(182, 60);
             this.buttonLogin.TabIndex = 6;
             this.buttonLogin.Text = "Login";
             this.buttonLogin.UseVisualStyleBackColor = true;
@@ -126,9 +135,10 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(64, 156);
+            this.buttonCancel.Location = new System.Drawing.Point(96, 240);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(121, 39);
+            this.buttonCancel.Size = new System.Drawing.Size(182, 60);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -146,9 +156,10 @@
             this.pictureBoxLoading.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBoxLoading.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxLoading.Image = global::TqatProReportingTool.Properties.Resources.gif_loading_001;
-            this.pictureBoxLoading.Location = new System.Drawing.Point(3, 0);
+            this.pictureBoxLoading.Location = new System.Drawing.Point(4, 0);
+            this.pictureBoxLoading.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBoxLoading.Name = "pictureBoxLoading";
-            this.pictureBoxLoading.Size = new System.Drawing.Size(377, 220);
+            this.pictureBoxLoading.Size = new System.Drawing.Size(574, 344);
             this.pictureBoxLoading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxLoading.TabIndex = 27;
             this.pictureBoxLoading.TabStop = false;
@@ -158,9 +169,10 @@
             // 
             this.checkBoxRememberMe.AutoSize = true;
             this.checkBoxRememberMe.BackColor = System.Drawing.Color.Transparent;
-            this.checkBoxRememberMe.Location = new System.Drawing.Point(153, 133);
+            this.checkBoxRememberMe.Location = new System.Drawing.Point(230, 205);
+            this.checkBoxRememberMe.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxRememberMe.Name = "checkBoxRememberMe";
-            this.checkBoxRememberMe.Size = new System.Drawing.Size(95, 17);
+            this.checkBoxRememberMe.Size = new System.Drawing.Size(140, 24);
             this.checkBoxRememberMe.TabIndex = 4;
             this.checkBoxRememberMe.Text = "Remember Me";
             this.checkBoxRememberMe.UseVisualStyleBackColor = false;
@@ -168,19 +180,20 @@
             // labelDatabaseHost
             // 
             this.labelDatabaseHost.BackColor = System.Drawing.Color.Transparent;
-            this.labelDatabaseHost.Location = new System.Drawing.Point(200, 194);
+            this.labelDatabaseHost.Location = new System.Drawing.Point(300, 298);
+            this.labelDatabaseHost.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDatabaseHost.Name = "labelDatabaseHost";
-            this.labelDatabaseHost.Size = new System.Drawing.Size(177, 23);
+            this.labelDatabaseHost.Size = new System.Drawing.Size(266, 35);
             this.labelDatabaseHost.TabIndex = 30;
             this.labelDatabaseHost.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // DialogLogin
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::TqatProReportingTool.Properties.Resources.image_background_001;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(380, 220);
+            this.ClientSize = new System.Drawing.Size(578, 344);
             this.Controls.Add(this.labelDatabaseHost);
             this.Controls.Add(this.pictureBoxLoading);
             this.Controls.Add(this.label1);
@@ -195,13 +208,14 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.checkBoxRememberMe);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DialogLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "DialogLogin";
+            this.Text = "Login";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.DialogLogin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderDatabaseConfiguration)).EndInit();

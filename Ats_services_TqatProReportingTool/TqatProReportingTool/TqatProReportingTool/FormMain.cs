@@ -31,8 +31,9 @@ namespace TqatProReportingTool {
 
         #region Global Reference
 
-        Account account;
-        DataTable dataTableTrackers, dataTableAccounts;
+        User user;
+        Company company;
+
         Database database;
         TabControl tabControl;
 
@@ -46,51 +47,37 @@ namespace TqatProReportingTool {
 
         #region Initialization
 
-        public FormMain(ref Account account) {
+        public FormMain(Company company, User user) {
             InitializeComponent();
 
             this.DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            this.account = account;
+            this.user = user;
+            this.company = company;
+
             database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword, 30);
         }
 
         private void FormMain_Load(object sender, EventArgs e) {
-            Query query = new Query(database);
-            try {
-                dataTableAccounts = query.getAccounts(this.account);
-            } catch (QueryException queryException) {
-                Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
-                log.write(logData);
-            } catch (MySqlException mySqlException) {
-                Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + mySqlException.Message;
-                log.write(logData);
-            } catch (Exception exception) {
-                Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t exception \t\t" + exception.Message;
-                log.write(logData);
-            }
 
             //Search Category
-            comboBoxAccount.DataSource = dataTableAccounts;
-            comboBoxAccount.DisplayMember = "uname";
-            comboBoxAccount.ValueMember = "uid";
-            comboBoxAccount.SelectedItem = comboBoxAccount.Items[0];
+            comboBoxUser.DataSource = company.Users;
+            comboBoxUser.DisplayMember = "Username";
+            comboBoxUser.ValueMember = "Id";
+            comboBoxUser.SelectedItem = comboBoxUser.Items[0];
 
-            comboBoxTrackersBound.Items.Clear();
-            comboBoxTrackersBound.Items.AddRange(new string[] { "Vehicle Reg", "Driver Name", "Owner Name", "Model Name", "Sim No", "Sim Imei", "Tracker Imei" });
+            comboBoxTrackersDisplayMember.Items.Clear();
+            comboBoxTrackersDisplayMember.Items.AddRange(new string[] { "VehicleRegistration", "DriverName", "OwnerName", "VehicleModel", "SimNumber", "SimImei", "TrackerImei" });
 
             comboBoxReportType.Items.Clear();
             comboBoxReportType.Items.AddRange(Enum.GetNames(typeof(ReportType)));
-            if (account.accessLevel > 1) {
+            if (user.AccessLevel > 1) {
                 comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_COMPANIES));
                 comboBoxReportType.Items.Remove(Enum.GetName(typeof(ReportType), ReportType.ALL_TRACKERS));
             }
 
-            comboBoxTrackersBound.SelectedItem = comboBoxTrackersBound.Items[0];
+            comboBoxTrackersDisplayMember.SelectedItem = comboBoxTrackersDisplayMember.Items[0];
             comboBoxReportType.SelectedItem = comboBoxReportType.Items[0];
 
             //Date and Time
@@ -102,9 +89,9 @@ namespace TqatProReportingTool {
             dateTimePickerDateFrom.Value = (DateTime.Today);
 
 
-            comboBoxAccount.SelectedIndexChanged += comboBoxAccount_SelectedIndexChanged;
-            comboBoxTrackersBound.SelectedIndexChanged += comboBoxTrackersBound_SelectedIndexChanged;
-            comboBoxAccount_SelectedIndexChanged(this, new EventArgs());
+            comboBoxUser.SelectedIndexChanged += comboBoxUser_SelectedIndexChanged;
+            comboBoxTrackersDisplayMember.SelectedIndexChanged += comboBoxTrackersBound_SelectedIndexChanged;
+            comboBoxUser_SelectedIndexChanged(this, new EventArgs());
 
             comboBoxDateShortCut.Items.Clear();
             comboBoxDateShortCut.Items.AddRange(new string[] { 
@@ -116,7 +103,7 @@ namespace TqatProReportingTool {
             //Limit
             comboBoxLimit.Items.Clear();
             comboBoxLimit.Items.AddRange(new string[] { "10", "50", "100", "200", "300", "400" });
-            comboBoxLimit.SelectedItem = comboBoxLimit.Items[2];
+            comboBoxLimit.SelectedItem = comboBoxLimit.Items[1];
 
 
             //Chart
@@ -144,9 +131,9 @@ namespace TqatProReportingTool {
                 pictureBoxCompanyLogo.Refresh();
             }
 
-            textBoxCompanyName.Text = account.companyDisplayName;
-            textBoxCompanyDateCreated.Text = account.dateTimeCreated.ToString();
-            textBoxCompanyDateExpired.Text = account.dateTimeExpired.ToString();
+            textBoxCompanyName.Text = company.DisplayName;
+            textBoxCompanyDateCreated.Text = user.DateTimeCreated.ToString();
+            textBoxCompanyDateExpired.Text = user.DateTimeExpired.ToString();
             radioButtonSelectedTab.Checked = true;
 
 
@@ -168,58 +155,23 @@ namespace TqatProReportingTool {
         #region Threads
 
         public void threadLoadFilters(object uncast) {
-
-            int selectedValueAccountId = 0;
-            string selectedDisplayMember;
-
             try {
 
-                this.Invoke(new MethodInvoker(delegate() {
-                    DataRowView dataRowView = (DataRowView)comboBoxAccount.SelectedItem;
-                    selectedValueAccountId = (int)dataRowView.Row["uid"];
-                }));
+                this.BeginInvoke(new MethodInvoker(delegate() {
+                
+                    comboBoxCollection.Items.Clear();
 
-                Query query = new Query(database);
-                dataTableTrackers = query.getTrackers(this.account, selectedValueAccountId);
+                    User user = (User)comboBoxUser.SelectedItem;
 
-                updateProgressBarStatus(0);
-
-                this.Invoke(new MethodInvoker(delegate() {
-                    DataRowView dataRowView = (DataRowView)comboBoxAccount.SelectedItem;
-                    selectedValueAccountId = (int)dataRowView.Row["uid"];
-
-
-                    switch (comboBoxTrackersBound.SelectedIndex) {
-                        case 1:
-                            selectedDisplayMember = "driverName";
-                            break;
-                        case 2:
-                            selectedDisplayMember = "ownerName";
-                            break;
-                        case 3:
-                            selectedDisplayMember = "vehicleModel";
-                            break;
-                        case 4:
-                            selectedDisplayMember = "simNumber";
-                            break;
-                        case 5:
-                            selectedDisplayMember = "simImei";
-                            break;
-                        case 6:
-                            selectedDisplayMember = "deviceImei";
-                            break;
-                        default:
-                            selectedDisplayMember = "vehicleRegistration";
-                            break;
+                   
+                    foreach (Collection collection in user.Collections) {
+                        comboBoxCollection.Items.Add(collection);
                     }
-                    comboBoxTrackers.DataSource = dataTableTrackers;
-                    comboBoxTrackers.DisplayMember = selectedDisplayMember;
-                    comboBoxTrackers.ValueMember = "dataDatabaseName";
 
-                    checkedListBoxTrackers.SuspendLayout();
-                    checkedListBoxTrackers.DataSource = dataTableTrackers;
-                    checkedListBoxTrackers.DisplayMember = selectedDisplayMember;
-                    checkedListBoxTrackers.ValueMember = "dataDatabaseName";
+                    comboBoxCollection.DisplayMember = "Name";
+
+                    comboBoxCollection.SelectedItem = comboBoxCollection.Items[0];
+                    
 
                     ContextMenuStrip contextMenuStripCheckedListBoxTrackers = new ContextMenuStrip();
                     ToolStripItem toolStripItemCheckedListBoxTrackersCheckAll = contextMenuStripCheckedListBoxTrackers.Items.Add("Check all");
@@ -231,11 +183,14 @@ namespace TqatProReportingTool {
                     ToolStripItem toolStripItemCheckedPrevGroup = contextMenuStripCheckedListBoxTrackers.Items.Add("Check Prev 10 items");
                     toolStripItemCheckedPrevGroup.Click += toolStripItemCheckedPrevGroup_Click;
 
+                    ToolStripItem toolStripItemSortAscending = contextMenuStripCheckedListBoxTrackers.Items.Add("Sort/Unsort");
+                    toolStripItemSortAscending.Click += toolStripItemSortAscending_Click;
+
                     checkedListBoxTrackers.ContextMenuStrip = contextMenuStripCheckedListBoxTrackers;
                     checkedListBoxTrackers.ItemCheck += checkedListBoxTrackers_ItemCheck;
                     checkedListBoxTrackers.ResumeLayout();
 
-                    labelTotalTrackers.Text = "Total Trackers : " + checkedListBoxTrackers.Items.Count.ToString();
+                   
                 }));
             } catch (QueryException queryException) {
                 this.Invoke(new MethodInvoker(delegate() {
@@ -249,6 +204,10 @@ namespace TqatProReportingTool {
             }
 
         }
+
+        private void toolStripItemSortAscending_Click(object sender, EventArgs e) {
+            checkedListBoxTrackers.Sorted = !checkedListBoxTrackers.Sorted;
+        }
         public void threadFunctionQuery(object uncast) {
             #region -instances
 
@@ -260,7 +219,7 @@ namespace TqatProReportingTool {
 
             Tracker tracker = (Tracker)hashTable["tracker"];
             if (tracker != null)
-                speedLimit = tracker.speedLimit;
+                speedLimit = tracker.SpeedLimit;
 
             TabControl tabControl = (TabControl)hashTable["tabControl"];
 
@@ -311,53 +270,53 @@ namespace TqatProReportingTool {
                     #region querySelection
                     switch (reportType) {
                         case ReportType.HISTORICAL:
-                            dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, limit, offset, tracker);
-                            dataCount = query.getTrackerHistoricalDataCount(this.account, dateTimeFrom, dateTimeTo, tracker);
+                            dataTableDetails = query.getTrackerHistoricalData(this.company, this.user, dateTimeFrom, dateTimeTo, limit, offset, tracker);
+                            dataCount = query.getTrackerHistoricalDataCount(this.user, dateTimeFrom, dateTimeTo, tracker);
                             //dataTableDetails.writeToCsvFile(Directory.GetCurrentDirectory());
                             pagingStatus = true;
                             break;
                         case ReportType.IDLING:
-                            dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerIdlingData(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.RUNNING:
-                            dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerRunningData(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.GEOFENCE:
-                            dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerGeofence(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.TRACKERS:
-                            dataTableDetails = query.getTrackers(this.account, userId);
+                            dataTableDetails = query.getTrackers(this.company);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ACC:
-                            dataTableDetails = query.getTrackerAccData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerAccData(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.EXTERNAL_POWER_CUT:
-                            dataTableDetails = query.getTrackerExternalPowerCutData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerExternalPowerCutData(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.OVERSPEED:
-                            dataTableDetails = query.getTrackerOverSpeedData(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
+                            dataTableDetails = query.getTrackerOverSpeedData(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, tracker);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.TRACKERS_GEOFENCE:
-                            dataTableDetails = query.getTrackersGeofence(this.account, dateTimeFrom, dateTimeTo, 1000000, 0, trackerList);
+                            dataTableDetails = query.getTrackersGeofence(this.company, this.user, dateTimeFrom, dateTimeTo, 1000000, 0, trackerList);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.TRACKERS_HISTORICAL:
-                            dataTableDetails = query.getTrackersHistorical(this.account, dateTimeFrom, dateTimeTo, 500, 0, trackerList);
+                            dataTableDetails = query.getTrackersHistorical(this.company, this.user, dateTimeFrom, dateTimeTo, 500, 0, trackerList);
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ALL_COMPANIES:
-                            dataTableDetails = query.getAllCompanies();
+                            //dataTableDetails = query.getAllCompanies();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ALL_TRACKERS:
-                            dataTableDetails = query.getAllTrackers();
+                            //dataTableDetails = query.getAllTrackers();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                     }
@@ -400,38 +359,38 @@ namespace TqatProReportingTool {
 
 
                     listViewItemsDetail[0].Text = "Company Name";
-                    listViewItemsDetail[0].SubItems.Add(account.companyDisplayName);
+                    listViewItemsDetail[0].SubItems.Add(company.DisplayName);
 
                     listViewItemsDetail[1].Text = "User Name";
-                    listViewItemsDetail[1].SubItems.Add(account.username);
+                    listViewItemsDetail[1].SubItems.Add(user.Username);
 
                     if (tracker != null) {
                         listViewItemsDetail[2].Text = "Vehicle Reg";
-                        listViewItemsDetail[2].SubItems.Add(tracker.vehicleRegistration);
+                        listViewItemsDetail[2].SubItems.Add(tracker.VehicleRegistration);
 
                         listViewItemsDetail[3].Text = "Vehicle Model";
-                        listViewItemsDetail[3].SubItems.Add(tracker.vehicleModel);
+                        listViewItemsDetail[3].SubItems.Add(tracker.VehicleModel);
 
                         listViewItemsDetail[4].Text = "Owner Name";
-                        listViewItemsDetail[4].SubItems.Add(tracker.ownerName);
+                        listViewItemsDetail[4].SubItems.Add(tracker.OwnerName);
 
                         listViewItemsDetail[5].Text = "Driver Name";
-                        listViewItemsDetail[5].SubItems.Add(tracker.driverName);
+                        listViewItemsDetail[5].SubItems.Add(tracker.DriverName);
 
                         listViewItemsDetail[6].Text = "Device Imei";
-                        listViewItemsDetail[6].SubItems.Add(tracker.trackerImei);
+                        listViewItemsDetail[6].SubItems.Add(tracker.TrackerImei);
 
                         listViewItemsDetail[7].Text = "Sim Number";
-                        listViewItemsDetail[7].SubItems.Add(tracker.simNumber);
+                        listViewItemsDetail[7].SubItems.Add(tracker.SimNumber);
 
                         listViewItemsDetail[8].Text = "Vehicle Created";
-                        listViewItemsDetail[8].SubItems.Add(tracker.dateCreated.ToString("yyyy/MM/dd HH:mm:ss"));
+                        listViewItemsDetail[8].SubItems.Add(tracker.DateTimeCreated.ToString("yyyy/MM/dd HH:mm:ss"));
 
                         listViewItemsDetail[9].Text = "Vehicle Expiry";
-                        listViewItemsDetail[9].SubItems.Add(tracker.vehicleRegistrationExpiry.ToString("yyyy/MM/dd HH:mm:ss"));
+                        listViewItemsDetail[9].SubItems.Add(tracker.VehicleRegistrationExpiry.ToString("yyyy/MM/dd HH:mm:ss"));
 
                         listViewItemsDetail[10].Text = "Device Expiry";
-                        listViewItemsDetail[10].SubItems.Add(tracker.dateExpired.ToString("yyyy/MM/dd HH:mm:ss"));
+                        listViewItemsDetail[10].SubItems.Add(tracker.DateTimeExpired.ToString("yyyy/MM/dd HH:mm:ss"));
                     }
 
                     ListView listViewDetails = new ListView();
@@ -650,7 +609,7 @@ namespace TqatProReportingTool {
                     Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
                     string logData = "";
                     if (tracker != null)
-                        logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + tracker.vehicleRegistration + " : " + queryException.Message;
+                        logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + tracker.VehicleRegistration + " : " + queryException.Message;
                     else
                         logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
 
@@ -660,7 +619,7 @@ namespace TqatProReportingTool {
                     Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
                     string logData = "";
                     if (tracker != null)
-                        logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + tracker.vehicleRegistration + " : " + mySqlException.Message;
+                        logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + tracker.VehicleRegistration + " : " + mySqlException.Message;
                     else
                         logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + mySqlException.Message;
                     log.write(logData);
@@ -676,7 +635,7 @@ namespace TqatProReportingTool {
                     Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
                     string logData = "";
                     if (tracker != null) {
-                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.vehicleRegistration + " : " + exception.Message;
+                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.VehicleRegistration + " : " + exception.Message;
                     } else {
                         logData = DateTime.Now.ToString() + "\t\t exception \t\t" + exception.Message;
                     }
@@ -700,9 +659,8 @@ namespace TqatProReportingTool {
         void tabControl_Click(object sender, EventArgs e) {
             TabPage tabPage = (TabPage)tabControl.SelectedTab;
             for (int index = 0; index < checkedListBoxTrackers.Items.Count; index++) {
-                DataRowView dataRowView = (DataRowView)checkedListBoxTrackers.Items[index];
-                string trackerItem = (string)checkedListBoxTrackers.GetItemText((object)checkedListBoxTrackers.Items[index]);
-                //string trackerItem = (string) dataRowView[fieldName];
+                Tracker tracker = (Tracker)checkedListBoxTrackers.Items[index];
+                string trackerItem = (string)checkedListBoxTrackers.GetItemText(tracker);
                 string[] trackerName = tabPage.Text.Split(' ');
                 if (trackerName[2] == trackerItem) {
                     checkedListBoxTrackers.SetSelected(index, true);
@@ -740,16 +698,16 @@ namespace TqatProReportingTool {
                 #region querySelection
                 switch (reportType) {
                     case ReportType.HISTORICAL:
-                        dataTableDetails = query.getTrackerHistoricalData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerHistoricalData(this.company, this.user, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.IDLING:
-                        dataTableDetails = query.getTrackerIdlingData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerIdlingData(this.company, this.user, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.RUNNING:
-                        dataTableDetails = query.getTrackerRunningData(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerRunningData(this.company, this.user, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.GEOFENCE:
-                        dataTableDetails = query.getTrackerGeofence(this.account, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
+                        dataTableDetails = query.getTrackerGeofence(this.company, this.user, dateTimeFrom, dateTimeTo, queryLimit, offset, tracker);
                         break;
                     case ReportType.TRACKERS:
                         //dataTableDetails = query.getTrackers(this.account, userId);
@@ -770,12 +728,12 @@ namespace TqatProReportingTool {
                 #endregion
             } catch (QueryException queryException) {
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + tracker.vehicleRegistration + " : " + queryException.Message;
+                string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + tracker.VehicleRegistration + " : " + queryException.Message;
                 log.write(logData);
 
             } catch (MySqlException mySqlException) {
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + tracker.vehicleRegistration + " : " + mySqlException.Message;
+                string logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + tracker.VehicleRegistration + " : " + mySqlException.Message;
                 log.write(logData);
                 if (mySqlException.ErrorCode == -2147467259) {
 
@@ -784,7 +742,7 @@ namespace TqatProReportingTool {
                 }
             } catch (Exception exception) {
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.vehicleRegistration + " : " + exception.Message;
+                string logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.VehicleRegistration + " : " + exception.Message;
                 log.write(logData);
 
             }
@@ -891,7 +849,6 @@ namespace TqatProReportingTool {
         }
         #endregion
         #endregion
-
         #region Events
 
         #region dataGridViewData
@@ -1203,7 +1160,7 @@ namespace TqatProReportingTool {
             } else if (e.CurrentValue == CheckState.Checked && e.NewValue != CheckState.Checked) {
                 count -= 1;
             }
-            labelTotalCheckedTrackers.Text = "Total Checked Trackers : " + count.ToString();
+            labelTotalCheckedTrackers.Text = "Checked : " + count.ToString();
         }
         #endregion
 
@@ -1302,7 +1259,7 @@ namespace TqatProReportingTool {
             workerThreadCount = 0;
             workerThreadFinished = 0;
             progressBarStatus.Value = 1;
-            labelTotalTabPages.Text = "Total TabPages : 0";
+            labelTotalTabPages.Text = "TabPages : 0";
 
             if (reportType == ReportType.TRACKERS || reportType == ReportType.ALL_COMPANIES || reportType == ReportType.ALL_TRACKERS || reportType == ReportType.TRACKERS_GEOFENCE || reportType == ReportType.TRACKERS_HISTORICAL) {
                 workerThreadCount = 0;
@@ -1313,42 +1270,11 @@ namespace TqatProReportingTool {
 
                 List<Tracker> trackerList = new List<Tracker>();
 
-                foreach (object trackerItem in checkedListBoxTrackers.CheckedItems) {
-                    Tracker tracker = new Tracker();
-
-                    DataRowView dataRowView = (DataRowView)trackerItem;
-                    tracker.collections = (string)dataRowView["collections"];
-                    tracker.companyDatabaseName = (string)dataRowView["companyDatabaseName"];
-                    tracker.databaseHost = (int)dataRowView["databaseHost"];
-                    tracker.dataDatabaseName = (string)dataRowView["dataDatabaseName"];
-                    tracker.dateCreated = (DateTime)dataRowView["dateCreated"];
-                    tracker.dateExpired = (DateTime)dataRowView["dateExpired"];
-                    tracker.trackerImei = (string)dataRowView["deviceImei"];
-                    tracker.devicePassword = (string)dataRowView["devicePassword"];
-                    tracker.deviceType = (int)dataRowView["deviceType"];
-                    tracker.driverName = (string)dataRowView["driverName"];
-                    tracker.emails = (string)dataRowView["emails"];
-                    tracker.httpHost = (int)dataRowView["httpHost"];
-                    tracker.id = (int)dataRowView["id"];
-                    tracker.idlingTime = (int)dataRowView["idlingTime"];
-                    tracker.imageNumber = (int)dataRowView["imageNumber"];
-                    tracker.inputs = (string)dataRowView["inputs"];
-                    tracker.mileageInitial = (int)dataRowView["mileageInitial"];
-                    tracker.mileageLimit = (int)dataRowView["mileageLimit"];
-                    tracker.mobileDataProvider = (int)dataRowView["mobileDataProvider"];
-                    tracker.note = (string)dataRowView["note"];
-                    tracker.ownerName = (string)dataRowView["ownerName"];
-                    tracker.simImei = (string)dataRowView["simImei"];
-                    tracker.simNumber = (string)dataRowView["simNumber"];
-                    tracker.users = (string)dataRowView["users"];
-                    tracker.speedLimit = (int)dataRowView["speedLimit"];
-                    tracker.vehicleModel = (string)dataRowView["vehicleModel"];
-                    tracker.vehicleRegistration = (string)dataRowView["vehicleRegistration"];
-
+                foreach (Tracker tracker in checkedListBoxTrackers.CheckedItems) {
                     trackerList.Add(tracker);
                 }
 
-                hashTable.Add("reportItemName", comboBoxAccount.Text);
+                hashTable.Add("reportItemName", comboBoxUser.Text);
                 hashTable.Add("trackerList", trackerList);
                 hashTable.Add("tabControl", tabControl);
                 hashTable.Add("dateTimeFrom", dateTimePickerDateFrom.Value);
@@ -1358,48 +1284,16 @@ namespace TqatProReportingTool {
                 hashTable.Add("dataGridViewInformation", null);
                 hashTable.Add("offset", 0);
 
-                int userId = (int)comboBoxAccount.SelectedValue;
+                int userId = (int)comboBoxUser.SelectedValue;
                 hashTable.Add("comboBoxAccountId", userId);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(threadFunctionQuery), hashTable);
                 workerThreadCount++;
 
             } else {
-                foreach (object trackerItem in checkedListBoxTrackers.CheckedItems) {
-
-                    Tracker tracker = new Tracker();
-
-                    DataRowView dataRowView = (DataRowView)trackerItem;
-                    tracker.collections = (string)dataRowView["collections"];
-                    tracker.companyDatabaseName = (string)dataRowView["companyDatabaseName"];
-                    tracker.databaseHost = (int)dataRowView["databaseHost"];
-                    tracker.dataDatabaseName = (string)dataRowView["dataDatabaseName"];
-                    tracker.dateCreated = (DateTime)dataRowView["dateCreated"];
-                    tracker.dateExpired = (DateTime)dataRowView["dateExpired"];
-                    tracker.trackerImei = (string)dataRowView["deviceImei"];
-                    tracker.devicePassword = (string)dataRowView["devicePassword"];
-                    tracker.deviceType = (int)dataRowView["deviceType"];
-                    tracker.driverName = (string)dataRowView["driverName"];
-                    tracker.emails = (string)dataRowView["emails"];
-                    tracker.httpHost = (int)dataRowView["httpHost"];
-                    tracker.id = (int)dataRowView["id"];
-                    tracker.idlingTime = (int)dataRowView["idlingTime"];
-                    tracker.imageNumber = (int)dataRowView["imageNumber"];
-                    tracker.inputs = (string)dataRowView["inputs"];
-                    tracker.mileageInitial = (int)dataRowView["mileageInitial"];
-                    tracker.mileageLimit = (int)dataRowView["mileageLimit"];
-                    tracker.mobileDataProvider = (int)dataRowView["mobileDataProvider"];
-                    tracker.note = (string)dataRowView["note"];
-                    tracker.ownerName = (string)dataRowView["ownerName"];
-                    tracker.simImei = (string)dataRowView["simImei"];
-                    tracker.simNumber = (string)dataRowView["simNumber"];
-                    tracker.users = (string)dataRowView["users"];
-                    tracker.speedLimit = (int)dataRowView["speedLimit"];
-                    tracker.vehicleModel = (string)dataRowView["vehicleModel"];
-                    tracker.vehicleRegistration = (string)dataRowView["vehicleRegistration"];
-
+                foreach (Tracker tracker in checkedListBoxTrackers.CheckedItems) {
                     Hashtable hashTable = new Hashtable();
                     hashTable.Add("tracker", tracker);
-                    hashTable.Add("reportItemName", checkedListBoxTrackers.GetItemText(trackerItem));
+                    hashTable.Add("reportItemName", checkedListBoxTrackers.GetItemText(tracker));
                     hashTable.Add("checkedListBoxTrackers", checkedListBoxTrackers);
                     hashTable.Add("tabControl", tabControl);
                     hashTable.Add("dateTimeFrom", dateTimePickerDateFrom.Value);
@@ -1408,7 +1302,7 @@ namespace TqatProReportingTool {
                     hashTable.Add("limit", int.Parse(comboBoxLimit.Text));
                     hashTable.Add("dataGridViewInformation", null);
                     hashTable.Add("offset", 0);
-                    int userId = (int)comboBoxAccount.SelectedValue;
+                    int userId = (int)comboBoxUser.SelectedValue;
                     hashTable.Add("comboBoxAccountId", userId);
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback(threadFunctionQuery), hashTable);
@@ -1653,7 +1547,7 @@ namespace TqatProReportingTool {
 
         #region buttonSettingsAdvance
         private void buttonSettingsAdvance_Click(object sender, EventArgs e) {
-            FormAdvanceSettings formAdvanceSettings = new FormAdvanceSettings(account, tabControl);
+            FormAdvanceSettings formAdvanceSettings = new FormAdvanceSettings(user, tabControl);
             formAdvanceSettings.Show();
         }
         #endregion
@@ -1678,7 +1572,7 @@ namespace TqatProReportingTool {
                     } else {
                         checkedListBoxTrackers.SetItemCheckState(selectedIndex, CheckState.Checked);
                     }
-                    labelTotalCheckedTrackers.Text = "Total Checked Trackers : " + checkedListBoxTrackers.CheckedItems.Count.ToString();
+                    labelTotalCheckedTrackers.Text = "Checked : " + checkedListBoxTrackers.CheckedItems.Count.ToString();
                 }
             }
         }
@@ -1699,7 +1593,7 @@ namespace TqatProReportingTool {
         #endregion
 
         #region comboBoxAccount
-        private void comboBoxAccount_SelectedIndexChanged(object sender, EventArgs e) {
+        private void comboBoxUser_SelectedIndexChanged(object sender, EventArgs e) {
             ThreadPool.QueueUserWorkItem(new WaitCallback(threadLoadFilters));
         }
 
@@ -1707,33 +1601,8 @@ namespace TqatProReportingTool {
 
         #region comboBoxTrackersBound
         private void comboBoxTrackersBound_SelectedIndexChanged(object sender, EventArgs e) {
-            string selectedDisplayMember = "";
 
-            switch (comboBoxTrackersBound.SelectedIndex) {
-                case 1:
-                    selectedDisplayMember = "driverName";
-                    break;
-                case 2:
-                    selectedDisplayMember = "ownerName";
-                    break;
-                case 3:
-                    selectedDisplayMember = "vehicleModel";
-                    break;
-                case 4:
-                    selectedDisplayMember = "simNumber";
-                    break;
-                case 5:
-                    selectedDisplayMember = "simImei";
-                    break;
-                case 6:
-                    selectedDisplayMember = "deviceImei";
-                    break;
-                default:
-                    selectedDisplayMember = "vehicleRegistration";
-                    break;
-            }
-            checkedListBoxTrackers.DisplayMember = selectedDisplayMember;
-            comboBoxTrackers.DisplayMember = selectedDisplayMember;
+            checkedListBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
         }
         #endregion
 
@@ -1916,12 +1785,10 @@ namespace TqatProReportingTool {
         #endregion
 
         #endregion
-
         #region Gui Methods
         private void updateProgressBarStatus(int value) {
-            if (progressBarStatus.InvokeRequired) {
-                progressBarStatus.Invoke(new MethodInvoker(delegate() {
-
+            lock (progressBarStatus) {
+                this.Invoke(new Action(() => {
                     if (value > progressBarStatus.Maximum)
                         value = progressBarStatus.Maximum;
 
@@ -1929,25 +1796,13 @@ namespace TqatProReportingTool {
                     progressBarStatus.Refresh();
 
                     if (tabControl != null) {
-                        labelTotalTabPages.Text = "Total TabPages : " + tabControl.TabPages.Count.ToString();
+                        labelTotalTabPages.Text = "TabPages : " + tabControl.TabPages.Count.ToString();
                     } else {
-                        labelTotalTabPages.Text = "Total TabPages : 0";
+                        labelTotalTabPages.Text = "TabPages : 0";
                     }
+                    progressBarStatus.Refresh();
                 }));
-            } else {
-                if (value > progressBarStatus.Maximum)
-                    value = progressBarStatus.Maximum;
-
-                progressBarStatus.Value = value;
-                progressBarStatus.Refresh();
-
-                if (tabControl != null) {
-                    labelTotalTabPages.Text = "Total TabPages : " + tabControl.TabPages.Count.ToString();
-                } else {
-                    labelTotalTabPages.Text = "Total TabPages : 0";
-                }
             }
-            Application.DoEvents();
         }
         #endregion
         #region chart
@@ -2105,7 +1960,7 @@ namespace TqatProReportingTool {
                 } else {
                     export.logoPath = Settings.Default.UserLogoPath;
                 }
-                export.companyName = account.companyDisplayName;
+                export.companyName = company.DisplayName;
                 export.reportInformation = reportInformation;
                 if (!export.dataTable(dataTable, openTheFile)) {
                     throw new Exception();
@@ -2136,7 +1991,10 @@ namespace TqatProReportingTool {
         private void pictureBoxLogout_Click(object sender, EventArgs e) {
             Settings.Default.accountRememberMe = false;
             Settings.Default.Save();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+
+            DialogLogin dialogLogin = new DialogLogin();
+            dialogLogin.Show();
+            this.Close();
         }
         #endregion
 
@@ -2151,6 +2009,24 @@ namespace TqatProReportingTool {
             } else {
                 comboBoxLimit.Enabled = false;
             }
+        }
+
+        private void comboBoxCollection_SelectedIndexChanged(object sender, EventArgs e) {
+            comboBoxTrackers.Items.Clear();
+            checkedListBoxTrackers.Items.Clear();
+            foreach (Tracker tracker in company.Trackers) {
+                foreach (Collection collection in tracker.Collections) {
+                    Collection collectionSelected = (Collection)comboBoxCollection.SelectedItem;
+                    if (collectionSelected.Id == collection.Id) {
+                        checkedListBoxTrackers.Items.Add(tracker);
+                        comboBoxTrackers.Items.Add(tracker);
+                    }
+                }
+
+            }
+            comboBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
+            checkedListBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
+            groupBoxTrackers.Text = "Trackers " + checkedListBoxTrackers.Items.Count.ToString();
         }
 
 

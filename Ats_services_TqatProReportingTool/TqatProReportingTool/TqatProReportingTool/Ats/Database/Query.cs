@@ -13,7 +13,9 @@ using TqatProReportingTool.Properties;
 using Ats.Session;
 using Ats.Helper;
 using Ats.Devices.Meitrack;
-using Ats.Map;
+using Ats.Parser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Ats.Database {
 
@@ -24,7 +26,7 @@ namespace Ats.Database {
         MySqlConnection mysqlConnection = null;
         Database database;
         String sql;
-        Account account;
+        User account;
 
         public Query(string sql, Database database) {
             if (database == null) {
@@ -49,21 +51,643 @@ namespace Ats.Database {
             mysqlConnection = new MySqlConnection(this.database.getConnectionString());
         }
 
-        public void checkLogin(Account account) {
-            this.account = account;
+        //public void checkLogin(User account) {
+        //    this.account = account;
+
+        //    try {
+        //        //1st Query
+        //        //checking if the company is existing
+        //        mysqlConnection.Open();
+
+        //        sql =
+        //            "SELECT * " +
+        //            "FROM dbt_tracking_master.cmps " +
+        //            "WHERE dbt_tracking_master.cmps.cmpname = @sCompanyName;";
+
+        //        MySqlCommand mySqlCommand = new MySqlCommand(this.sql, mysqlConnection);
+        //        mySqlCommand.Parameters.AddWithValue("@sCompanyName", this.account.companyUsername);
+
+        //        MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+
+
+        //        if (!mySqlDataReader.HasRows) {
+        //            mySqlDataReader.Dispose();
+        //            throw new QueryException(1, "Company does not exist.");
+        //        } else {
+        //            mySqlDataReader.Read();
+        //            this.account.companyUsername = mySqlDataReader.GetString("cmpname");
+        //            this.account.databaseName = "cmp_" + mySqlDataReader.GetString("cmpdbname");
+        //            this.account.companyDisplayName = mySqlDataReader.GetString("cmpdisplayname");
+
+        //            mysqlConnection.Close();
+
+        //            //2nd Query
+        //            //checking if user is existing in the company
+        //            mysqlConnection = new MySqlConnection(database.getConnectionString());
+
+        //            mysqlConnection.Open();
+
+        //            sql =
+        //                "SELECT * " +
+        //                "FROM " + this.account.databaseName + ".usrs " +
+        //                "WHERE " +
+        //                this.account.databaseName + ".usrs.uname = @sUsername AND " +
+        //                this.account.databaseName + ".usrs.upass = @sPassword;";
+        //            mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+
+
+        //            mySqlCommand.Parameters.AddWithValue("@sUsername", account.username);
+        //            mySqlCommand.Parameters.AddWithValue("@sPassword", Cryptography.md5(account.password));
+
+        //            mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //            if (!mySqlDataReader.HasRows) {
+        //                mySqlDataReader.Dispose();
+        //                throw new QueryException(1, "Username or Password does not exist.");
+        //            } else {
+        //                mySqlDataReader.Read();
+        //                this.account.accessLevel = int.Parse(mySqlDataReader.GetString("upriv"));
+        //                this.account.username = mySqlDataReader.GetString("uname");
+        //                this.account.id = int.Parse(mySqlDataReader.GetString("uid"));
+        //                this.account.active = int.Parse(mySqlDataReader.GetString("uactive"));
+
+        //                if (!String.IsNullOrEmpty(mySqlDataReader.GetString("uexpiredate"))) {
+        //                    string dateTime = (mySqlDataReader.GetString("uexpiredate"));
+        //                    if (!String.IsNullOrEmpty(dateTime)) {
+        //                        DateTime parsedDate = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                        //= DateTime.ParseExact(dateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+        //                        this.account.dateTimeExpired = parsedDate;
+        //                    }
+        //                } else {
+        //                    this.account.dateTimeExpired = new DateTime(2050, 01, 01);
+        //                }
+
+        //                if (!String.IsNullOrEmpty(mySqlDataReader.GetString("ucreatedate"))) {
+        //                    string dateTime = mySqlDataReader.GetString("ucreatedate");
+        //                    if (!String.IsNullOrEmpty(dateTime)) {
+        //                        DateTime parsedDate = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                        //DateTime parsedDate = DateTime.ParseExact(dateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        //                        this.account.dateTimeCreated = parsedDate;
+        //                    }
+        //                } else {
+        //                    this.account.dateTimeCreated = new DateTime(2010, 01, 01);
+        //                    mySqlDataReader.Dispose();
+        //                }
+        //                mySqlDataReader.Dispose();
+
+        //                //3rd query
+        //                //Getting all the geofences
+        //                mysqlConnection = new MySqlConnection(database.getConnectionString());
+
+        //                mysqlConnection.Open();
+
+        //                sql =
+        //                    "SELECT * " +
+        //                    "FROM " + this.account.databaseName + ".gf";
+
+        //                mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+        //                mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //                if (!mySqlDataReader.HasRows) {
+        //                    mySqlDataReader.Dispose();
+        //                } else {
+        //                    while (mySqlDataReader.Read()) {
+        //                        string geofenceData = (string)mySqlDataReader["gf_data"];
+        //                        string geofenceName = (string)mySqlDataReader["gf_name"];
+
+        //                        geofenceData = geofenceData.Replace("),( ", "|");
+        //                        geofenceData = geofenceData.Replace(")", string.Empty);
+        //                        geofenceData = geofenceData.Replace("(", string.Empty);
+        //                        geofenceData = geofenceData.Replace(" ", string.Empty);
+
+        //                        Geofence geofence = new Geofence();
+        //                        List<string> points = geofenceData.Split('|').ToList();
+        //                        foreach (string point in points) {
+        //                            string[] coordinates = point.Split(',');
+        //                            double latitude = double.Parse(coordinates[0]);
+        //                            double longitude = double.Parse(coordinates[1]);
+        //                            Coordinate Coordinate = new Coordinate(latitude, longitude);
+        //                            geofence.addPoint(Coordinate);
+        //                        }
+
+        //                        geofence.Name = geofenceName;
+        //                        account.geofenceCollection.Add(geofence);
+        //                    }
+
+        //                    mySqlDataReader.Dispose();
+        //                }
+
+        //            }
+
+        //        }
+
+        //    } catch (MySqlException mySqlException) {
+        //        throw new QueryException(1, mySqlException.Message);
+        //    } catch (QueryException queryException) {
+        //        throw queryException;
+        //    } catch (Exception exception) {
+        //        throw new QueryException(1, exception.Message);
+        //    } finally {
+        //        mysqlConnection.Close();
+        //    }
+
+
+        //}
+
+        //        public DataTable getAllCompanies() {
+        //            DataTable dataTable = this.getReportTable(ReportType.ALL_COMPANIES);
+        //            try {
+        //                mysqlConnection.Open();
+
+        //                string sql =
+        //                "SELECT * " +
+        //                "FROM dbt_tracking_master.cmps;";
+
+        //                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+        //                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //                if (!mySqlDataReader.HasRows) {
+        //                    throw new QueryException(1, "Companies's Collection is empty.");
+        //                } else {
+        //                    while (mySqlDataReader.Read()) {
+
+        //                        DataRow dataRow = dataTable.NewRow();
+        //                        dataRow["id"] = mySqlDataReader.GetInt32("cmpid");
+        //                        dataRow["host"] = mySqlDataReader.GetString("cmphost");
+        //                        dataRow["username"] = mySqlDataReader.GetString("cmpname");
+        //                        dataRow["displayName"] = mySqlDataReader.GetString("cmpdisplayname");
+        //                        dataRow["email"] = mySqlDataReader.GetString("cmpemail");
+        //                        dataRow["address"] = mySqlDataReader.GetString("cmpaddress");
+        //                        dataRow["telephoneNumber"] = mySqlDataReader.GetString("cmpphoneno");
+        //                        dataRow["mobileNumber"] = mySqlDataReader.GetString("cmpmobileno");
+        //                        dataRow["databaseName"] = mySqlDataReader.GetString("cmpdbname");
+        //                        dataRow["isActive"] = (mySqlDataReader.GetString("cmpactive") == "1") ? true : false;
+
+        //                        dataRow["dateCreated"] = Converter.subStandardDateTimeToDateTime(mySqlDataReader.GetString("cmpcreatedate"));
+        //                        dataRow["dateExpired"] = Converter.subStandardDateTimeToDateTime(mySqlDataReader.GetString("cmpexpiredate"));
+
+        //                        dataTable.Rows.Add(dataRow);
+        //                    }
+        //                    mySqlDataReader.Dispose();
+        //                }
+
+        //            } catch (QueryException queryException) {
+        //                throw queryException;
+        //            } catch (MySqlException mySqlException) {
+        //                throw new QueryException(1, mySqlException.Message);
+        //            } catch (Exception exception) {
+        //                throw new QueryException(1, exception.Message);
+        //            } finally {
+        //                mysqlConnection.Close();
+        //            }
+        //            return dataTable;
+        //        }
+
+        //        public DataTable getAllTrackers() {
+        //            DataTable dataTable = this.getReportTable(ReportType.ALL_TRACKERS);
+
+        //            try {
+        //                mysqlConnection.Open();
+
+        //                string sql =
+        //                    "SELECT * " +
+        //                    "FROM dbt_tracking_master.trks;";
+
+        //                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+        //                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //                if (!mySqlDataReader.HasRows) {
+        //                    throw new QueryException(1, "Tracker's Collection is empty.");
+        //                } else {
+
+
+        //                    Tracker tracker = new Tracker();
+        //                    string dateTime;
+
+        //                    while (mySqlDataReader.Read()) {
+
+        //                        tracker.Collections = (string)mySqlDataReader["tcollections"];
+        //                        tracker.CompanyDatabaseName = (string)mySqlDataReader["tcmp"];
+        //                        tracker.DatabaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
+        //                        tracker.DatabaseName = (string)mySqlDataReader["tdbs"];
+
+        //                        dateTime = (string)mySqlDataReader["tcreatedate"];
+        //                        tracker.DateTimeCreated = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                        dateTime = String.Empty;
+
+        //                        dateTime = (string)mySqlDataReader["ttrackerexpiry"];
+        //                        tracker.DateTimeExpired = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                        dateTime = String.Empty;
+
+        //                        tracker.TrackerImei = (string)mySqlDataReader["tunit"];
+        //                        tracker.DevicePassword = (string)mySqlDataReader["tunitpassword"];
+        //                        tracker.DeviceType = int.Parse((string)mySqlDataReader["ttype"]);
+        //                        tracker.DriverName = (string)mySqlDataReader["tdrivername"];
+        //                        tracker.Emails = (string)mySqlDataReader["temails"];
+        //                        tracker.HttpHost = int.Parse((string)mySqlDataReader["thttphost"]);
+        //                        tracker.Id = (int)mySqlDataReader["tid"];
+        //                        tracker.IdlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
+        //                        tracker.ImageNumber = int.Parse((string)mySqlDataReader["timg"]);
+        //                        tracker.Inputs = (string)mySqlDataReader["tinputs"];
+        //                        tracker.MileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
+        //                        tracker.MileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
+        //                        tracker.MobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
+        //                        tracker.Note = (string)mySqlDataReader["tnote"];
+        //                        tracker.OwnerName = (string)mySqlDataReader["townername"];
+        //                        tracker.SimImei = (string)mySqlDataReader["tsimsr"];
+        //                        tracker.SimNumber = (string)mySqlDataReader["tsimno"];
+        //                        tracker.Users = (string)mySqlDataReader["tusers"];
+        //                        tracker.SpeedLimit = int.Parse((string)mySqlDataReader["tSpeedLimit"]);
+        //                        tracker.VehicleModel = (string)mySqlDataReader["tvehiclemodel"];
+        //                        tracker.vehicleRegis
+        //tration = (string)mySqlDataReader["tvehiclereg"];
+
+
+        //                        DataRow dataRow = dataTable.NewRow();
+        //                        dataRow["id"] = tracker.id;
+        //                        dataRow["vehicleRegistration"] = tracker.vehicleRegistration;
+        //                        dataRow["vehicleModel"] = tracker.vehicleModel;
+        //                        dataRow["ownerName"] = tracker.ownerName;
+        //                        dataRow["driverName"] = tracker.driverName;
+
+        //                        dataRow["simImei"] = tracker.simImei;
+        //                        dataRow["simNumber"] = tracker.simNumber;
+        //                        dataRow["mobileDataProvider"] = tracker.mobileDataProvider;
+
+        //                        dataRow["deviceImei"] = tracker.trackerImei;
+        //                        dataRow["devicePassword"] = tracker.devicePassword;
+        //                        dataRow["deviceType"] = tracker.deviceType;
+
+        //                        dataRow["emails"] = tracker.emails;
+        //                        dataRow["users"] = tracker.users;
+
+        //                        dataRow["mileageInitial"] = tracker.mileageInitial;
+        //                        dataRow["mileageLimit"] = tracker.mileageLimit;
+        //                        dataRow["SpeedLimit"] = tracker.SpeedLimit;
+
+        //                        dataRow["idlingTime"] = tracker.idlingTime;
+        //                        dataRow["inputs"] = tracker.inputs;
+        //                        dataRow["imageNumber"] = tracker.imageNumber;
+        //                        dataRow["note"] = tracker.note;
+
+        //                        dataRow["collections"] = tracker.collections;
+        //                        dataRow["companyDatabaseName"] = tracker.companyDatabaseName;
+        //                        dataRow["databaseHost"] = tracker.databaseHost;
+        //                        dataRow["DatabaseName"] = tracker.DatabaseName;
+        //                        dataRow["httpHost"] = tracker.httpHost;
+        //                        dataRow["dateCreated"] = tracker.dateCreated;
+        //                        dataRow["dateExpired"] = tracker.dateExpired;
+
+        //                        dataTable.Rows.Add(dataRow);
+        //                    }
+
+
+        //                    return dataTable;
+        //                }
+        //            } catch (QueryException queryException) {
+        //                throw queryException;
+        //            } catch (MySqlException mySqlException) {
+        //                throw new QueryException(1, mySqlException.Message);
+        //            } catch (Exception exception) {
+        //                throw new QueryException(1, exception.Message);
+        //            } finally {
+        //                mysqlConnection.Close();
+        //            }
+        //        }
+
+        public void fillTrackers(Company company) {
+            List<Tracker> trackers = new List<Tracker>();
 
             try {
-                //1st Query
-                //checking if the company is existing
                 mysqlConnection.Open();
 
-                sql =
+                string sql =
+                    "SELECT * " +
+                    "FROM dbt_tracking_master.trks " +
+                    "WHERE dbt_tracking_master.trks.tcmp = @CompanyDatabaseName";
+
+                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+                mySqlCommand.Parameters.AddWithValue("@CompanyDatabaseName", company.DatabaseName);
+                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+
+                if (!mySqlDataReader.HasRows) {
+                    //throw new QueryException(1, "Tracker's Collection is empty.");
+                    mySqlDataReader.Dispose();
+                    mysqlConnection.Close();
+                } else {
+
+
+                    string dateTime;
+
+                    while (mySqlDataReader.Read()) {
+                        string[] trackerUser = mySqlDataReader.GetString("tusers").Split(',');
+                        List<User> trackerUsers = new List<User>();
+                        foreach (User user in company.Users) {
+                            for (int index = 0; index < trackerUser.ToList().Count; index++) {
+                                if (Int32.Parse(trackerUser[index]) == user.Id) {
+                                    trackerUsers.Add(user);
+                                }
+                            }
+                        }
+
+                        Tracker tracker = new Tracker();
+
+                        dynamic dynamicCollection = JsonConvert.DeserializeObject<dynamic>(mySqlDataReader.GetString("tcollections"));
+                        JArray arrayCollection = (JArray)dynamicCollection;
+                        List<Collection> collections = new List<Collection>();
+                        Collection collectionItem = new Collection();
+                        collectionItem.Id = 0;
+                        collectionItem.Name = "All";
+                        collectionItem.Description = "All";
+                        collections.Add(collectionItem);
+
+                        foreach (User user in company.Users) {
+                            if (user.Collections == null) {
+                                continue;
+                            }
+
+                            foreach (Collection collection in user.Collections) {
+
+                                for (int index = 0; index < arrayCollection.Count; index++) {
+                                    if (dynamicCollection[index].value == collection.Id) {
+                                        collections.Add(collection);
+                                    }
+                                }
+                            }
+                        }
+                        tracker.Collections = collections;
+
+
+                        //tracker.Collections = mySqlDataReader.GetString("tcollections");
+                        tracker.CompanyDatabaseName = (string)mySqlDataReader["tcmp"];
+                        tracker.DatabaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
+                        tracker.DatabaseName = (string)mySqlDataReader["tdbs"];
+
+                        dateTime = (string)mySqlDataReader["tcreatedate"];
+                        tracker.DateTimeCreated = SubStandard.dateTime(dateTime);
+                        dateTime = String.Empty;
+
+                        dateTime = (string)mySqlDataReader["ttrackerexpiry"];
+                        tracker.DateTimeExpired = SubStandard.dateTime(dateTime);
+                        dateTime = String.Empty;
+
+                        tracker.TrackerImei = (string)mySqlDataReader["tunit"];
+                        tracker.DevicePassword = (string)mySqlDataReader["tunitpassword"];
+                        tracker.DeviceType = int.Parse((string)mySqlDataReader["ttype"]);
+                        tracker.DriverName = (string)mySqlDataReader["tdrivername"];
+                        tracker.Emails = (string)mySqlDataReader["temails"];
+                        tracker.HttpHost = int.Parse((string)mySqlDataReader["thttphost"]);
+                        tracker.Id = (int)mySqlDataReader["tid"];
+                        tracker.IdlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
+                        tracker.ImageNumber = int.Parse((string)mySqlDataReader["timg"]);
+                        tracker.Inputs = (string)mySqlDataReader["tinputs"];
+                        tracker.MileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
+                        tracker.MileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
+                        tracker.MobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
+                        tracker.Note = (string)mySqlDataReader["tnote"];
+                        tracker.OwnerName = (string)mySqlDataReader["townername"];
+                        tracker.SimImei = (string)mySqlDataReader["tsimsr"];
+                        tracker.SimNumber = (string)mySqlDataReader["tsimno"];
+                        tracker.Users = trackerUsers;
+                        tracker.SpeedLimit = int.Parse((string)mySqlDataReader["tSpeedLimit"]);
+                        tracker.VehicleModel = (string)mySqlDataReader["tvehiclemodel"];
+                        tracker.VehicleRegistration = (string)mySqlDataReader["tvehiclereg"];
+
+                        trackers.Add(tracker);
+                    }
+                    company.Trackers = trackers;
+                    mySqlDataReader.Dispose();
+                }
+            } catch (QueryException queryException) {
+                throw queryException;
+            } catch (MySqlException mySqlException) {
+                throw new QueryException(1, mySqlException.Message);
+            } catch (Exception exception) {
+                throw new QueryException(1, exception.Message);
+            } finally {
+                mysqlConnection.Close();
+            }
+        }
+        public DataTable getTrackers(Company company) {
+            DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
+            //List<Tracker> trackers = this.fillTrackers(company);
+
+            //foreach (Tracker tracker in trackers) {
+            //    DataRow dataRow = dataTable.NewRow();
+            //    dataRow["id"] = tracker.Id;
+            //    dataRow["vehicleRegistration"] = tracker.VehicleRegistration;
+            //    dataRow["vehicleModel"] = tracker.VehicleModel;
+            //    dataRow["ownerName"] = tracker.OwnerName;
+            //    dataRow["driverName"] = tracker.DriverName;
+
+            //    dataRow["simImei"] = tracker.SimImei;
+            //    dataRow["simNumber"] = tracker.SimNumber;
+            //    dataRow["mobileDataProvider"] = tracker.MobileDataProvider;
+
+            //    dataRow["deviceImei"] = tracker.TrackerImei;
+            //    dataRow["devicePassword"] = tracker.DevicePassword;
+            //    dataRow["deviceType"] = tracker.DeviceType;
+
+            //    dataRow["emails"] = tracker.Emails;
+            //    dataRow["users"] = tracker.Users;
+
+            //    dataRow["mileageInitial"] = tracker.MileageInitial;
+            //    dataRow["mileageLimit"] = tracker.MileageLimit;
+            //    dataRow["SpeedLimit"] = tracker.SpeedLimit;
+
+            //    dataRow["idlingTime"] = tracker.IdlingTime;
+            //    dataRow["inputs"] = tracker.Inputs;
+            //    dataRow["imageNumber"] = tracker.ImageNumber;
+            //    dataRow["note"] = tracker.Note;
+
+            //    dataRow["collections"] = tracker.Collections;
+            //    dataRow["companyDatabaseName"] = tracker.CompanyDatabaseName;
+            //    dataRow["databaseHost"] = tracker.DatabaseHost;
+            //    dataRow["DatabaseName"] = tracker.DatabaseName;
+            //    dataRow["httpHost"] = tracker.HttpHost;
+            //    dataRow["dateCreated"] = tracker.DateTimeCreated;
+            //    dataRow["dateExpired"] = tracker.DateTimeExpired;
+
+            //    dataTable.Rows.Add(dataRow);
+            //}
+
+            return dataTable;
+        }
+        //public DataTable getTrackers(Company company, User user, int userAccountId) {
+        //    DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
+
+        //    try {
+        //        mysqlConnection.Open();
+
+        //        string sql =
+        //            "SELECT * " +
+        //            "FROM dbt_tracking_master.trks " +
+        //            "WHERE dbt_tracking_master.trks.tcmp = @sCompanyName " +
+        //            "AND dbt_tracking_master.trks.tusers LIKE @sUserId;";
+
+        //        MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+        //        mySqlCommand.Parameters.AddWithValue("@sCompanyName", company.DatabaseName.Substring(4));
+        //        mySqlCommand.Parameters.AddWithValue("@sUserId", "%" + userAccountId.ToString() + "%");
+
+        //        MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //        if (!mySqlDataReader.HasRows) {
+        //            throw new QueryException(1, "Tracker's Collection is empty.");
+        //        } else {
+
+
+        //            Tracker tracker = new Tracker();
+        //            string dateTime;
+
+        //            while (mySqlDataReader.Read()) {
+
+        //                tracker.collections = (string)mySqlDataReader["tcollections"];
+        //                tracker.companyDatabaseName = (string)mySqlDataReader["tcmp"];
+        //                tracker.databaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
+        //                tracker.DatabaseName = (string)mySqlDataReader["tdbs"];
+
+        //                dateTime = (string)mySqlDataReader["tcreatedate"];
+        //                tracker.dateCreated = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                dateTime = String.Empty;
+
+        //                dateTime = (string)mySqlDataReader["ttrackerexpiry"];
+        //                tracker.dateExpired = Converter.subStandardDateTimeToDateTime(dateTime);
+        //                dateTime = String.Empty;
+
+        //                tracker.trackerImei = (string)mySqlDataReader["tunit"];
+        //                tracker.devicePassword = (string)mySqlDataReader["tunitpassword"];
+        //                tracker.deviceType = int.Parse((string)mySqlDataReader["ttype"]);
+        //                tracker.driverName = (string)mySqlDataReader["tdrivername"];
+        //                tracker.emails = (string)mySqlDataReader["temails"];
+        //                tracker.httpHost = int.Parse((string)mySqlDataReader["thttphost"]);
+        //                tracker.id = (int)mySqlDataReader["tid"];
+        //                tracker.idlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
+        //                tracker.imageNumber = int.Parse((string)mySqlDataReader["timg"]);
+        //                tracker.inputs = (string)mySqlDataReader["tinputs"];
+        //                tracker.mileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
+        //                tracker.mileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
+        //                tracker.mobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
+        //                tracker.note = (string)mySqlDataReader["tnote"];
+        //                tracker.ownerName = (string)mySqlDataReader["townername"];
+        //                tracker.simImei = (string)mySqlDataReader["tsimsr"];
+        //                tracker.simNumber = (string)mySqlDataReader["tsimno"];
+        //                tracker.users = (string)mySqlDataReader["tusers"];
+        //                tracker.SpeedLimit = int.Parse((string)mySqlDataReader["tSpeedLimit"]);
+        //                tracker.vehicleModel = (string)mySqlDataReader["tvehiclemodel"];
+        //                tracker.vehicleRegistration = (string)mySqlDataReader["tvehiclereg"];
+
+
+        //                DataRow dataRow = dataTable.NewRow();
+        //                dataRow["id"] = tracker.id;
+        //                dataRow["vehicleRegistration"] = tracker.vehicleRegistration;
+        //                dataRow["vehicleModel"] = tracker.vehicleModel;
+        //                dataRow["ownerName"] = tracker.ownerName;
+        //                dataRow["driverName"] = tracker.driverName;
+
+        //                dataRow["simImei"] = tracker.simImei;
+        //                dataRow["simNumber"] = tracker.simNumber;
+        //                dataRow["mobileDataProvider"] = tracker.mobileDataProvider;
+
+        //                dataRow["deviceImei"] = tracker.trackerImei;
+        //                dataRow["devicePassword"] = tracker.devicePassword;
+        //                dataRow["deviceType"] = tracker.deviceType;
+
+        //                dataRow["emails"] = tracker.emails;
+        //                dataRow["users"] = tracker.users;
+
+        //                dataRow["mileageInitial"] = tracker.mileageInitial;
+        //                dataRow["mileageLimit"] = tracker.mileageLimit;
+        //                dataRow["SpeedLimit"] = tracker.SpeedLimit;
+
+        //                dataRow["idlingTime"] = tracker.idlingTime;
+        //                dataRow["inputs"] = tracker.inputs;
+        //                dataRow["imageNumber"] = tracker.imageNumber;
+        //                dataRow["note"] = tracker.note;
+
+        //                dataRow["collections"] = tracker.collections;
+        //                dataRow["companyDatabaseName"] = tracker.companyDatabaseName;
+        //                dataRow["databaseHost"] = tracker.databaseHost;
+        //                dataRow["DatabaseName"] = tracker.DatabaseName;
+        //                dataRow["httpHost"] = tracker.httpHost;
+        //                dataRow["dateCreated"] = tracker.dateCreated;
+        //                dataRow["dateExpired"] = tracker.dateExpired;
+
+        //                dataTable.Rows.Add(dataRow);
+        //            }
+
+
+        //            return dataTable;
+        //        }
+        //    } catch (QueryException queryException) {
+        //        throw queryException;
+        //    } catch (MySqlException mySqlException) {
+        //        throw new QueryException(1, mySqlException.Message);
+        //    } catch (Exception exception) {
+        //        throw new QueryException(1, exception.Message);
+        //    } finally {
+        //        mysqlConnection.Close();
+        //    }
+        //}
+
+        //public DataTable getAccounts(User account) {
+        //    DataTable dataTable = new DataTable();
+        //    try {
+        //        mysqlConnection.Open();
+        //        string sql;
+        //        if (account.accessLevel == 1 || account.accessLevel == 2) {
+        //            sql =
+        //                "SELECT  * " +
+        //                "FROM " + account.databaseName + ".usrs " +
+        //                "WHERE " + account.databaseName + ".usrs.upriv >= " + account.accessLevel.ToString() + ";";
+        //        } else {
+        //            sql =
+        //               "SELECT  * " +
+        //               "FROM " + account.databaseName + ".usrs " +
+        //               "WHERE " + account.databaseName + ".usrs.upriv = " + account.accessLevel.ToString() + " " +
+        //               "AND " + account.databaseName + ".usrs.uname = '" + account.username + "';";
+        //        }
+
+        //        MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+        //        MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+        //        if (!mySqlDataReader.HasRows) {
+        //            throw new QueryException(1, "Account's Collection is empty.");
+        //        } else {
+        //            dataTable.Load(mySqlDataReader);
+        //            return dataTable;
+        //        }
+        //    } catch (QueryException queryException) {
+        //        throw queryException;
+        //    } catch (MySqlException mySqlException) {
+        //        throw new QueryException(1, mySqlException.Message);
+        //    } catch (Exception exception) {
+        //        throw new QueryException(1, exception.Message);
+        //    } finally {
+        //        mysqlConnection.Close();
+        //    }
+        //}
+
+
+        //
+        public void getCompany(Company company) {
+            try {
+                mysqlConnection.Open();
+
+                string sql =
                     "SELECT * " +
                     "FROM dbt_tracking_master.cmps " +
                     "WHERE dbt_tracking_master.cmps.cmpname = @sCompanyName;";
 
-                MySqlCommand mySqlCommand = new MySqlCommand(this.sql, mysqlConnection);
-                mySqlCommand.Parameters.AddWithValue("@sCompanyName", this.account.companyUsername);
+                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+                mySqlCommand.Parameters.AddWithValue("@sCompanyName", company.Username);
 
                 MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 
@@ -74,439 +698,312 @@ namespace Ats.Database {
                     throw new QueryException(1, "Company does not exist.");
                 } else {
                     mySqlDataReader.Read();
-                    this.account.companyUsername = mySqlDataReader.GetString("cmpname");
-                    this.account.databaseName = "cmp_" + mySqlDataReader.GetString("cmpdbname");
-                    this.account.companyDisplayName = mySqlDataReader.GetString("cmpdisplayname");
+                    company.Id = mySqlDataReader.GetInt32("cmpid");
+                    company.Username = mySqlDataReader.GetString("cmpname");
+                    company.DisplayName = mySqlDataReader.GetString("cmpdisplayname");
+                    company.Host = int.Parse(mySqlDataReader.GetString("cmphost"));
+                    company.Email = mySqlDataReader.GetString("cmpemail");
+                    company.PhoneNo = mySqlDataReader.GetString("cmpphoneno");
+                    company.MobileNo = mySqlDataReader.GetString("cmpmobileno");
+                    company.Address = mySqlDataReader.GetString("cmpaddress");
+                    company.IsActive = (mySqlDataReader.GetString("cmpactive") == "1") ? true : false;
+                    company.DateTimeCreated = SubStandard.dateTime(mySqlDataReader.GetString("cmpcreatedate"));
+                    company.DateTimeExpired = SubStandard.dateTime(mySqlDataReader.GetString("cmpexpiredate"));
+                    company.DatabaseName = mySqlDataReader.GetString("cmpdbname");
 
-                    mysqlConnection.Close();
+                    mySqlDataReader.Dispose();
+                }
+            } catch (MySqlException mySqlException) {
+                throw new QueryException(1, mySqlException.Message);
+            } catch (QueryException queryException) {
+                throw queryException;
+            } catch (Exception exception) {
+                throw new QueryException(1, exception.Message);
+            } finally {
+                mysqlConnection.Close();
+            }
 
-                    //2nd Query
-                    //checking if user is existing in the company
-                    mysqlConnection = new MySqlConnection(database.getConnectionString());
+        }
+        public void getUser(Company company, User user) {
+            try {
+                mysqlConnection = new MySqlConnection(database.getConnectionString());
 
-                    mysqlConnection.Open();
+                mysqlConnection.Open();
 
-                    sql =
-                        "SELECT * " +
-                        "FROM " + this.account.databaseName + ".usrs " +
-                        "WHERE " +
-                        this.account.databaseName + ".usrs.uname = @sUsername AND " +
-                        this.account.databaseName + ".usrs.upass = @sPassword;";
-                    mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+                string sql =
+                    "SELECT * " +
+                    "FROM cmp_" + company.DatabaseName + ".usrs " +
+                    "WHERE " +
+                    "cmp_" + company.DatabaseName + ".usrs.uname = @sUsername AND " +
+                    "cmp_" + company.DatabaseName + ".usrs.upass = @sPassword;";
 
+                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+                mySqlCommand.Parameters.AddWithValue("@sUsername", user.Username);
+                mySqlCommand.Parameters.AddWithValue("@sPassword", Cryptography.md5(user.Password));
 
+                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 
-                    mySqlCommand.Parameters.AddWithValue("@sUsername", account.username);
-                    mySqlCommand.Parameters.AddWithValue("@sPassword", account.password);
+                if (!mySqlDataReader.HasRows) {
+                    mySqlDataReader.Dispose();
+                    throw new QueryException(1, "Username or Password does not exist.");
+                } else {
+                    mySqlDataReader.Read();
 
-                    mySqlDataReader = mySqlCommand.ExecuteReader();
+                    user.Id = mySqlDataReader.GetInt32("uid");
+                    user.Username = mySqlDataReader.GetString("uname");
+                    //user.Password = mySqlDataReader.GetString("upass");
+                    user.Email = mySqlDataReader.GetString("uemail");
+                    user.Main = mySqlDataReader.GetString("umain");
+                    user.AccessLevel = int.Parse(mySqlDataReader.GetString("upriv"));
+                    user.Timezone = mySqlDataReader.GetString("utimezone");
+                    user.IsActive = mySqlDataReader.GetString("uactive").Equals("1");
+                    user.DatabaseName = mySqlDataReader.GetString("udbs");
 
-                    if (!mySqlDataReader.HasRows) {
-                        mySqlDataReader.Dispose();
-                        throw new QueryException(1, "Username or Password does not exist.");
+                    if (!String.IsNullOrEmpty(mySqlDataReader.GetString("uexpiredate"))) {
+                        string dateTime = (mySqlDataReader.GetString("uexpiredate"));
+                        if (!String.IsNullOrEmpty(dateTime)) {
+                            DateTime parsedDate = SubStandard.dateTime(dateTime);
+                            user.DateTimeExpired = parsedDate;
+                        }
                     } else {
-                        mySqlDataReader.Read();
-                        this.account.accessLevel = int.Parse(mySqlDataReader.GetString("upriv"));
-                        this.account.username = mySqlDataReader.GetString("uname");
-                        this.account.password = mySqlDataReader.GetString("upass");
-                        this.account.id = int.Parse(mySqlDataReader.GetString("uid"));
-                        this.account.active = int.Parse(mySqlDataReader.GetString("uactive"));
+                        user.DateTimeExpired = new DateTime(2050, 01, 01);
+                    }
+
+                    if (!String.IsNullOrEmpty(mySqlDataReader.GetString("ucreatedate"))) {
+                        string dateTime = mySqlDataReader.GetString("ucreatedate");
+                        if (!String.IsNullOrEmpty(dateTime)) {
+                            DateTime parsedDate = SubStandard.dateTime(dateTime);
+                            user.DateTimeCreated = parsedDate;
+                        }
+                    } else {
+                        user.DateTimeCreated = new DateTime(2010, 01, 01);
+                    }
+                    mySqlDataReader.Dispose();
+                }
+
+            } catch (MySqlException mySqlException) {
+                throw new QueryException(1, mySqlException.Message);
+            } catch (QueryException queryException) {
+                throw queryException;
+            } catch (Exception exception) {
+                throw new QueryException(1, exception.Message);
+            } finally {
+                mysqlConnection.Close();
+            }
+        }
+        public void fillUsers(Company company, User user) {
+            List<User> users = new List<User>();
+            try {
+                mysqlConnection = new MySqlConnection(database.getConnectionString());
+
+                mysqlConnection.Open();
+
+                string sql =
+                    "SELECT * " +
+                    "FROM cmp_" + company.DatabaseName + ".usrs " +
+                    "WHERE cmp_" + company.DatabaseName + ".usrs.upriv >= " + user.AccessLevel.ToString() + ";";
+
+                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+                if (!mySqlDataReader.HasRows) {
+                    mySqlDataReader.Dispose();
+                    throw new QueryException(1, "Users table is empty.");
+                } else {
+                    while (mySqlDataReader.Read()) {
+                        User userSubordinate = new User();
+                        userSubordinate.Id = mySqlDataReader.GetInt32("uid");
+                        userSubordinate.Username = mySqlDataReader.GetString("uname");
+                        userSubordinate.Password = mySqlDataReader.GetString("upass");
+                        userSubordinate.Email = mySqlDataReader.GetString("uemail");
+                        userSubordinate.Main = mySqlDataReader.GetString("umain");
+                        userSubordinate.AccessLevel = int.Parse(mySqlDataReader.GetString("upriv"));
+                        userSubordinate.Timezone = mySqlDataReader.GetString("utimezone");
+                        userSubordinate.IsActive = mySqlDataReader.GetString("uactive").Equals("1");
+                        userSubordinate.DatabaseName = mySqlDataReader.GetString("udbs");
 
                         if (!String.IsNullOrEmpty(mySqlDataReader.GetString("uexpiredate"))) {
                             string dateTime = (mySqlDataReader.GetString("uexpiredate"));
                             if (!String.IsNullOrEmpty(dateTime)) {
-                                DateTime parsedDate = Converter.subStandardDateTimeToDateTime(dateTime);
-                                //= DateTime.ParseExact(dateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-
-                                this.account.dateTimeExpired = parsedDate;
+                                DateTime parsedDate = SubStandard.dateTime(dateTime);
+                                userSubordinate.DateTimeExpired = parsedDate;
                             }
                         } else {
-                            this.account.dateTimeExpired = new DateTime(2050, 01, 01);
+                            userSubordinate.DateTimeExpired = new DateTime(2050, 01, 01);
                         }
 
                         if (!String.IsNullOrEmpty(mySqlDataReader.GetString("ucreatedate"))) {
                             string dateTime = mySqlDataReader.GetString("ucreatedate");
                             if (!String.IsNullOrEmpty(dateTime)) {
-                                DateTime parsedDate = Converter.subStandardDateTimeToDateTime(dateTime);
-                                //DateTime parsedDate = DateTime.ParseExact(dateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                                this.account.dateTimeCreated = parsedDate;
+                                DateTime parsedDate = SubStandard.dateTime(dateTime);
+                                userSubordinate.DateTimeCreated = parsedDate;
                             }
                         } else {
-                            this.account.dateTimeCreated = new DateTime(2010, 01, 01);
-                            mySqlDataReader.Dispose();
+                            userSubordinate.DateTimeCreated = new DateTime(2010, 01, 01);
                         }
-                        mySqlDataReader.Dispose();
-
-                        //3rd query
-                        //Getting all the geofences
-                        mysqlConnection = new MySqlConnection(database.getConnectionString());
-
-                        mysqlConnection.Open();
-
-                        sql =
-                            "SELECT * " +
-                            "FROM " + this.account.databaseName + ".gf";
-
-                        mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-                        mySqlDataReader = mySqlCommand.ExecuteReader();
-
-                        if (!mySqlDataReader.HasRows) {
-                            mySqlDataReader.Dispose();
-                        } else {
-                            while (mySqlDataReader.Read()) {
-                                string geofenceData = (string)mySqlDataReader["gf_data"];
-                                string geofenceName = (string)mySqlDataReader["gf_name"];
-
-                                geofenceData = geofenceData.Replace("),( ", "|");
-                                geofenceData = geofenceData.Replace(")", string.Empty);
-                                geofenceData = geofenceData.Replace("(", string.Empty);
-                                geofenceData = geofenceData.Replace(" ", string.Empty);
-
-                                Geofence geofence = new Geofence();
-                                List<string> points = geofenceData.Split('|').ToList();
-                                foreach (string point in points) {
-                                    string[] coordinates = point.Split(',');
-                                    double latitude = double.Parse(coordinates[0]);
-                                    double longitude = double.Parse(coordinates[1]);
-                                    Location location = new Location(latitude, longitude);
-                                    geofence.addPoint(location);
-                                }
-
-                                geofence.Name = geofenceName;
-                                account.geofenceCollection.Add(geofence);
-                            }
-
-                            mySqlDataReader.Dispose();
-                        }
-
-                    }
-
-                }
-
-            } catch (MySqlException mySqlException) {
-                throw new QueryException(1, mySqlException.Message);
-            } catch (QueryException queryException) {
-                throw queryException;
-            } catch (Exception exception) {
-                throw new QueryException(1, exception.Message);
-            } finally {
-                mysqlConnection.Close();
-            }
-
-
-        }
-
-        public DataTable getAllCompanies() {
-            DataTable dataTable = this.getReportTable(ReportType.ALL_COMPANIES);
-            try {
-                mysqlConnection.Open();
-
-                string sql =
-                "SELECT * " +
-                "FROM dbt_tracking_master.cmps;";
-
-                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-
-                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-
-                if (!mySqlDataReader.HasRows) {
-                    throw new QueryException(1, "Companies's Collection is empty.");
-                } else {
-                    while (mySqlDataReader.Read()) {
-
-                        DataRow dataRow = dataTable.NewRow();
-                        dataRow["id"] = mySqlDataReader.GetInt32("cmpid");
-                        dataRow["host"] = mySqlDataReader.GetString("cmphost");
-                        dataRow["username"] = mySqlDataReader.GetString("cmpname");
-                        dataRow["displayName"] = mySqlDataReader.GetString("cmpdisplayname");
-                        dataRow["email"] = mySqlDataReader.GetString("cmpemail");
-                        dataRow["address"] = mySqlDataReader.GetString("cmpaddress");
-                        dataRow["telephoneNumber"] = mySqlDataReader.GetString("cmpphoneno");
-                        dataRow["mobileNumber"] = mySqlDataReader.GetString("cmpmobileno");
-                        dataRow["databaseName"] = mySqlDataReader.GetString("cmpdbname");
-                        dataRow["isActive"] = (mySqlDataReader.GetString("cmpactive") == "1") ? true : false;
-
-                        dataRow["dateCreated"] = Converter.subStandardDateTimeToDateTime(mySqlDataReader.GetString("cmpcreatedate"));
-                        dataRow["dateExpired"] = Converter.subStandardDateTimeToDateTime(mySqlDataReader.GetString("cmpexpiredate"));
-
-                        dataTable.Rows.Add(dataRow);
+                        users.Add(userSubordinate);
                     }
                     mySqlDataReader.Dispose();
                 }
 
-            } catch (QueryException queryException) {
-                throw queryException;
             } catch (MySqlException mySqlException) {
                 throw new QueryException(1, mySqlException.Message);
+            } catch (QueryException queryException) {
+                throw queryException;
             } catch (Exception exception) {
                 throw new QueryException(1, exception.Message);
             } finally {
                 mysqlConnection.Close();
             }
-            return dataTable;
+            company.Users = users;
         }
 
-        public DataTable getAllTrackers() {
-            DataTable dataTable = this.getReportTable(ReportType.ALL_TRACKERS);
+        public void fillCollection(Company company) {
+            foreach (User user in company.Users) {
+                List<Collection> collections = new List<Collection>();
+                try {
+                    mysqlConnection = new MySqlConnection(database.getConnectionString());
+
+                    mysqlConnection.Open();
+
+                    string sql =
+                        "SELECT * " +
+                        "FROM cmp_" + company.DatabaseName + ".coll_" + user.DatabaseName + ";";
+
+                    MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+                    MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+                    if (!mySqlDataReader.HasRows) {
+                        Collection collection = new Collection();
+                        collection.Id = 0;
+                        collection.Name = "All";
+                        collection.Description = "All";
+                        collections.Add(collection);
+                        user.Collections = collections;
+                        mySqlDataReader.Dispose();
+                    } else {
+                        Collection collection = new Collection();
+                        collection.Id = 0;
+                        collection.Name = "All";
+                        collection.Description = "All";
+                        collections.Add(collection);
+
+                        while (mySqlDataReader.Read()) {
+                            Collection collectionItem = new Collection();
+                            collectionItem.Id = mySqlDataReader.GetInt32("collid");
+                            collectionItem.Name = mySqlDataReader.GetString("collname");
+                            collectionItem.Description = mySqlDataReader.GetString("colldesc");
+                            collections.Add(collectionItem);
+                        }
+
+                        user.Collections = collections;
+                        mySqlDataReader.Dispose();
+                    }
+                } catch (MySqlException mySqlException) {
+                    throw new QueryException(1, mySqlException.Message);
+                } catch (QueryException queryException) {
+                    throw queryException;
+                } catch (Exception exception) {
+                    throw new QueryException(1, exception.Message);
+                } finally {
+                    mysqlConnection.Close();
+                }
+            }
+        }
+        public void fillPois(Company company) {
+            foreach (User user in company.Users) {
+                List<Poi> pois = new List<Poi>();
+                try {
+                    mysqlConnection = new MySqlConnection(database.getConnectionString());
+
+                    mysqlConnection.Open();
+
+                    string sql =
+                        "SELECT * " +
+                        "FROM cmp_" + company.DatabaseName + ".poi_" + user.DatabaseName + ";";
+
+                    MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
+
+                    MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+
+                    if (!mySqlDataReader.HasRows) {
+                        mySqlDataReader.Dispose();
+                    } else {
+                        while (mySqlDataReader.Read()) {
+                            Poi poi = new Poi();
+                            poi.id = mySqlDataReader.GetInt32("poi_id");
+                            poi.name = mySqlDataReader.GetString("poi_name");
+                            poi.description = mySqlDataReader.GetString("poi_desc");
+                            poi.image = mySqlDataReader.GetString("poi_img");
+                            poi.location = new Coordinate(double.Parse(mySqlDataReader.GetString("poi_lat")),
+                                                        double.Parse(mySqlDataReader.GetString("poi_lon")));
+                            pois.Add(poi);
+                        }
+
+                        user.Pois = pois;
+                        mySqlDataReader.Dispose();
+                    }
+                } catch (MySqlException mySqlException) {
+                    throw new QueryException(1, mySqlException.Message);
+                } catch (QueryException queryException) {
+                    throw queryException;
+                } catch (Exception exception) {
+                    throw new QueryException(1, exception.Message);
+                } finally {
+                    mysqlConnection.Close();
+                }
+            }
+        }
+
+        public void fillGeofences(Company company) {
+            List<Geofence> geofences = new List<Geofence>();
 
             try {
+                mysqlConnection = new MySqlConnection(database.getConnectionString());
                 mysqlConnection.Open();
 
                 string sql =
-                    "SELECT * " +
-                    "FROM dbt_tracking_master.trks;";
+                     "SELECT * " +
+                     "FROM cmp_" + company.DatabaseName + ".gf";
 
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-
                 MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 
                 if (!mySqlDataReader.HasRows) {
-                    throw new QueryException(1, "Tracker's Collection is empty.");
+                    mySqlDataReader.Dispose();
                 } else {
-
-
-                    Tracker tracker = new Tracker();
-                    string dateTime;
-
                     while (mySqlDataReader.Read()) {
+                        Geofence geofence = new Geofence();
+                        geofence.Id = mySqlDataReader.GetInt32("gf_id");
+                        geofence.Name = mySqlDataReader.GetString("gf_name");
+                        geofence.Tracks = mySqlDataReader.GetString("gf_trks");
 
-                        tracker.collections = (string)mySqlDataReader["tcollections"];
-                        tracker.companyDatabaseName = (string)mySqlDataReader["tcmp"];
-                        tracker.databaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
-                        tracker.dataDatabaseName = (string)mySqlDataReader["tdbs"];
-
-                        dateTime = (string)mySqlDataReader["tcreatedate"];
-                        tracker.dateCreated = Converter.subStandardDateTimeToDateTime(dateTime);
-                        dateTime = String.Empty;
-
-                        dateTime = (string)mySqlDataReader["ttrackerexpiry"];
-                        tracker.dateExpired = Converter.subStandardDateTimeToDateTime(dateTime);
-                        dateTime = String.Empty;
-
-                        tracker.trackerImei = (string)mySqlDataReader["tunit"];
-                        tracker.devicePassword = (string)mySqlDataReader["tunitpassword"];
-                        tracker.deviceType = int.Parse((string)mySqlDataReader["ttype"]);
-                        tracker.driverName = (string)mySqlDataReader["tdrivername"];
-                        tracker.emails = (string)mySqlDataReader["temails"];
-                        tracker.httpHost = int.Parse((string)mySqlDataReader["thttphost"]);
-                        tracker.id = (int)mySqlDataReader["tid"];
-                        tracker.idlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
-                        tracker.imageNumber = int.Parse((string)mySqlDataReader["timg"]);
-                        tracker.inputs = (string)mySqlDataReader["tinputs"];
-                        tracker.mileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
-                        tracker.mileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
-                        tracker.mobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
-                        tracker.note = (string)mySqlDataReader["tnote"];
-                        tracker.ownerName = (string)mySqlDataReader["townername"];
-                        tracker.simImei = (string)mySqlDataReader["tsimsr"];
-                        tracker.simNumber = (string)mySqlDataReader["tsimno"];
-                        tracker.users = (string)mySqlDataReader["tusers"];
-                        tracker.speedLimit = int.Parse((string)mySqlDataReader["tspeedlimit"]);
-                        tracker.vehicleModel = (string)mySqlDataReader["tvehiclemodel"];
-                        tracker.vehicleRegistration = (string)mySqlDataReader["tvehiclereg"];
+                        string geofenceData = (string)mySqlDataReader["gf_data"];
+                        geofenceData = geofenceData.Replace("),( ", "|");
+                        geofenceData = geofenceData.Replace(")", string.Empty);
+                        geofenceData = geofenceData.Replace("(", string.Empty);
+                        geofenceData = geofenceData.Replace(" ", string.Empty);
 
 
-                        DataRow dataRow = dataTable.NewRow();
-                        dataRow["id"] = tracker.id;
-                        dataRow["vehicleRegistration"] = tracker.vehicleRegistration;
-                        dataRow["vehicleModel"] = tracker.vehicleModel;
-                        dataRow["ownerName"] = tracker.ownerName;
-                        dataRow["driverName"] = tracker.driverName;
-
-                        dataRow["simImei"] = tracker.simImei;
-                        dataRow["simNumber"] = tracker.simNumber;
-                        dataRow["mobileDataProvider"] = tracker.mobileDataProvider;
-
-                        dataRow["deviceImei"] = tracker.trackerImei;
-                        dataRow["devicePassword"] = tracker.devicePassword;
-                        dataRow["deviceType"] = tracker.deviceType;
-
-                        dataRow["emails"] = tracker.emails;
-                        dataRow["users"] = tracker.users;
-
-                        dataRow["mileageInitial"] = tracker.mileageInitial;
-                        dataRow["mileageLimit"] = tracker.mileageLimit;
-                        dataRow["speedLimit"] = tracker.speedLimit;
-
-                        dataRow["idlingTime"] = tracker.idlingTime;
-                        dataRow["inputs"] = tracker.inputs;
-                        dataRow["imageNumber"] = tracker.imageNumber;
-                        dataRow["note"] = tracker.note;
-
-                        dataRow["collections"] = tracker.collections;
-                        dataRow["companyDatabaseName"] = tracker.companyDatabaseName;
-                        dataRow["databaseHost"] = tracker.databaseHost;
-                        dataRow["dataDatabaseName"] = tracker.dataDatabaseName;
-                        dataRow["httpHost"] = tracker.httpHost;
-                        dataRow["dateCreated"] = tracker.dateCreated;
-                        dataRow["dateExpired"] = tracker.dateExpired;
-
-                        dataTable.Rows.Add(dataRow);
+                        List<string> points = geofenceData.Split('|').ToList();
+                        foreach (string point in points) {
+                            string[] coordinates = point.Split(',');
+                            double latitude = double.Parse(coordinates[0]);
+                            double longitude = double.Parse(coordinates[1]);
+                            Coordinate location = new Coordinate(latitude, longitude);
+                            geofence.addPoint(location);
+                        }
+                        geofences.Add(geofence);
                     }
-
-
-                    return dataTable;
+                    company.Geofences = geofences;
+                    mySqlDataReader.Dispose();
                 }
-            } catch (QueryException queryException) {
-                throw queryException;
             } catch (MySqlException mySqlException) {
                 throw new QueryException(1, mySqlException.Message);
-            } catch (Exception exception) {
-                throw new QueryException(1, exception.Message);
-            } finally {
-                mysqlConnection.Close();
-            }
-        }
-
-        public DataTable getTrackers(Account account, int userAccountId) {
-            DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
-
-            try {
-                mysqlConnection.Open();
-
-                string sql =
-                    "SELECT * " +
-                    "FROM dbt_tracking_master.trks " +
-                    "WHERE dbt_tracking_master.trks.tcmp = @sCompanyName " +
-                    "AND dbt_tracking_master.trks.tusers LIKE @sUserId;";
-
-                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-
-                mySqlCommand.Parameters.AddWithValue("@sCompanyName", account.databaseName.Substring(4));
-                mySqlCommand.Parameters.AddWithValue("@sUserId", "%" + userAccountId.ToString() + "%");
-
-                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-
-                if (!mySqlDataReader.HasRows) {
-                    throw new QueryException(1, "Tracker's Collection is empty.");
-                } else {
-
-
-                    Tracker tracker = new Tracker();
-                    string dateTime;
-
-                    while (mySqlDataReader.Read()) {
-
-                        tracker.collections = (string)mySqlDataReader["tcollections"];
-                        tracker.companyDatabaseName = (string)mySqlDataReader["tcmp"];
-                        tracker.databaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
-                        tracker.dataDatabaseName = (string)mySqlDataReader["tdbs"];
-
-                        dateTime = (string)mySqlDataReader["tcreatedate"];
-                        tracker.dateCreated = Converter.subStandardDateTimeToDateTime(dateTime);
-                        dateTime = String.Empty;
-
-                        dateTime = (string)mySqlDataReader["ttrackerexpiry"];
-                        tracker.dateExpired = Converter.subStandardDateTimeToDateTime(dateTime);
-                        dateTime = String.Empty;
-
-                        tracker.trackerImei = (string)mySqlDataReader["tunit"];
-                        tracker.devicePassword = (string)mySqlDataReader["tunitpassword"];
-                        tracker.deviceType = int.Parse((string)mySqlDataReader["ttype"]);
-                        tracker.driverName = (string)mySqlDataReader["tdrivername"];
-                        tracker.emails = (string)mySqlDataReader["temails"];
-                        tracker.httpHost = int.Parse((string)mySqlDataReader["thttphost"]);
-                        tracker.id = (int)mySqlDataReader["tid"];
-                        tracker.idlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
-                        tracker.imageNumber = int.Parse((string)mySqlDataReader["timg"]);
-                        tracker.inputs = (string)mySqlDataReader["tinputs"];
-                        tracker.mileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
-                        tracker.mileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
-                        tracker.mobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
-                        tracker.note = (string)mySqlDataReader["tnote"];
-                        tracker.ownerName = (string)mySqlDataReader["townername"];
-                        tracker.simImei = (string)mySqlDataReader["tsimsr"];
-                        tracker.simNumber = (string)mySqlDataReader["tsimno"];
-                        tracker.users = (string)mySqlDataReader["tusers"];
-                        tracker.speedLimit = int.Parse((string)mySqlDataReader["tspeedlimit"]);
-                        tracker.vehicleModel = (string)mySqlDataReader["tvehiclemodel"];
-                        tracker.vehicleRegistration = (string)mySqlDataReader["tvehiclereg"];
-
-
-                        DataRow dataRow = dataTable.NewRow();
-                        dataRow["id"] = tracker.id;
-                        dataRow["vehicleRegistration"] = tracker.vehicleRegistration;
-                        dataRow["vehicleModel"] = tracker.vehicleModel;
-                        dataRow["ownerName"] = tracker.ownerName;
-                        dataRow["driverName"] = tracker.driverName;
-
-                        dataRow["simImei"] = tracker.simImei;
-                        dataRow["simNumber"] = tracker.simNumber;
-                        dataRow["mobileDataProvider"] = tracker.mobileDataProvider;
-
-                        dataRow["deviceImei"] = tracker.trackerImei;
-                        dataRow["devicePassword"] = tracker.devicePassword;
-                        dataRow["deviceType"] = tracker.deviceType;
-
-                        dataRow["emails"] = tracker.emails;
-                        dataRow["users"] = tracker.users;
-
-                        dataRow["mileageInitial"] = tracker.mileageInitial;
-                        dataRow["mileageLimit"] = tracker.mileageLimit;
-                        dataRow["speedLimit"] = tracker.speedLimit;
-
-                        dataRow["idlingTime"] = tracker.idlingTime;
-                        dataRow["inputs"] = tracker.inputs;
-                        dataRow["imageNumber"] = tracker.imageNumber;
-                        dataRow["note"] = tracker.note;
-
-                        dataRow["collections"] = tracker.collections;
-                        dataRow["companyDatabaseName"] = tracker.companyDatabaseName;
-                        dataRow["databaseHost"] = tracker.databaseHost;
-                        dataRow["dataDatabaseName"] = tracker.dataDatabaseName;
-                        dataRow["httpHost"] = tracker.httpHost;
-                        dataRow["dateCreated"] = tracker.dateCreated;
-                        dataRow["dateExpired"] = tracker.dateExpired;
-
-                        dataTable.Rows.Add(dataRow);
-                    }
-
-
-                    return dataTable;
-                }
             } catch (QueryException queryException) {
                 throw queryException;
-            } catch (MySqlException mySqlException) {
-                throw new QueryException(1, mySqlException.Message);
-            } catch (Exception exception) {
-                throw new QueryException(1, exception.Message);
-            } finally {
-                mysqlConnection.Close();
-            }
-        }
-
-        public DataTable getAccounts(Account account) {
-            DataTable dataTable = new DataTable();
-            try {
-                mysqlConnection.Open();
-                string sql;
-                if (account.accessLevel == 1 || account.accessLevel == 2) {
-                    sql =
-                        "SELECT  * " +
-                        "FROM " + account.databaseName + ".usrs " +
-                        "WHERE " + account.databaseName + ".usrs.upriv >= " + account.accessLevel.ToString() + ";";
-                } else {
-                    sql =
-                       "SELECT  * " +
-                       "FROM " + account.databaseName + ".usrs " +
-                       "WHERE " + account.databaseName + ".usrs.upriv = " + account.accessLevel.ToString() + " " +
-                       "AND " + account.databaseName + ".usrs.uname = '" + account.username + "';";
-                }
-
-                MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-
-                MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-
-                if (!mySqlDataReader.HasRows) {
-                    throw new QueryException(1, "Account's Collection is empty.");
-                } else {
-                    dataTable.Load(mySqlDataReader);
-                    return dataTable;
-                }
-            } catch (QueryException queryException) {
-                throw queryException;
-            } catch (MySqlException mySqlException) {
-                throw new QueryException(1, mySqlException.Message);
             } catch (Exception exception) {
                 throw new QueryException(1, exception.Message);
             } finally {
@@ -516,7 +1013,7 @@ namespace Ats.Database {
 
 
         //Based Reports
-        public int getTrackerHistoricalDataCount(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
+        public int getTrackerHistoricalDataCount(User account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
             DataTable dataTable = new DataTable();
             try {
                 mysqlConnection.Open();
@@ -528,19 +1025,19 @@ namespace Ats.Database {
                 if (timestampFrom > timestampTo) {
                     sql =
                        "SELECT  COUNT(*) " +
-                       "FROM trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + " " +
-                       "WHERE trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time >= " + timestampTo.ToString() + " " +
-                       "AND trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time <= " + timestampFrom.ToString() + " " +
-                       "ORDER BY trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_id ASC;";
+                       "FROM trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + " " +
+                       "WHERE trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time >= " + timestampTo.ToString() + " " +
+                       "AND trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time <= " + timestampFrom.ToString() + " " +
+                       "ORDER BY trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_id ASC;";
 
 
                 } else {
                     sql =
                           "SELECT  COUNT(*) " +
-                          "FROM trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + " " +
-                          "WHERE trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time <= " + timestampTo.ToString() + " " +
-                          "AND trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time >= " + timestampFrom.ToString() + " " +
-                          "ORDER BY trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_id ASC;";
+                          "FROM trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + " " +
+                          "WHERE trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time <= " + timestampTo.ToString() + " " +
+                          "AND trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time >= " + timestampFrom.ToString() + " " +
+                          "ORDER BY trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_id ASC;";
 
                 }
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
@@ -561,9 +1058,9 @@ namespace Ats.Database {
 
         }
 
-        public DataTable getTrackerHistoricalData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerHistoricalData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTable = this.getReportTable(ReportType.HISTORICAL);
-            dataTable.TableName = tracker.dataDatabaseName;
+            dataTable.TableName = tracker.DatabaseName;
 
             try {
                 mysqlConnection.Open();
@@ -576,37 +1073,37 @@ namespace Ats.Database {
                     sql =
                        "SELECT " +
 
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_id, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_lat, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_lng, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_ori, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_speed, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_mileage, " +
-                       "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_data " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_id, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_lat, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_lng, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_ori, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_speed, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_mileage, " +
+                       "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_data " +
 
 
-                       "FROM trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + " " +
-                       "WHERE trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time >= " + timestampTo.ToString() + " " +
-                       "AND trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time <= " + timestampFrom.ToString() + " " +
-                       "ORDER BY trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time ASC LIMIT " + limit.ToString() + " OFFSET " + offset.ToString() + ";";
+                       "FROM trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + " " +
+                       "WHERE trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time >= " + timestampTo.ToString() + " " +
+                       "AND trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time <= " + timestampFrom.ToString() + " " +
+                       "ORDER BY trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time ASC LIMIT " + limit.ToString() + " OFFSET " + offset.ToString() + ";";
                 } else {
                     sql =
                         "SELECT " +
 
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_id, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_lat, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_lng, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_ori, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_speed, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_mileage, " +
-                        "trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_data " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_id, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_lat, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_lng, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_ori, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_speed, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_mileage, " +
+                        "trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_data " +
 
-                        "FROM trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + " " +
-                        "WHERE trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time <= " + timestampTo.ToString() + " " +
-                        "AND trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time >= " + timestampFrom.ToString() + " " +
-                        "ORDER BY trk_" + tracker.dataDatabaseName + ".gps_" + tracker.dataDatabaseName + ".gm_time ASC LIMIT " + limit.ToString() + " OFFSET " + offset.ToString() + ";";
+                        "FROM trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + " " +
+                        "WHERE trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time <= " + timestampTo.ToString() + " " +
+                        "AND trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time >= " + timestampFrom.ToString() + " " +
+                        "ORDER BY trk_" + tracker.DatabaseName + ".gps_" + tracker.DatabaseName + ".gm_time ASC LIMIT " + limit.ToString() + " OFFSET " + offset.ToString() + ";";
                 }
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
 
@@ -681,12 +1178,12 @@ namespace Ats.Database {
 
                         dataRow["ACC"] = (int.Parse(data[18]) == 1) ? true : false;
                         dataRow["SOS"] = (int.Parse(data[17]) == 1) ? true : false;
-                        dataRow["OverSpeed"] = ((int)dataRow["Speed"] > tracker.speedLimit) ? true : false;
+                        dataRow["OverSpeed"] = ((int)dataRow["Speed"] > tracker.SpeedLimit) ? true : false;
                         //Geofence
-                        Location location = new Location(latitude, longitude);
-                        MapTools mapTools = new MapTools();
-                        foreach (Geofence geofence in account.geofenceCollection) {
-                            if (mapTools.IsPointInPolygon(geofence, location)) {
+                        Coordinate Coordinate = new Coordinate(latitude, longitude);
+                        //MapTools mapTools = new MapTools();
+                        foreach (Geofence geofence in company.Geofences) {
+                            if (Geofence.isPointInPolygon(geofence, Coordinate)) {
                                 if (String.IsNullOrEmpty(geofence.Name)) {
                                     dataRow["Geofence"] = "";
                                 } else {
@@ -734,12 +1231,11 @@ namespace Ats.Database {
 
         }
 
-
         //Processed Reports
-        public DataTable getTrackerRunningData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerRunningData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableRunningData = this.getReportTable(ReportType.RUNNING);
-            dataTableRunningData.TableName = tracker.dataDatabaseName;
+            dataTableRunningData.TableName = tracker.DatabaseName;
 
             try {
 
@@ -904,10 +1400,10 @@ namespace Ats.Database {
             return dataTableRunningData;
         }
 
-        public DataTable getTrackerIdlingData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerIdlingData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableIdleData = this.getReportTable(ReportType.IDLING);
-            dataTableIdleData.TableName = tracker.dataDatabaseName;
+            dataTableIdleData.TableName = tracker.DatabaseName;
 
             try {
 
@@ -1076,10 +1572,10 @@ namespace Ats.Database {
             return dataTableIdleData;
         }
 
-        public DataTable getTrackerGeofence(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerGeofence(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableGeofenceData = this.getReportTable(ReportType.GEOFENCE);
-            dataTableGeofenceData.TableName = tracker.dataDatabaseName;
+            dataTableGeofenceData.TableName = tracker.DatabaseName;
 
             try {
 
@@ -1203,7 +1699,7 @@ namespace Ats.Database {
 
                         dataRowGeofenceData["Time"] = timeSpan;
                         dataRowGeofenceData["Distance"] = distanceCovered;
-                        
+
 
 
                         dataRowGeofenceData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
@@ -1243,10 +1739,10 @@ namespace Ats.Database {
             }
         }
 
-        public DataTable getTrackerAccData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerAccData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableIAccData = this.getReportTable(ReportType.ACC);
-            dataTableIAccData.TableName = tracker.dataDatabaseName;
+            dataTableIAccData.TableName = tracker.DatabaseName;
 
             try {
 
@@ -1403,10 +1899,10 @@ namespace Ats.Database {
             return dataTableIAccData;
         }
 
-        public DataTable getTrackerExternalPowerCutData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerExternalPowerCutData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableExternalPowerCutData = this.getReportTable(ReportType.EXTERNAL_POWER_CUT);
-            dataTableExternalPowerCutData.TableName = tracker.dataDatabaseName;
+            dataTableExternalPowerCutData.TableName = tracker.DatabaseName;
 
 
             try {
@@ -1571,10 +2067,10 @@ namespace Ats.Database {
             return dataTableExternalPowerCutData;
         }
 
-        public DataTable getTrackerOverSpeedData(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
-            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
+        public DataTable getTrackerOverSpeedData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+            DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableOverSpeedData = this.getReportTable(ReportType.OVERSPEED);
-            dataTableOverSpeedData.TableName = tracker.dataDatabaseName;
+            dataTableOverSpeedData.TableName = tracker.DatabaseName;
 
             try {
 
@@ -1617,7 +2113,7 @@ namespace Ats.Database {
             return dataTableOverSpeedData;
         }
 
-        public DataTable getTrackersGeofence(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
+        public DataTable getTrackersGeofence(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS_GEOFENCE);
             //dataTable.TableName = "";
             try {
@@ -1625,14 +2121,14 @@ namespace Ats.Database {
                 foreach (Tracker tracker in trackerList) {
                     index++;
 
-                    DataTable dataTableGeofence = (this.getTrackerGeofence(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker));
+                    DataTable dataTableGeofence = (this.getTrackerGeofence(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker));
 
                     if (dataTableGeofence.Rows.Count <= 0) {
                         DataRow dataRow = dataTable.NewRow();
                         dataRow["No"] = index;
-                        dataRow["VehicleRegistration"] = tracker.vehicleRegistration;
-                        dataRow["DriverName"] = tracker.driverName;
-                        dataRow["DeviceImei"] = tracker.trackerImei;
+                        dataRow["VehicleRegistration"] = tracker.VehicleRegistration;
+                        dataRow["DriverName"] = tracker.DriverName;
+                        dataRow["DeviceImei"] = tracker.TrackerImei;
 
                         dataRow["DateTimeFrom"] = dateTimeDateFrom;
                         dataRow["DateTimeTo"] = dateTimeDateTo;
@@ -1646,9 +2142,9 @@ namespace Ats.Database {
                     } else {
                         DataRow dataRow = dataTable.NewRow();
                         dataRow["No"] = index;
-                        dataRow["VehicleRegistration"] = tracker.vehicleRegistration;
-                        dataRow["DriverName"] = tracker.driverName;
-                        dataRow["DeviceImei"] = tracker.trackerImei;
+                        dataRow["VehicleRegistration"] = tracker.VehicleRegistration;
+                        dataRow["DriverName"] = tracker.DriverName;
+                        dataRow["DeviceImei"] = tracker.TrackerImei;
 
                         dataRow["DateTimeFrom"] = dateTimeDateFrom;
                         dataRow["DateTimeTo"] = dateTimeDateTo;
@@ -1679,7 +2175,7 @@ namespace Ats.Database {
             }
         }
 
-        public DataTable getTrackersHistorical(Account account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
+        public DataTable getTrackersHistorical(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS_HISTORICAL);
 
             try {
@@ -1687,17 +2183,17 @@ namespace Ats.Database {
                 foreach (Tracker tracker in trackerList) {
                     index++;
 
-                    DataTable dataTableHistorical = (this.getTrackerHistoricalData(account, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker));
+                    DataTable dataTableHistorical = (this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker));
 
                     if (dataTableHistorical.Rows.Count <= 0) {
                         DataRow dataRow = dataTable.NewRow();
-                        dataRow["VehicleRegistration"] = tracker.vehicleRegistration;
-                        dataRow["DriverName"] = tracker.driverName;
-                        dataRow["VehicleModel"] = tracker.vehicleModel;
-                        dataRow["OwnerName"] = tracker.ownerName;
-                        dataRow["SimNumber"] = tracker.simNumber;
-                        dataRow["SimImei"] = tracker.simImei;
-                        dataRow["TrackerImei"] = tracker.trackerImei;
+                        dataRow["VehicleRegistration"] = tracker.VehicleRegistration;
+                        dataRow["DriverName"] = tracker.DriverName;
+                        dataRow["VehicleModel"] = tracker.VehicleModel;
+                        dataRow["OwnerName"] = tracker.OwnerName;
+                        dataRow["SimNumber"] = tracker.SimNumber;
+                        dataRow["SimImei"] = tracker.SimImei;
+                        dataRow["TrackerImei"] = tracker.TrackerImei;
 
                         dataTable.Rows.Add(dataRow);
 
@@ -1708,13 +2204,13 @@ namespace Ats.Database {
                         foreach (DataRow dataRowItem in dataTableHistorical.Rows) {
 
                             DataRow dataRow = dataTable.NewRow();
-                            dataRow["VehicleRegistration"] = tracker.vehicleRegistration;
-                            dataRow["DriverName"] = tracker.driverName;
-                            dataRow["VehicleModel"] = tracker.vehicleModel;
-                            dataRow["OwnerName"] = tracker.ownerName;
-                            dataRow["SimNumber"] = tracker.simNumber;
-                            dataRow["SimImei"] = tracker.simImei;
-                            dataRow["TrackerImei"] = tracker.trackerImei;
+                            dataRow["VehicleRegistration"] = tracker.VehicleRegistration;
+                            dataRow["DriverName"] = tracker.DriverName;
+                            dataRow["VehicleModel"] = tracker.VehicleModel;
+                            dataRow["OwnerName"] = tracker.OwnerName;
+                            dataRow["SimNumber"] = tracker.SimNumber;
+                            dataRow["SimImei"] = tracker.SimImei;
+                            dataRow["TrackerImei"] = tracker.TrackerImei;
 
                             dataRow["No"] = dataRowItem["No"];
                             dataRow["DateTime"] = dataRowItem["DateTime"];
@@ -1905,7 +2401,7 @@ namespace Ats.Database {
 
                     dataTable.Columns.Add("mileageInitial", typeof(int));
                     dataTable.Columns.Add("mileageLimit", typeof(int));
-                    dataTable.Columns.Add("speedLimit", typeof(int));
+                    dataTable.Columns.Add("SpeedLimit", typeof(int));
 
                     dataTable.Columns.Add("idlingTime", typeof(int));
                     dataTable.Columns.Add("inputs", typeof(string));
@@ -1915,7 +2411,7 @@ namespace Ats.Database {
                     dataTable.Columns.Add("collections", typeof(string));
                     dataTable.Columns.Add("companyDatabaseName", typeof(string));
                     dataTable.Columns.Add("databaseHost", typeof(int));
-                    dataTable.Columns.Add("dataDatabaseName", typeof(string));
+                    dataTable.Columns.Add("DatabaseName", typeof(string));
                     dataTable.Columns.Add("httpHost", typeof(int));
 
 

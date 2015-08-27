@@ -8,66 +8,66 @@ using Ats.Map;
 
 namespace Ats.Session {
 
-   public class Account {
+    public class User {
 
-       public List<Geofence> geofenceCollection = new List<Geofence>();
-     
 
-        public Account() {
+        public int Id {
+            get;
+            set;
         }
-
-        public string companyUsername {
+        public string Username {
+            get;
+            set;
+        }
+        public string Password {
+            get;
+            set;
+        }
+        public string Email {
+            get;
+            set;
+        }
+        public string Main {
+            get;
+            set;
+        }
+        public string Timezone {
+            get;
+            set;
+        }
+        public int AccessLevel {
+            get;
+            set;
+        }
+        public DateTime DateTimeExpired {
+            get;
+            set;
+        }
+        public DateTime DateTimeCreated {
+            get;
+            set;
+        }
+        public bool IsActive {
+            get;
+            set;
+        }
+        public string DatabaseName {
+            get;
+            set;
+        }
+        public bool? RememberMe {
+            get;
+            set;
+        }
+        public List<Poi> Pois {
             get;
             set;
         }
 
-        public string companyDisplayName {
+        public List<Collection> Collections {
             get;
             set;
         }
-
-        public string username {
-            get;
-            set;
-        }
-        public string password {
-            get;
-            set;
-        }
-        public int accessLevel {
-            get;
-            set;
-        }
-
-        public int active {
-            get;
-            set;
-        }
-
-        public int id {
-            get;
-            set;
-        }
-
-        public DateTime dateTimeExpired{
-            get;
-            set;
-        }
-
-        public DateTime dateTimeCreated {
-            get;
-            set;
-        }
-
-        public string databaseName {
-            get;
-            set;
-        }
-
-        public bool rememberMe{
-            get;
-            set;
-        }
-
     }
+    
 }
