@@ -35,6 +35,8 @@ namespace Ats.Session {
             get;
             set;
         }
+
+        //master 1
         public int AccessLevel {
             get;
             set;

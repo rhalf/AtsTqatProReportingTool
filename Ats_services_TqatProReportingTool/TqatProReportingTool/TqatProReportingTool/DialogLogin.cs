@@ -89,20 +89,19 @@ namespace TqatProReportingTool {
                 Query query = new Query(database);
 
                 query.getCompany(company);
-
-                if (!company.IsActive)
-                    throw new QueryException(1, "Company is inactive.");
-                if (company.DateTimeCreated.CompareTo(DateTime.Now) != -1)
-                    throw new QueryException(1, "Can't Login! This user is expired.");
-
                 query.getUser(company, user);
 
+                if (user.AccessLevel != 1) {
+                    if (!company.IsActive)
+                        throw new QueryException(1, "Company is deactivated.");
+                    if (company.DateTimeExpired.CompareTo(DateTime.Now) != -1)
+                        throw new QueryException(1, "Can't Login! This user is expired.");
 
-                if (user.DateTimeCreated.CompareTo(DateTime.Now) != -1)
-                    throw new QueryException(1, "Can't Login! This user is expired.");
-                if (!user.IsActive)
-                    throw new QueryException(1, "User is inactive.");
-
+                    if (user.DateTimeExpired.CompareTo(DateTime.Now) != -1)
+                        throw new QueryException(1, "Can't Login! This user is expired.");
+                    if (!user.IsActive)
+                        throw new QueryException(1, "User is deactivated.");
+                }
                 //=============================Login successful
 
                 query.fillGeofences(company);
