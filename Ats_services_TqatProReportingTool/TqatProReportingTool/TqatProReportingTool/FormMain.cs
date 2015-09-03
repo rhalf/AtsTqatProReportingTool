@@ -95,7 +95,7 @@ namespace TqatProReportingTool {
 
             comboBoxDateShortCut.Items.Clear();
             comboBoxDateShortCut.Items.AddRange(new string[] { 
-                "Today","Yesterday", "2 days ago", "3 days ago", "5 days ago", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago"
+                "Today","Yesterday", "3 days ago", "5 days ago", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago"
             //,"1 day later", "2 days later", "3 days later", "5 days later", "1 week later", "2 weeks later", "3 weeks later", "1 month later",
             });
             comboBoxDateShortCut.SelectedItem = comboBoxDateShortCut.Items[0];
@@ -158,12 +158,12 @@ namespace TqatProReportingTool {
             try {
 
                 this.BeginInvoke(new MethodInvoker(delegate() {
-                
+
                     comboBoxCollection.Items.Clear();
 
                     User user = (User)comboBoxUser.SelectedItem;
 
-                   
+
                     foreach (Collection collection in user.Collections) {
                         comboBoxCollection.Items.Add(collection);
                     }
@@ -171,7 +171,7 @@ namespace TqatProReportingTool {
                     comboBoxCollection.DisplayMember = "Name";
 
                     comboBoxCollection.SelectedItem = comboBoxCollection.Items[0];
-                    
+
 
                     ContextMenuStrip contextMenuStripCheckedListBoxTrackers = new ContextMenuStrip();
                     ToolStripItem toolStripItemCheckedListBoxTrackersCheckAll = contextMenuStripCheckedListBoxTrackers.Items.Add("Check all");
@@ -190,7 +190,7 @@ namespace TqatProReportingTool {
                     checkedListBoxTrackers.ItemCheck += checkedListBoxTrackers_ItemCheck;
                     checkedListBoxTrackers.ResumeLayout();
 
-                   
+
                 }));
             } catch (QueryException queryException) {
                 this.Invoke(new MethodInvoker(delegate() {
@@ -1055,8 +1055,6 @@ namespace TqatProReportingTool {
 
 
         #endregion
-
-
         #region checkedListBoxTrackers
         private void checkedListBoxTrackers_Click(object sender, EventArgs e) {
             if (tabControl != null) {
@@ -1163,8 +1161,6 @@ namespace TqatProReportingTool {
             labelTotalCheckedTrackers.Text = "Checked : " + count.ToString();
         }
         #endregion
-
-
         #region tabControlData
         void toolStripItemCloseThisTab_Click(object sender, EventArgs e) {
             if (tabControl.TabPages.Count > 0) {
@@ -1239,6 +1235,7 @@ namespace TqatProReportingTool {
 
             if (tabControl == null) {
                 tabControl = new TabControl();
+                labelTotalTabPages.Text = "TabPages : 0";
                 ContextMenuStrip contextMenuStripTabControl = new ContextMenuStrip();
                 ToolStripItem toolStripItemCloseThisTab = contextMenuStripTabControl.Items.Add("Close this tab", null);
                 ToolStripItem toolStripItemCloseOtherTabs = contextMenuStripTabControl.Items.Add("Close other tabs", null);
@@ -1749,35 +1746,33 @@ namespace TqatProReportingTool {
         #region comboBoxDateShortCut
         private void comboBoxDateShortCut_SelectedIndexChanged(object sender, EventArgs e) {
 
-            DateTime dateTime = dateTimePickerDateTo.Value;
 
-            dateTimePickerDateFrom.Value = DateTime.Today;
-            dateTimePickerDateTo.Value = DateTime.Today.AddDays(1);
+            dateTimePickerDateTo.Value = DateTime.Today;                    
 
             switch (comboBoxDateShortCut.SelectedIndex) {
                 case 0:
-
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(1);
                     break;
                 case 1:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-2);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-1);
                     break;
                 case 2:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-3);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-3);
                     break;
                 case 3:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-5);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-5);
                     break;
                 case 4:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-7);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-7);
                     break;
                 case 5:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-14);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-14);
                     break;
                 case 6:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-21);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-21);
                     break;
                 case 7:
-                    dateTimePickerDateFrom.Value = dateTime.AddDays(-30);
+                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-30);
                     break;
             }
 

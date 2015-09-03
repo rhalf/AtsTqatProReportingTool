@@ -92,13 +92,18 @@ namespace TqatProReportingTool {
                 query.getUser(company, user);
 
                 if (user.AccessLevel != 1) {
+
+                    int isExpired = company.DateTimeExpired.CompareTo(DateTime.Now);
+
+                    if (isExpired == -1)
+                        throw new QueryException(1, "This company is expired.");
                     if (!company.IsActive)
                         throw new QueryException(1, "Company is deactivated.");
-                    if (company.DateTimeExpired.CompareTo(DateTime.Now) != -1)
-                        throw new QueryException(1, "Can't Login! This user is expired.");
 
-                    if (user.DateTimeExpired.CompareTo(DateTime.Now) != -1)
-                        throw new QueryException(1, "Can't Login! This user is expired.");
+                    isExpired = user.DateTimeExpired.CompareTo(DateTime.Now);
+
+                    if (isExpired == -1)
+                        throw new QueryException(1, "This user is expired.");
                     if (!user.IsActive)
                         throw new QueryException(1, "User is deactivated.");
                 }

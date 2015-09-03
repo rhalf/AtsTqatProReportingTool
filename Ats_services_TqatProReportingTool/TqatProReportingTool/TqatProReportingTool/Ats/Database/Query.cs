@@ -932,13 +932,31 @@ namespace Ats.Database {
                         mySqlDataReader.Dispose();
                     } else {
                         while (mySqlDataReader.Read()) {
+                            //Poi poi = new Poi();
+                            //poi.id = mySqlDataReader.GetInt32("poi_id");
+                            //poi.name = mySqlDataReader.GetString("poi_name");
+                            //poi.description = mySqlDataReader.GetString("poi_desc");
+                            //poi.image = mySqlDataReader.GetString("poi_img");
+                            //poi.location = new Coordinate(double.Parse(mySqlDataReader.GetString("poi_lat")),
+                            //                            double.Parse(mySqlDataReader.GetString("poi_lon")));
+                            //pois.Add(poi);
                             Poi poi = new Poi();
-                            poi.id = mySqlDataReader.GetInt32("poi_id");
-                            poi.name = mySqlDataReader.GetString("poi_name");
-                            poi.description = mySqlDataReader.GetString("poi_desc");
-                            poi.image = mySqlDataReader.GetString("poi_img");
-                            poi.location = new Coordinate(double.Parse(mySqlDataReader.GetString("poi_lat")),
-                                                        double.Parse(mySqlDataReader.GetString("poi_lon")));
+                            poi.Id = mySqlDataReader.GetInt32("poi_id");
+                            poi.Name = mySqlDataReader.GetString("poi_name");
+                            poi.Description = mySqlDataReader.GetString("poi_desc");
+                            poi.Image = mySqlDataReader.GetString("poi_img");
+
+                            string poiLatitude = mySqlDataReader.GetString("poi_lat");
+                            string potLongitude = mySqlDataReader.GetString("poi_lon");
+
+                            if (!String.IsNullOrEmpty(poiLatitude) || !String.IsNullOrEmpty(potLongitude)) {
+                                poi.Coordinate = new Coordinate(
+                                        double.Parse(poiLatitude),
+                                        double.Parse(potLongitude)
+                                        );
+                            }
+
+
                             pois.Add(poi);
                         }
 
@@ -956,7 +974,6 @@ namespace Ats.Database {
                 }
             }
         }
-
         public void fillGeofences(Company company) {
             List<Geofence> geofences = new List<Geofence>();
 
@@ -1010,8 +1027,6 @@ namespace Ats.Database {
                 mysqlConnection.Close();
             }
         }
-
-
         //Based Reports
         public int getTrackerHistoricalDataCount(User account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
             DataTable dataTable = new DataTable();
@@ -1057,7 +1072,6 @@ namespace Ats.Database {
 
 
         }
-
         public DataTable getTrackerHistoricalData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTable = this.getReportTable(ReportType.HISTORICAL);
             dataTable.TableName = tracker.DatabaseName;
@@ -1182,15 +1196,18 @@ namespace Ats.Database {
                         //Geofence
                         Coordinate Coordinate = new Coordinate(latitude, longitude);
                         //MapTools mapTools = new MapTools();
-                        foreach (Geofence geofence in company.Geofences) {
-                            if (Geofence.isPointInPolygon(geofence, Coordinate)) {
-                                if (String.IsNullOrEmpty(geofence.Name)) {
-                                    dataRow["Geofence"] = "";
-                                } else {
-                                    dataRow["Geofence"] = geofence.Name;
+
+                        if (company.Geofences != null) {
+                            foreach (Geofence geofence in company.Geofences) {
+                                if (Geofence.isPointInPolygon(geofence, Coordinate)) {
+                                    if (String.IsNullOrEmpty(geofence.Name)) {
+                                        dataRow["Geofence"] = "";
+                                    } else {
+                                        dataRow["Geofence"] = geofence.Name;
+                                    }
                                 }
                             }
-                        };
+                        }
 
                         double batteryStrength = (double)int.Parse(data[28], System.Globalization.NumberStyles.AllowHexSpecifier);
                         batteryStrength = ((batteryStrength - 2114f) * (100f / 492f));//*100.0;
@@ -1230,7 +1247,6 @@ namespace Ats.Database {
 
 
         }
-
         //Processed Reports
         public DataTable getTrackerRunningData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);

@@ -5,26 +5,26 @@ using System.Text;
 
 namespace Ats.Session {
     public class Poi {
-        public int id {
+        public int Id {
             get;
             set;
         }
 
-        public Coordinate location {
+        public Coordinate Coordinate {
             get;
             set;
         }
 
-        public string name {
+        public string Name {
             get;
             set;
         }
-        public string description {
+        public string Description {
             get;
             set;
         }
 
-        public string image {
+        public string Image {
             get;
             set;
         }
