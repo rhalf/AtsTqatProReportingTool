@@ -190,7 +190,7 @@
             this.tabPage1.Controls.Add(this.tableLayoutSearchPanel);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(1250, 138);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Search";
@@ -226,9 +226,9 @@
             this.buttonRevert.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonRevert.BackgroundImage")));
             this.buttonRevert.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonRevert.Location = new System.Drawing.Point(1015, 5);
-            this.buttonRevert.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonRevert.Margin = new System.Windows.Forms.Padding(5);
             this.buttonRevert.Name = "buttonRevert";
-            this.buttonRevert.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonRevert.Padding = new System.Windows.Forms.Padding(5);
             this.buttonRevert.Size = new System.Drawing.Size(119, 122);
             this.buttonRevert.TabIndex = 8;
             this.buttonRevert.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -241,9 +241,9 @@
             this.buttonFilter.BackgroundImage = global::TqatProReportingTool.Properties.Resources.icon_filter_001;
             this.buttonFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonFilter.Location = new System.Drawing.Point(885, 5);
-            this.buttonFilter.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonFilter.Margin = new System.Windows.Forms.Padding(5);
             this.buttonFilter.Name = "buttonFilter";
-            this.buttonFilter.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonFilter.Padding = new System.Windows.Forms.Padding(5);
             this.buttonFilter.Size = new System.Drawing.Size(119, 122);
             this.buttonFilter.TabIndex = 7;
             this.buttonFilter.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -256,9 +256,9 @@
             this.buttonSearch.BackgroundImage = global::TqatProReportingTool.Properties.Resources.icon_search_001;
             this.buttonSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonSearch.Location = new System.Drawing.Point(505, 5);
-            this.buttonSearch.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSearch.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSearch.Padding = new System.Windows.Forms.Padding(5);
             this.buttonSearch.Size = new System.Drawing.Size(119, 122);
             this.buttonSearch.TabIndex = 2;
             this.buttonSearch.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -578,8 +578,8 @@
             this.tabPage2.Controls.Add(this.tableLayoutTools);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage2.Size = new System.Drawing.Size(1251, 138);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1250, 138);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Tools";
             // 
@@ -605,7 +605,7 @@
             this.tableLayoutTools.Name = "tableLayoutTools";
             this.tableLayoutTools.RowCount = 1;
             this.tableLayoutTools.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutTools.Size = new System.Drawing.Size(1245, 132);
+            this.tableLayoutTools.Size = new System.Drawing.Size(1244, 132);
             this.tableLayoutTools.TabIndex = 7;
             // 
             // buttonSettingsAdvance
@@ -615,9 +615,9 @@
             this.buttonSettingsAdvance.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonSettingsAdvance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonSettingsAdvance.Location = new System.Drawing.Point(1115, 5);
-            this.buttonSettingsAdvance.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSettingsAdvance.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSettingsAdvance.Name = "buttonSettingsAdvance";
-            this.buttonSettingsAdvance.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSettingsAdvance.Padding = new System.Windows.Forms.Padding(5);
             this.buttonSettingsAdvance.Size = new System.Drawing.Size(120, 122);
             this.buttonSettingsAdvance.TabIndex = 7;
             this.buttonSettingsAdvance.UseVisualStyleBackColor = false;
@@ -630,9 +630,9 @@
             this.buttonGenerateExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonGenerateExport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonGenerateExport.Location = new System.Drawing.Point(635, 5);
-            this.buttonGenerateExport.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonGenerateExport.Margin = new System.Windows.Forms.Padding(5);
             this.buttonGenerateExport.Name = "buttonGenerateExport";
-            this.buttonGenerateExport.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonGenerateExport.Padding = new System.Windows.Forms.Padding(5);
             this.buttonGenerateExport.Size = new System.Drawing.Size(120, 122);
             this.buttonGenerateExport.TabIndex = 6;
             this.buttonGenerateExport.UseVisualStyleBackColor = false;
@@ -645,7 +645,7 @@
             this.buttonGenerateChart.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonGenerateChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonGenerateChart.Location = new System.Drawing.Point(255, 5);
-            this.buttonGenerateChart.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonGenerateChart.Margin = new System.Windows.Forms.Padding(5);
             this.buttonGenerateChart.Name = "buttonGenerateChart";
             this.buttonGenerateChart.Size = new System.Drawing.Size(120, 122);
             this.buttonGenerateChart.TabIndex = 0;
@@ -935,8 +935,8 @@
             this.tabPage3.Controls.Add(this.tableLayoutPanel1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage3.Size = new System.Drawing.Size(1251, 138);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1250, 138);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "About";
             // 
@@ -958,7 +958,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1245, 132);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1244, 132);
             this.tableLayoutPanel1.TabIndex = 8;
             // 
             // groupBoxLogout
@@ -977,9 +977,9 @@
             // 
             this.pictureBoxLogout.Image = global::TqatProReportingTool.Properties.Resources.icon_exit_001;
             this.pictureBoxLogout.Location = new System.Drawing.Point(21, 23);
-            this.pictureBoxLogout.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxLogout.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxLogout.Name = "pictureBoxLogout";
-            this.pictureBoxLogout.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxLogout.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxLogout.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxLogout.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxLogout.TabIndex = 15;
@@ -1006,9 +1006,9 @@
             // 
             this.pictureBoxAtsWebsite.Image = global::TqatProReportingTool.Properties.Resources.icon_ats_logo_001;
             this.pictureBoxAtsWebsite.Location = new System.Drawing.Point(11, 23);
-            this.pictureBoxAtsWebsite.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxAtsWebsite.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxAtsWebsite.Name = "pictureBoxAtsWebsite";
-            this.pictureBoxAtsWebsite.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxAtsWebsite.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxAtsWebsite.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxAtsWebsite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxAtsWebsite.TabIndex = 12;
@@ -1019,9 +1019,9 @@
             // 
             this.pictureBoxInstagram.Image = global::TqatProReportingTool.Properties.Resources.icon_social_instagram_001;
             this.pictureBoxInstagram.Location = new System.Drawing.Point(394, 23);
-            this.pictureBoxInstagram.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxInstagram.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxInstagram.Name = "pictureBoxInstagram";
-            this.pictureBoxInstagram.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxInstagram.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxInstagram.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxInstagram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxInstagram.TabIndex = 14;
@@ -1032,9 +1032,9 @@
             // 
             this.pictureBoxFacebook.Image = global::TqatProReportingTool.Properties.Resources.icon_social_fb_001;
             this.pictureBoxFacebook.Location = new System.Drawing.Point(108, 23);
-            this.pictureBoxFacebook.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxFacebook.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxFacebook.Name = "pictureBoxFacebook";
-            this.pictureBoxFacebook.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxFacebook.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxFacebook.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxFacebook.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxFacebook.TabIndex = 11;
@@ -1045,9 +1045,9 @@
             // 
             this.pictureBoxGooglePlus.Image = global::TqatProReportingTool.Properties.Resources.icon_social_googleplus_001;
             this.pictureBoxGooglePlus.Location = new System.Drawing.Point(204, 23);
-            this.pictureBoxGooglePlus.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxGooglePlus.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxGooglePlus.Name = "pictureBoxGooglePlus";
-            this.pictureBoxGooglePlus.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxGooglePlus.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxGooglePlus.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxGooglePlus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxGooglePlus.TabIndex = 12;
@@ -1058,9 +1058,9 @@
             // 
             this.pictureBoxTwitter.Image = global::TqatProReportingTool.Properties.Resources.icon_social_twitter_001;
             this.pictureBoxTwitter.Location = new System.Drawing.Point(299, 23);
-            this.pictureBoxTwitter.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.pictureBoxTwitter.Margin = new System.Windows.Forms.Padding(10);
             this.pictureBoxTwitter.Name = "pictureBoxTwitter";
-            this.pictureBoxTwitter.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxTwitter.Padding = new System.Windows.Forms.Padding(5);
             this.pictureBoxTwitter.Size = new System.Drawing.Size(90, 90);
             this.pictureBoxTwitter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxTwitter.TabIndex = 13;
@@ -1174,7 +1174,7 @@
             // 
             this.labelAtsInformation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelAtsInformation.Location = new System.Drawing.Point(3, 16);
-            this.labelAtsInformation.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.labelAtsInformation.Margin = new System.Windows.Forms.Padding(2);
             this.labelAtsInformation.Name = "labelAtsInformation";
             this.labelAtsInformation.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
             this.labelAtsInformation.Size = new System.Drawing.Size(238, 107);
@@ -1193,7 +1193,7 @@
             this.tableLayoutBody.Name = "tableLayoutBody";
             this.tableLayoutBody.RowCount = 1;
             this.tableLayoutBody.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutBody.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 575F));
+            this.tableLayoutBody.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 498F));
             this.tableLayoutBody.Size = new System.Drawing.Size(1258, 498);
             this.tableLayoutBody.TabIndex = 3;
             // 

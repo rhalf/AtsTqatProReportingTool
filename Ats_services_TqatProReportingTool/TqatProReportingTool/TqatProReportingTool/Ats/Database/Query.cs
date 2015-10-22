@@ -637,7 +637,7 @@ namespace Ats.Database {
                         dataRow["Latitude"] = latitude;
                         dataRow["Longitude"] = longitude;
                         dataRow["Speed"] = int.Parse((string)mySqlDataReader["gm_speed"]);
-                        dataRow["Mileage"] = double.Parse((string)mySqlDataReader["gm_mileage"]);
+                        dataRow["Mileage"] = (double.Parse((string)mySqlDataReader["gm_mileage"])  ) + tracker.mileageInitial;
 
                         if ((double)dataRow["Mileage"] < 0) {
                             dataRow["Mileage"] = ((double)dataRow["Mileage"]) * -1;
