@@ -67,3 +67,4 @@ C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProRepo
 C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\obj\Release\TqatProReportingTool.application
 C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\obj\Release\TqatProReportingTool.exe
 C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\obj\Release\TqatProReportingTool.pdb
+C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\MySql.Data.dll
