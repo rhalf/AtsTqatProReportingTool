@@ -18,7 +18,7 @@ namespace TqatProReportingTool {
         /// </summary>
         [STAThread]
 
-        static void Main() {
+        static void Main () {
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -44,31 +44,13 @@ namespace TqatProReportingTool {
 
             //0 = ResetMode 
             //1 = DevelopersMode 
-            //2 = Static Ip
+
             int appMode = 2;
-            int appServer = 2;
 
             if (appMode == 0) {
                 Settings.Default.Reset();
             } else if (appMode == 1) {
                 //Do nothing
-            } else if (appMode == 2) {
-                switch (appServer) {
-                    case 1:
-                        //Ats Mowasalat Server
-                        Settings.Default.DatabaseHost = "184.107.175.154";
-                        Settings.Default.DatabaseUsername = "reportapp";
-                        Settings.Default.DatabasePassword = "my5q1r3p0rt@pp!@#";
-                        break;
-                    case 2:
-                        //Ats Database Server
-                        Settings.Default.DatabaseHost = "108.163.190.202";
-                        Settings.Default.DatabaseUsername = "atstqatpro";
-                        Settings.Default.DatabasePassword = "@t5tq@pr0!@#";
-
-                        break;
-                }
-                Settings.Default.Save();
             }
 
             #endregion
@@ -76,41 +58,25 @@ namespace TqatProReportingTool {
             while (true) {
                 Account account = new Account();
 
-
-                if ((string.IsNullOrEmpty(Settings.Default.DatabaseHost) || string.IsNullOrEmpty(Settings.Default.DatabaseUsername) || string.IsNullOrEmpty(Settings.Default.DatabasePassword))) {
-                    DialogDatabaseConfiguration dialogDatabaseConfiguration = new DialogDatabaseConfiguration();
-                    if (dialogDatabaseConfiguration.ShowDialog() == DialogResult.OK) {
-                        if (login(ref account) == DialogResult.Cancel) {
-                            break;
-                        } else {
-                            DialogResult dialogResult = mainApplication(ref account);
-                            if (dialogResult == DialogResult.Cancel) {
-                                break;
-                            }
-                        }
-                    } else {
-                        break;
-                    }
+                if (login(ref account) == DialogResult.Cancel) {
+                    Environment.Exit(0);
                 } else {
-                    if (login(ref account) == DialogResult.Cancel) {
-                        break;
+                    if (mainApplication(ref account) == DialogResult.Cancel) {
+                        Environment.Exit(0);
                     } else {
-                        DialogResult dialogResult = mainApplication(ref account);
-                        if (dialogResult == DialogResult.Cancel) {
-                            break;
-                        }
+                        continue;
                     }
                 }
             }
             #endregion
         }
 
-        public static DialogResult login(ref Account account) {
+        public static DialogResult login (ref Account account) {
             DialogLogin dialogLogin = new DialogLogin(ref account);
             return dialogLogin.ShowDialog();
         }
 
-        public static DialogResult mainApplication(ref Account account) {
+        public static DialogResult mainApplication (ref Account account) {
 
             FormMain formMain = new FormMain(ref account);
             return formMain.ShowDialog();

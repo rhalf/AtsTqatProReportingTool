@@ -39,8 +39,10 @@
             this.pictureBoxLoading = new System.Windows.Forms.PictureBox();
             this.checkBoxRememberMe = new System.Windows.Forms.CheckBox();
             this.labelDatabaseHost = new System.Windows.Forms.Label();
+            this.pictureBoxSetDatabase = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderDatabaseConfiguration)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLoading)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSetDatabase)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -174,6 +176,18 @@
             this.labelDatabaseHost.TabIndex = 30;
             this.labelDatabaseHost.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // pictureBoxSetDatabase
+            // 
+            this.pictureBoxSetDatabase.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBoxSetDatabase.BackgroundImage = global::TqatProReportingTool.Properties.Resources.icon_settingsadvanced_001;
+            this.pictureBoxSetDatabase.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxSetDatabase.Location = new System.Drawing.Point(345, 12);
+            this.pictureBoxSetDatabase.Name = "pictureBoxSetDatabase";
+            this.pictureBoxSetDatabase.Size = new System.Drawing.Size(23, 24);
+            this.pictureBoxSetDatabase.TabIndex = 32;
+            this.pictureBoxSetDatabase.TabStop = false;
+            this.pictureBoxSetDatabase.Click += new System.EventHandler(this.pictureBoxSetDatabase_Click);
+            // 
             // DialogLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,8 +195,9 @@
             this.BackgroundImage = global::TqatProReportingTool.Properties.Resources.image_background_001;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(380, 220);
-            this.Controls.Add(this.labelDatabaseHost);
             this.Controls.Add(this.pictureBoxLoading);
+            this.Controls.Add(this.pictureBoxSetDatabase);
+            this.Controls.Add(this.labelDatabaseHost);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.labelPassword);
@@ -206,6 +221,7 @@
             this.Load += new System.EventHandler(this.DialogLogin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderDatabaseConfiguration)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLoading)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSetDatabase)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -227,5 +243,6 @@
         private System.Windows.Forms.PictureBox pictureBoxLoading;
         private System.Windows.Forms.CheckBox checkBoxRememberMe;
         private System.Windows.Forms.Label labelDatabaseHost;
+        private System.Windows.Forms.PictureBox pictureBoxSetDatabase;
     }
 }

@@ -26,17 +26,17 @@ namespace TqatProReportingTool {
 
         //Hashtable hashTable = new Hashtable();
 
-        public DialogLogin(ref Account account) {
+        public DialogLogin (ref Account account) {
             this.account = account;
             InitializeComponent();
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e) {
+        private void buttonCancel_Click (object sender, EventArgs e) {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        private void buttonLogin_Click(object sender, EventArgs e) {
+        private void buttonLogin_Click (object sender, EventArgs e) {
             /*
              *  Validate Inputs 
              * 
@@ -85,7 +85,7 @@ namespace TqatProReportingTool {
             }
         }
 
-        void backgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+        void backgroundWorker_DoWork (object sender, DoWorkEventArgs e) {
             database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
 
 
@@ -136,17 +136,7 @@ namespace TqatProReportingTool {
             }
         }
 
-        private void DialogLogin_Load(object sender, EventArgs e) {
-            if (Settings.Default.DatabaseHost == "67.205.85.177") {
-                labelDatabaseHost.Text = "Ats Server 1";
-            } else if (Settings.Default.DatabaseHost == "184.107.175.154") {
-                labelDatabaseHost.Text = "Ats Server 2";
-            } else if (Settings.Default.DatabaseHost == "108.163.190.202") {
-                labelDatabaseHost.Text = "Ats Database Server";
-            } else {
-                labelDatabaseHost.Text = Settings.Default.DatabaseHost;
-            }
-
+        private void DialogLogin_Load (object sender, EventArgs e) {
 
             this.textBoxPassword.PasswordChar = '\u25CF';
             if (Settings.Default.accountRememberMe) {
@@ -171,11 +161,15 @@ namespace TqatProReportingTool {
             }
         }
 
-        private void textBoxPassword_KeyDown(object sender, KeyEventArgs e) {
+        private void textBoxPassword_KeyDown (object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
                 buttonLogin.PerformClick();
             }
         }
 
+        private void pictureBoxSetDatabase_Click (object sender, EventArgs e) {
+            DialogDatabase dialogDatabase = new DialogDatabase();
+            dialogDatabase.ShowDialog();
+        }
     }
 }

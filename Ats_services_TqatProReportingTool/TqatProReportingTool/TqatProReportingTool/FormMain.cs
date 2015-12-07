@@ -57,6 +57,8 @@ namespace TqatProReportingTool {
         }
 
         private void FormMain_Load(object sender, EventArgs e) {
+            this.Text += "@" + Settings.Default.DatabaseHost;
+
             Query query = new Query(database);
             try {
                 dataTableAccounts = query.getAccounts(this.account);

@@ -52,9 +52,9 @@ namespace Ats.Database {
             if (String.IsNullOrEmpty(sPassword)) {
                 throw new DatabaseException(1, "Password is Null or Empty!");
             }
-            if (String.IsNullOrEmpty(sDatabaseName)) {
-                throw new DatabaseException(1, "DatabaseName is Null or Empty!");
-            }
+            //if (String.IsNullOrEmpty(sDatabaseName)) {
+            //    throw new DatabaseException(1, "DatabaseName is Null or Empty!");
+            //}
             if (iPort < 1 || iPort > 65536) {
                 throw new DatabaseException(1, "Port should be from 1-65536!");
             }

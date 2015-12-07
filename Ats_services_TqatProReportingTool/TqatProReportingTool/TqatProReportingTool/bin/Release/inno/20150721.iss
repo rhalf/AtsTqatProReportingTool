@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "TqatProReportingTool"
-#define MyAppVersion "1.21"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "Advanced Technologies and Solutions"
 #define MyAppURL "http://www.ats-qatar.com/"
 #define MyAppExeName "TqatProReportingTool.exe"
