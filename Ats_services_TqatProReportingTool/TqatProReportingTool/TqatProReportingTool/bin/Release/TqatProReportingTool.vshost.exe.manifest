@@ -67,14 +67,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="914944">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="963072">
       <assemblyIdentity name="TqatProReportingTool" version="1.3.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>3er6yfTRnOebZiva/D5O0oSDlH4=</dsig:DigestValue>
+        <dsig:DigestValue>g8cMb9q9qbXOly2UCt+nnIBU4Ug=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

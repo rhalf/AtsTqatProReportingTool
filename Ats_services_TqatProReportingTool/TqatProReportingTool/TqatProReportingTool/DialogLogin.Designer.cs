@@ -144,7 +144,7 @@
             // pictureBoxLoading
             // 
             this.pictureBoxLoading.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBoxLoading.BackgroundImage = global::TqatProReportingTool.Properties.Resources.image_background_001;
+            this.pictureBoxLoading.BackgroundImage = global::TqatProReportingTool.Properties.Resources.image_background_002;
             this.pictureBoxLoading.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBoxLoading.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxLoading.Image = global::TqatProReportingTool.Properties.Resources.gif_loading_001;
