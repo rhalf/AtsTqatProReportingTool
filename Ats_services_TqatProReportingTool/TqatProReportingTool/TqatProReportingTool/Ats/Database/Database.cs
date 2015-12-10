@@ -16,7 +16,7 @@ namespace Ats.Database {
         private int port = 0;
         private int commandTimeOut = 0;
 
-        public Database(string sHost, string sUsername, string sPassword, int iPort, string sDatabaseName, int commandTimeout) {
+        public Database (string sHost, string sUsername, string sPassword, int iPort, string sDatabaseName, int commandTimeout) {
             if (String.IsNullOrEmpty(sHost)) {
                 throw new DatabaseException(1, "Host is Null or Empty!");
             }
@@ -42,7 +42,7 @@ namespace Ats.Database {
 
         }
 
-        public Database(string sHost, string sUsername, string sPassword, int iPort, string sDatabaseName) {
+        public Database (string sHost, string sUsername, string sPassword, int iPort, string sDatabaseName) {
             if (String.IsNullOrEmpty(sHost)) {
                 throw new DatabaseException(1, "Host is Null or Empty!");
             }
@@ -52,9 +52,9 @@ namespace Ats.Database {
             if (String.IsNullOrEmpty(sPassword)) {
                 throw new DatabaseException(1, "Password is Null or Empty!");
             }
-            if (String.IsNullOrEmpty(sDatabaseName)) {
-                throw new DatabaseException(1, "DatabaseName is Null or Empty!");
-            }
+            //if (String.IsNullOrEmpty(sDatabaseName)) {
+            //    throw new DatabaseException(1, "DatabaseName is Null or Empty!");
+            //}
             if (iPort < 1 || iPort > 65536) {
                 throw new DatabaseException(1, "Port should be from 1-65536!");
             }
@@ -67,7 +67,7 @@ namespace Ats.Database {
             this.commandTimeOut = 30;
 
         }
-        public Database(string sHost, string sUsername, string sPassword,int commandTimeout) {
+        public Database (string sHost, string sUsername, string sPassword, int commandTimeout) {
             if (String.IsNullOrEmpty(sHost)) {
                 throw new DatabaseException(1, "Host is Null or Empty!");
             }
@@ -85,7 +85,7 @@ namespace Ats.Database {
             this.databaseName = null;
             this.commandTimeOut = commandTimeout;
         }
-        public Database(string sHost, string sUsername, string sPassword) {
+        public Database (string sHost, string sUsername, string sPassword) {
             if (String.IsNullOrEmpty(sHost)) {
                 throw new DatabaseException(1, "Host is Null or Empty!");
             }
@@ -104,18 +104,18 @@ namespace Ats.Database {
             this.commandTimeOut = 30;
         }
 
-        public string getConnectionString() {
+        public string getConnectionString () {
             string sConnectionString;
             if (databaseName != null) {
                 sConnectionString = "SERVER=" + this.host + ";" + "DATABASE=" + this.databaseName + ";" + "UID=" + this.username + ";" + "PASSWORD=" + this.password + ";";
             } else {
-                sConnectionString = "SERVER=" + this.host + ";" + "DATABASE=;" + "UID=" + this.username + ";" + "PASSWORD=" + this.password + "; default command timeout="+this.commandTimeOut;
+                sConnectionString = "SERVER=" + this.host + ";" + "DATABASE=;" + "UID=" + this.username + ";" + "PASSWORD=" + this.password + "; default command timeout=" + this.commandTimeOut;
             }
 
             return sConnectionString;
         }
 
-        public void checkConnection() {
+        public void checkConnection () {
             if (String.IsNullOrEmpty(host)) {
                 throw new DatabaseException(1, "Host is Null or Empty!");
             }

@@ -137,12 +137,12 @@ namespace TqatProReportingTool {
             radioButtonSelectedTab.Checked = true;
 
 
-            labelAtsInformation.Text =
-            "is a full IT service provider, that has been helping businesses," +
-            "organizations and individuals to achieve their potential.\n" +
-            "We are offering the latest technology and innovative solutions. " +
-            "Therefore, our clients are having the most efficient and professional" +
-            "services with reasonable prices.";
+            labelProductName.Text = Assembly.GetExecutingAssembly().GetName().Name.ToString();
+            labelProductVersion.Text = "Version " + Application.ProductVersion;
+            labelServer.Text = Settings.Default.DatabaseHost;
+
+
+
 
             ToolTip toolTip = new ToolTip();
             toolTip.IsBalloon = true;
@@ -2022,6 +2022,10 @@ namespace TqatProReportingTool {
             comboBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             checkedListBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             groupBoxTrackers.Text = "Trackers " + checkedListBoxTrackers.Items.Count.ToString();
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
+            //Application.Current.Shutdown();
         }
 
 

@@ -35,26 +35,7 @@ namespace TqatProReportingTool {
 
             if (appMode == 0) {
                 Settings.Default.Reset();
-            } else if (appMode == 1) {
-                //Do nothing
-            } else if (appMode == 2) {
-                switch (appServer) {
-                    case 1:
-                        //Ats Mowasalat Server
-                        Settings.Default.DatabaseHost = "184.107.175.154";
-                        Settings.Default.DatabaseUsername = "reportapp";
-                        Settings.Default.DatabasePassword = "my5q1r3p0rt@pp!@#";
-                        break;
-                    case 2:
-                        //Ats Database Server
-                        Settings.Default.DatabaseHost = "108.163.190.202";
-                        Settings.Default.DatabaseUsername = "atstqatpro";
-                        Settings.Default.DatabasePassword = "@t5tq@pr0!@#";
-
-                        break;
-                }
-                Settings.Default.Save();
-            }
+            } 
 
             DialogLogin dialogLogin = new DialogLogin();
             dialogLogin.Show();

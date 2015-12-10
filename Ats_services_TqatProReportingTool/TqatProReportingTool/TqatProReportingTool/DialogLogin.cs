@@ -153,17 +153,7 @@ namespace TqatProReportingTool {
         }
 
         private void DialogLogin_Load(object sender, EventArgs e) {
-            if (Settings.Default.DatabaseHost == "67.205.85.177") {
-                labelDatabaseHost.Text = "Ats Server 1";
-            } else if (Settings.Default.DatabaseHost == "184.107.175.154") {
-                labelDatabaseHost.Text = "Ats Server 2";
-            } else if (Settings.Default.DatabaseHost == "108.163.190.202") {
-                labelDatabaseHost.Text = "Ats Database Server";
-            } else {
-                labelDatabaseHost.Text = Settings.Default.DatabaseHost;
-            }
-
-
+            labelApp.Text = Application.ProductVersion;
             this.textBoxPassword.PasswordChar = '\u25CF';
             if (Settings.Default.accountRememberMe) {
                 company.Username = Settings.Default.accountCompanyUsername;
@@ -184,5 +174,10 @@ namespace TqatProReportingTool {
             }
         }
 
+        private void pictureBoxSetDatabase_Click (object sender, EventArgs e) {
+            this.Hide();
+            DialogDatabase dialogDatabase = new DialogDatabase(this);
+            dialogDatabase.ShowDialog();
+        }
     }
 }

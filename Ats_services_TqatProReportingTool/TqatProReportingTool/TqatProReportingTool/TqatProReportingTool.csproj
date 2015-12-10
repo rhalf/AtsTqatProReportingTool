@@ -71,6 +71,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="itextsharp, Version=5.5.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
@@ -124,6 +125,12 @@
     <Compile Include="Ats\Session\Geofence.cs" />
     <Compile Include="Ats\Session\Poi.cs" />
     <Compile Include="Ats\Session\Tracker.cs" />
+    <Compile Include="DialogDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogDatabase.Designer.cs">
+      <DependentUpon>DialogDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCellInformation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,12 +153,6 @@
     <Compile Include="Ats\Helper\NetworkTools.cs" />
     <Compile Include="Ats\Helper\StringValidator.cs" />
     <Compile Include="Ats\Session\User.cs" />
-    <Compile Include="DialogDatabaseConfiguration.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogDatabaseConfiguration.Designer.cs">
-      <DependentUpon>DialogDatabaseConfiguration.cs</DependentUpon>
-    </Compile>
     <Compile Include="DialogLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,6 +179,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DialogDatabase.resx">
+      <DependentUpon>DialogDatabase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormCellInformation.resx">
       <DependentUpon>FormCellInformation.cs</DependentUpon>
     </EmbeddedResource>
@@ -186,9 +190,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormChart.resx">
       <DependentUpon>FormChart.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DialogDatabaseConfiguration.resx">
-      <DependentUpon>DialogDatabaseConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogLogin.resx">
       <DependentUpon>DialogLogin.cs</DependentUpon>

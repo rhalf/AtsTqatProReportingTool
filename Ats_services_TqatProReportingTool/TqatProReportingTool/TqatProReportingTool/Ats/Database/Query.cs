@@ -476,46 +476,47 @@ namespace Ats.Database {
         }
         public DataTable getTrackers(Company company) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
-            //List<Tracker> trackers = this.fillTrackers(company);
+            this.fillTrackers(company);
+            List<Tracker> trackers = company.Trackers;
 
-            //foreach (Tracker tracker in trackers) {
-            //    DataRow dataRow = dataTable.NewRow();
-            //    dataRow["id"] = tracker.Id;
-            //    dataRow["vehicleRegistration"] = tracker.VehicleRegistration;
-            //    dataRow["vehicleModel"] = tracker.VehicleModel;
-            //    dataRow["ownerName"] = tracker.OwnerName;
-            //    dataRow["driverName"] = tracker.DriverName;
+            foreach (Tracker tracker in trackers) {
+                DataRow dataRow = dataTable.NewRow();
+                dataRow["id"] = tracker.Id;
+                dataRow["vehicleRegistration"] = tracker.VehicleRegistration;
+                dataRow["vehicleModel"] = tracker.VehicleModel;
+                dataRow["ownerName"] = tracker.OwnerName;
+                dataRow["driverName"] = tracker.DriverName;
 
-            //    dataRow["simImei"] = tracker.SimImei;
-            //    dataRow["simNumber"] = tracker.SimNumber;
-            //    dataRow["mobileDataProvider"] = tracker.MobileDataProvider;
+                dataRow["simImei"] = tracker.SimImei;
+                dataRow["simNumber"] = tracker.SimNumber;
+                dataRow["mobileDataProvider"] = tracker.MobileDataProvider;
 
-            //    dataRow["deviceImei"] = tracker.TrackerImei;
-            //    dataRow["devicePassword"] = tracker.DevicePassword;
-            //    dataRow["deviceType"] = tracker.DeviceType;
+                dataRow["deviceImei"] = tracker.TrackerImei;
+                dataRow["devicePassword"] = tracker.DevicePassword;
+                dataRow["deviceType"] = tracker.DeviceType;
 
-            //    dataRow["emails"] = tracker.Emails;
-            //    dataRow["users"] = tracker.Users;
+                dataRow["emails"] = tracker.Emails;
+                dataRow["users"] = tracker.Users;
 
-            //    dataRow["mileageInitial"] = tracker.MileageInitial;
-            //    dataRow["mileageLimit"] = tracker.MileageLimit;
-            //    dataRow["SpeedLimit"] = tracker.SpeedLimit;
+                dataRow["mileageInitial"] = tracker.MileageInitial;
+                dataRow["mileageLimit"] = tracker.MileageLimit;
+                dataRow["SpeedLimit"] = tracker.SpeedLimit;
 
-            //    dataRow["idlingTime"] = tracker.IdlingTime;
-            //    dataRow["inputs"] = tracker.Inputs;
-            //    dataRow["imageNumber"] = tracker.ImageNumber;
-            //    dataRow["note"] = tracker.Note;
+                dataRow["idlingTime"] = tracker.IdlingTime;
+                dataRow["inputs"] = tracker.Inputs;
+                dataRow["imageNumber"] = tracker.ImageNumber;
+                dataRow["note"] = tracker.Note;
 
-            //    dataRow["collections"] = tracker.Collections;
-            //    dataRow["companyDatabaseName"] = tracker.CompanyDatabaseName;
-            //    dataRow["databaseHost"] = tracker.DatabaseHost;
-            //    dataRow["DatabaseName"] = tracker.DatabaseName;
-            //    dataRow["httpHost"] = tracker.HttpHost;
-            //    dataRow["dateCreated"] = tracker.DateTimeCreated;
-            //    dataRow["dateExpired"] = tracker.DateTimeExpired;
+                dataRow["collections"] = tracker.Collections;
+                dataRow["companyDatabaseName"] = tracker.CompanyDatabaseName;
+                dataRow["databaseHost"] = tracker.DatabaseHost;
+                dataRow["DatabaseName"] = tracker.DatabaseName;
+                dataRow["httpHost"] = tracker.HttpHost;
+                dataRow["dateCreated"] = tracker.DateTimeCreated;
+                dataRow["dateExpired"] = tracker.DateTimeExpired;
 
-            //    dataTable.Rows.Add(dataRow);
-            //}
+                dataTable.Rows.Add(dataRow);
+            }
 
             return dataTable;
         }
