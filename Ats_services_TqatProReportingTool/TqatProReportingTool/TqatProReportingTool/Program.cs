@@ -18,7 +18,7 @@ namespace TqatProReportingTool {
         /// </summary>
         [STAThread]
 
-        static void Main() {
+        static void Main () {
             //if (Debugger.IsAttached) {
             //    Settings.Default.Reset();
             //}
@@ -35,12 +35,30 @@ namespace TqatProReportingTool {
 
             if (appMode == 0) {
                 Settings.Default.Reset();
-            } 
+            }
 
-            DialogLogin dialogLogin = new DialogLogin();
-            dialogLogin.Show();
 
-            Application.Run();
+            User user = new User();
+            Company company = new Company(); 
+
+            while (true) {
+                DialogLogin dialogLogin = new DialogLogin(company,user);
+                DialogResult dialogResult = dialogLogin.ShowDialog();
+
+                if (dialogResult == DialogResult.OK) {
+                    FormMain formMain = new FormMain(company, user);
+                    dialogResult = formMain.ShowDialog();
+                    if (dialogResult == DialogResult.Cancel) {
+                        Environment.Exit(0);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    Environment.Exit(0);
+                }
+            }
+
+
         }
     }
 }

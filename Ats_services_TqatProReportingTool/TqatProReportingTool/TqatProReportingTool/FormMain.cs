@@ -1987,8 +1987,7 @@ namespace TqatProReportingTool {
             Settings.Default.accountRememberMe = false;
             Settings.Default.Save();
 
-            DialogLogin dialogLogin = new DialogLogin();
-            dialogLogin.Show();
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
         #endregion
@@ -2022,10 +2021,6 @@ namespace TqatProReportingTool {
             comboBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             checkedListBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             groupBoxTrackers.Text = "Trackers " + checkedListBoxTrackers.Items.Count.ToString();
-        }
-
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
-            //Application.Current.Shutdown();
         }
 
 

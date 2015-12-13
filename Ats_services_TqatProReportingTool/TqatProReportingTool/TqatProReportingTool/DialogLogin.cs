@@ -21,18 +21,21 @@ using Ats.Helper;
 namespace TqatProReportingTool {
     public partial class DialogLogin : Form {
 
-        User user = new User();
-        Company company = new Company();
+        User user;
+        Company company;
 
 
         Database database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
 
-        public DialogLogin() {
+        public DialogLogin(Company company, User user) {
             InitializeComponent();
+            this.company = company;
+            this.user = user;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) {
-            Application.Exit();
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
 
         private void buttonLogin_Click(object sender, EventArgs e) {
@@ -129,8 +132,7 @@ namespace TqatProReportingTool {
                     Settings.Default.accountPassword = user.Password;
                     Settings.Default.Save();
 
-                    FormMain formMain = new FormMain(company, user);
-                    formMain.Show();
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                 }));
             } catch (QueryException queryException) {

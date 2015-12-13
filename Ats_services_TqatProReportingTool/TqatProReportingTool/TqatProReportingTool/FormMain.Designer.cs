@@ -106,6 +106,9 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labelServer = new System.Windows.Forms.Label();
+            this.labelProductVersion = new System.Windows.Forms.Label();
+            this.labelProductName = new System.Windows.Forms.Label();
             this.tableLayoutBody = new System.Windows.Forms.TableLayoutPanel();
             this.panelData = new System.Windows.Forms.Panel();
             this.panelTracker = new System.Windows.Forms.Panel();
@@ -118,9 +121,6 @@
             this.labelTotalCheckedTrackers = new System.Windows.Forms.Label();
             this.labelTotalTabPages = new System.Windows.Forms.Label();
             this.progressBarStatus = new System.Windows.Forms.ProgressBar();
-            this.labelProductName = new System.Windows.Forms.Label();
-            this.labelProductVersion = new System.Windows.Forms.Label();
-            this.labelServer = new System.Windows.Forms.Label();
             this.tableLayoutContainer.SuspendLayout();
             this.tabControlMenu.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -1174,6 +1174,33 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Advanced Technologies and Solutions";
             // 
+            // labelServer
+            // 
+            this.labelServer.Location = new System.Drawing.Point(39, 80);
+            this.labelServer.Name = "labelServer";
+            this.labelServer.Size = new System.Drawing.Size(170, 17);
+            this.labelServer.TabIndex = 0;
+            this.labelServer.Text = "label9";
+            this.labelServer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelProductVersion
+            // 
+            this.labelProductVersion.Location = new System.Drawing.Point(39, 59);
+            this.labelProductVersion.Name = "labelProductVersion";
+            this.labelProductVersion.Size = new System.Drawing.Size(170, 17);
+            this.labelProductVersion.TabIndex = 0;
+            this.labelProductVersion.Text = "label9";
+            this.labelProductVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelProductName
+            // 
+            this.labelProductName.Location = new System.Drawing.Point(39, 34);
+            this.labelProductName.Name = "labelProductName";
+            this.labelProductName.Size = new System.Drawing.Size(170, 22);
+            this.labelProductName.TabIndex = 0;
+            this.labelProductName.Text = "label9";
+            this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // tableLayoutBody
             // 
             this.tableLayoutBody.ColumnCount = 2;
@@ -1327,33 +1354,6 @@
             this.progressBarStatus.Size = new System.Drawing.Size(1258, 4);
             this.progressBarStatus.TabIndex = 4;
             // 
-            // labelProductName
-            // 
-            this.labelProductName.Location = new System.Drawing.Point(39, 34);
-            this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(170, 22);
-            this.labelProductName.TabIndex = 0;
-            this.labelProductName.Text = "label9";
-            this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labelProductVersion
-            // 
-            this.labelProductVersion.Location = new System.Drawing.Point(39, 59);
-            this.labelProductVersion.Name = "labelProductVersion";
-            this.labelProductVersion.Size = new System.Drawing.Size(170, 17);
-            this.labelProductVersion.TabIndex = 0;
-            this.labelProductVersion.Text = "label9";
-            this.labelProductVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labelServer
-            // 
-            this.labelServer.Location = new System.Drawing.Point(39, 80);
-            this.labelServer.Name = "labelServer";
-            this.labelServer.Size = new System.Drawing.Size(170, 17);
-            this.labelServer.TabIndex = 0;
-            this.labelServer.Text = "label9";
-            this.labelServer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1367,7 +1367,6 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tqat Pro Reporting Tool";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.tableLayoutContainer.ResumeLayout(false);
             this.tabControlMenu.ResumeLayout(false);

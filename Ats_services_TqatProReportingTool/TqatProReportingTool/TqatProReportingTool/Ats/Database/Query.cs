@@ -26,7 +26,7 @@ namespace Ats.Database {
         MySqlConnection mysqlConnection = null;
         Database database;
         String sql;
-        User account;
+        //User account;
 
         public Query(string sql, Database database) {
             if (database == null) {
