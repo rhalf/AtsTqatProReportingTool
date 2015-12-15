@@ -21,8 +21,8 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-LicenseFile=C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\license\gpl.txt
-OutputDir=C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\inno
+LicenseFile=C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\license\gpl.txt
+OutputDir=C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\inno
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -34,8 +34,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\TqatProReportingTool.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Rhalf\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\TqatProReportingTool.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
