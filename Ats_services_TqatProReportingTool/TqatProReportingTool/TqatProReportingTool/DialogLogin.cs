@@ -25,8 +25,7 @@ namespace TqatProReportingTool {
         Company company;
 
 
-        Database database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
-
+        Database database;
         public DialogLogin(Company company, User user) {
             InitializeComponent();
             this.company = company;
@@ -89,6 +88,9 @@ namespace TqatProReportingTool {
             }));
 
             try {
+
+                database = new Database(Settings.Default.DatabaseHost, Settings.Default.DatabaseUsername, Settings.Default.DatabasePassword);
+
                 Query query = new Query(database);
 
                 query.getCompany(company);

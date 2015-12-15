@@ -740,7 +740,8 @@ namespace Ats.Database {
 
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
                 mySqlCommand.Parameters.AddWithValue("@sUsername", user.Username);
-                mySqlCommand.Parameters.AddWithValue("@sPassword", Cryptography.md5(user.Password));
+                String coded = Cryptography.md5(user.Password);
+                mySqlCommand.Parameters.AddWithValue("@sPassword", coded);
 
                 MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 

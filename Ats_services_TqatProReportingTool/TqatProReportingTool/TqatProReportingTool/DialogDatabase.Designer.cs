@@ -29,7 +29,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.radioButtonServerX = new System.Windows.Forms.RadioButton();
-            this.buttonDone = new System.Windows.Forms.Button();
             this.radioButtonServer2 = new System.Windows.Forms.RadioButton();
             this.radioButtonServer1 = new System.Windows.Forms.RadioButton();
             this.groupBoxOther = new System.Windows.Forms.GroupBox();
@@ -70,7 +69,6 @@
             this.groupBoxConfiguration.Controls.Add(this.label6);
             this.groupBoxConfiguration.Controls.Add(this.label3);
             this.groupBoxConfiguration.Controls.Add(this.radioButtonServerX);
-            this.groupBoxConfiguration.Controls.Add(this.buttonDone);
             this.groupBoxConfiguration.Controls.Add(this.radioButtonServer2);
             this.groupBoxConfiguration.Controls.Add(this.radioButtonServer1);
             this.groupBoxConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -109,16 +107,6 @@
             this.radioButtonServerX.Text = "Other";
             this.radioButtonServerX.UseVisualStyleBackColor = true;
             this.radioButtonServerX.CheckedChanged += new System.EventHandler(this.radioButtonServerX_CheckedChanged);
-            // 
-            // buttonDone
-            // 
-            this.buttonDone.Location = new System.Drawing.Point(23, 175);
-            this.buttonDone.Name = "buttonDone";
-            this.buttonDone.Size = new System.Drawing.Size(127, 23);
-            this.buttonDone.TabIndex = 8;
-            this.buttonDone.Text = "Done";
-            this.buttonDone.UseVisualStyleBackColor = true;
-            this.buttonDone.Click += new System.EventHandler(this.buttonDone_Click);
             // 
             // radioButtonServer2
             // 
@@ -253,7 +241,7 @@
             this.Name = "DialogDatabase";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DialogDatabase";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DialogDatabase_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DialogDatabase_FormClosing);
             this.Load += new System.EventHandler(this.DialogDatabase_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBoxConfiguration.ResumeLayout(false);
@@ -272,7 +260,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton radioButtonServerX;
-        private System.Windows.Forms.Button buttonDone;
         private System.Windows.Forms.RadioButton radioButtonServer2;
         private System.Windows.Forms.RadioButton radioButtonServer1;
         private System.Windows.Forms.Button buttonTest;

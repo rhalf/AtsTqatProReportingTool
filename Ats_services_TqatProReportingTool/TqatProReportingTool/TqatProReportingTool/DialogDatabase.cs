@@ -23,20 +23,7 @@ namespace TqatProReportingTool {
         }
 
         private void buttonDone_Click (object sender, EventArgs e) {
-            if (groupBoxOther.Enabled == true) {
-                try {
-                    Settings.Default.DatabaseHost = textBoxIp.Text;
-                    Settings.Default.DatabaseUsername = textBoxUsername.Text;
-                    Settings.Default.DatabasePort = Int32.Parse(textBoxPort.Text);
-                    Settings.Default.DatabasePassword = textBoxPassword.Text;
-                    Settings.Default.Save();
-                    this.Close();
-                } catch (Exception exception) {
-                    MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            } else {
-                this.Close();
-            }
+     
         }
 
         private void buttonTest_Click (object sender, EventArgs e) {
@@ -131,8 +118,24 @@ namespace TqatProReportingTool {
             }
         }
 
-        private void DialogDatabase_FormClosed (object sender, FormClosedEventArgs e) {
-            dialogLogin.Show();
+     
+
+        private void DialogDatabase_FormClosing(object sender, FormClosingEventArgs e) {
+            if (groupBoxOther.Enabled == true) {
+                try {
+                    Settings.Default.DatabaseHost = textBoxIp.Text;
+                    Settings.Default.DatabaseUsername = textBoxUsername.Text;
+                    Settings.Default.DatabasePort = Int32.Parse(textBoxPort.Text);
+                    Settings.Default.DatabasePassword = textBoxPassword.Text;
+                    Settings.Default.Save();
+
+                } catch (Exception exception) {
+                    MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    e.Cancel = true;
+                    return;
+                }
+            }
+            dialogLogin.Visible = true;
         }
     }
 }
