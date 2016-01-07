@@ -85,8 +85,8 @@ namespace TqatProReportingTool {
             dateTimePickerDateTo.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             dateTimePickerDateFrom.Format = DateTimePickerFormat.Custom;
             dateTimePickerDateFrom.CustomFormat = "yyyy/MM/dd HH:mm:ss";
-            dateTimePickerDateTo.Value = (DateTime.Today.AddDays(-1));
-            dateTimePickerDateFrom.Value = (DateTime.Today);
+            //dateTimePickerDateFrom.Value = (DateTime.Today.Subtract(new TimeSpan(1,0,0,0)));
+            //dateTimePickerDateTo.Value = (DateTime.Today);
 
 
             comboBoxUser.SelectedIndexChanged += comboBoxUser_SelectedIndexChanged;
@@ -1747,32 +1747,32 @@ namespace TqatProReportingTool {
         private void comboBoxDateShortCut_SelectedIndexChanged(object sender, EventArgs e) {
 
 
-            dateTimePickerDateTo.Value = DateTime.Today;                    
 
             switch (comboBoxDateShortCut.SelectedIndex) {
                 case 0:
-                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(1);
+                    dateTimePickerDateFrom.Value = DateTime.Today;
+                    dateTimePickerDateTo.Value = DateTime.Today.AddDays(1);
                     break;
                 case 1:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-1);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-1);
                     break;
                 case 2:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-3);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-3);
                     break;
                 case 3:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-5);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-5);
                     break;
                 case 4:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-7);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-7);
                     break;
                 case 5:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-14);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-14);
                     break;
                 case 6:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-21);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-21);
                     break;
                 case 7:
-                    dateTimePickerDateFrom.Value = dateTimePickerDateTo.Value.AddDays(-30);
+                    dateTimePickerDateFrom.Value = DateTime.Today.AddDays(-30);
                     break;
             }
 

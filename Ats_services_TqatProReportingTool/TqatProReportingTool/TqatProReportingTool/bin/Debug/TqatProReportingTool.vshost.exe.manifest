@@ -4,7 +4,7 @@
   <description asmv2:iconFile="favicon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="TqatProReportingTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="TqatProReportingTool" version="2.2.0.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="TqatProReportingTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -44,7 +44,7 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="MySql.Data" version="6.9.6.0" publicKeyToken="C5687FC88969C44D" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="MySql.Data" version="6.9.7.0" publicKeyToken="C5687FC88969C44D" language="neutral" processorArchitecture="msil" />
     </dependentAssembly>
   </dependency>
   <dependency>
@@ -72,14 +72,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1010688">
-      <assemblyIdentity name="TqatProReportingTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1059840">
+      <assemblyIdentity name="TqatProReportingTool" version="2.2.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>FPTkWmEvnDMmrPa435eLt4cLpJo=</dsig:DigestValue>
+        <dsig:DigestValue>psHpBsCNu7xML6UYvOOdk91zIlo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -101,13 +101,13 @@
       <dsig:DigestValue>cdBdNW9biBm5OBagLljbeSOcdWM=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TqatProReportingTool.exe.config" size="8613">
+  <file name="TqatProReportingTool.exe.config" size="9032">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>5dxf5AwRtHKIL4O1Rqj2P6kg7Ac=</dsig:DigestValue>
+      <dsig:DigestValue>YXnA1SXz6pJ3e1eCG2g5tENkLzY=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

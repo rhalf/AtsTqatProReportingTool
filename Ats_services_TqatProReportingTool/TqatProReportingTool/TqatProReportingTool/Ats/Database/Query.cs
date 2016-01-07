@@ -1257,8 +1257,8 @@ namespace Ats.Database {
 
             try {
 
-                bool runningStatusNow = false;
-                bool runningStatusBefore = false;
+                bool? runningStatusNow = null;
+                bool? runningStatusBefore = null;
                 EventCode eventCode = EventCode.TRACK_BY_TIME_INTERVAL;
                 bool acc = false;
 
@@ -1274,7 +1274,9 @@ namespace Ats.Database {
                 double distance = 0;
 
 
-                StringBuilder geofence = new StringBuilder();
+                String geofenceFrom = "";
+                String geofenceTo = "";
+
                 DateTime dateTimeRunningFrom = new DateTime();
                 DateTime dateTimeRunningTo = new DateTime();
 
@@ -1288,8 +1290,7 @@ namespace Ats.Database {
                 for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
                     //Initialized
                     eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
-                       EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
-                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
+                    EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
                     acc = (bool)dataTableHistoricalData.Rows[no]["ACC"];
                     speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     distance = (double)dataTableHistoricalData.Rows[no]["Distance"];
@@ -1309,7 +1310,7 @@ namespace Ats.Database {
 
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
-
+                        geofenceFrom = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
                         runningStatusBefore = runningStatusNow;
                     }
 
@@ -1318,6 +1319,7 @@ namespace Ats.Database {
                         dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -1342,8 +1344,11 @@ namespace Ats.Database {
                         dataRowRunningData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowRunningData["Cost"] = (double)dataRowRunningData["Fuel"] / Settings.Default.fuelLiterToCost;
 
-                        dataRowRunningData["Geofences"] = geofence.ToString();
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowRunningData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowRunningData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
                         dataRowRunningData["SpeedMax"] = speedMax;
                         dataRowRunningData["SpeedAve"] = speedAverage;
 
@@ -1352,6 +1357,7 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeRunningTo;
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
+                        geofenceFrom = geofenceTo;
                         dataTableRunningData.Rows.Add(dataRowRunningData);
                         runningStatusBefore = runningStatusNow;
                     }
@@ -1360,6 +1366,7 @@ namespace Ats.Database {
                         dateTimeRunningTo = dateTimeDateTo;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -1385,8 +1392,11 @@ namespace Ats.Database {
                         dataRowRunningData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowRunningData["Cost"] = (double)dataRowRunningData["Fuel"] / Settings.Default.fuelLiterToCost;
 
-                        dataRowRunningData["Geofences"] = geofence.ToString();
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowRunningData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowRunningData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
                         dataRowRunningData["SpeedMax"] = speedMax;
                         dataRowRunningData["SpeedAve"] = speedAverage;
 
@@ -1395,6 +1405,7 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeRunningTo;
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
+                        geofenceFrom = geofenceTo;
                         dataTableRunningData.Rows.Add(dataRowRunningData);
                         runningStatusBefore = runningStatusNow;
                     }
@@ -1425,11 +1436,11 @@ namespace Ats.Database {
 
             try {
 
-                bool idleStatusNow = false;
-                bool idleStatusBefore = false;
+                bool? idleStatusNow = null;
+                bool? idleStatusBefore = null;
 
                 EventCode eventCode = EventCode.TRACK_BY_TIME_INTERVAL;
-                bool acc = false;
+                bool? acc = null;
 
                 int index = 0;
 
@@ -1442,7 +1453,9 @@ namespace Ats.Database {
                 double distanceCovered = 0;
                 double distance = 0;
 
-                StringBuilder geofence = new StringBuilder();
+                String geofenceFrom = "";
+                String geofenceTo = "";
+
                 DateTime dateTimeIdleFrom = new DateTime();
                 DateTime dateTimeIdleTo = new DateTime();
 
@@ -1458,10 +1471,10 @@ namespace Ats.Database {
                     //Initialized
                     eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
                        EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
-                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
                     acc = (bool)dataTableHistoricalData.Rows[no]["ACC"];
                     speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     distance = (double)dataTableHistoricalData.Rows[no]["Distance"];
+                    geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                     //Conditions
                     if (speed == 0 && acc == true) {
@@ -1475,6 +1488,7 @@ namespace Ats.Database {
                         dateTimeIdleFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceFrom = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
                         idleStatusBefore = idleStatusNow;
                     }
 
@@ -1484,6 +1498,7 @@ namespace Ats.Database {
                         dateTimeIdleTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeIdleTo - dateTimeIdleFrom;
 
@@ -1507,8 +1522,11 @@ namespace Ats.Database {
                         dataRowIdleData["Time"] = timeSpan;
                         dataRowIdleData["Distance"] = distanceCovered;
 
-                        dataRowIdleData["Geofences"] = geofence.ToString();
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowIdleData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowIdleData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
 
                         dataRowIdleData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowIdleData["Cost"] = (double)dataRowIdleData["Fuel"] / Settings.Default.fuelLiterToCost;
@@ -1520,6 +1538,7 @@ namespace Ats.Database {
                         distanceCovered = 0;
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
+                        geofenceFrom = geofenceTo;
                         dateTimeIdleFrom = dateTimeIdleTo;
                         dataTableIdleData.Rows.Add(dataRowIdleData);
                         idleStatusBefore = idleStatusNow;
@@ -1530,6 +1549,7 @@ namespace Ats.Database {
                         dateTimeIdleTo = dateTimeDateTo;//= (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeIdleTo - dateTimeIdleFrom;
 
@@ -1552,8 +1572,11 @@ namespace Ats.Database {
                         dataRowIdleData["Time"] = timeSpan;
                         dataRowIdleData["Distance"] = distanceCovered;
 
-                        dataRowIdleData["Geofences"] = geofence.ToString();
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowIdleData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowIdleData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
 
                         dataRowIdleData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowIdleData["Cost"] = (double)dataRowIdleData["Fuel"] / Settings.Default.fuelLiterToCost;
@@ -1566,6 +1589,7 @@ namespace Ats.Database {
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
                         dateTimeIdleFrom = dateTimeIdleTo;
+                        geofenceFrom = geofenceTo;
                         dataTableIdleData.Rows.Add(dataRowIdleData);
                         idleStatusBefore = idleStatusNow;
                     }
@@ -1780,7 +1804,9 @@ namespace Ats.Database {
                 double distanceCovered = 0;
                 double distance = 0;
 
-                StringBuilder geofence = new StringBuilder();
+                String geofenceFrom = "";
+                String geofenceTo = "";
+
                 DateTime dateTimeRunningFrom = new DateTime();
                 DateTime dateTimeRunningTo = new DateTime();
 
@@ -1794,7 +1820,6 @@ namespace Ats.Database {
 
                 for (int no = 0; no < dataTableHistoricalData.Rows.Count; no++) {
                     //Initialized
-                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
                     accStatusNow = (bool)dataTableHistoricalData.Rows[no]["ACC"];
                     speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     distance = (double)dataTableHistoricalData.Rows[no]["Distance"];
@@ -1804,6 +1829,8 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceFrom = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
+
                         accStatusBefore = accStatusNow;
                     }
 
@@ -1812,6 +1839,7 @@ namespace Ats.Database {
                         dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -1837,8 +1865,11 @@ namespace Ats.Database {
                         dataRowAccData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowAccData["Cost"] = (double)dataRowAccData["Fuel"] / Settings.Default.fuelLiterToCost;
 
-                        dataRowAccData["Geofences"] = geofence;
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowAccData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowAccData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
                         dataRowAccData["SpeedMax"] = speedMax;
                         dataRowAccData["SpeedAve"] = speedAverage;
 
@@ -1847,6 +1878,7 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeRunningTo;
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
+                        geofenceFrom = geofenceTo;
 
                         dataTableIAccData.Rows.Add(dataRowAccData);
                         accStatusBefore = accStatusNow;
@@ -1857,6 +1889,7 @@ namespace Ats.Database {
                         dateTimeRunningTo = dateTimeDateTo;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -1883,8 +1916,12 @@ namespace Ats.Database {
                         dataRowAccData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowAccData["Cost"] = (double)dataRowAccData["Fuel"] / Settings.Default.fuelLiterToCost;
 
-                        dataRowAccData["Geofences"] = geofence;
-                        geofence.Clear();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowAccData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowAccData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
+
                         dataRowAccData["SpeedMax"] = speedMax;
                         dataRowAccData["SpeedAve"] = speedAverage;
 
@@ -1893,6 +1930,8 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeRunningTo;
                         longitudeFrom = longitudeTo;
                         latitudeFrom = latitudeTo;
+                        geofenceFrom = geofenceTo;
+
 
                         dataTableIAccData.Rows.Add(dataRowAccData);
                         accStatusBefore = accStatusNow;
@@ -1942,7 +1981,9 @@ namespace Ats.Database {
                 double distanceCovered = 0;
                 double distance = 0;
 
-                StringBuilder geofence = new StringBuilder();
+                String geofenceFrom = "";
+                String geofenceTo = "";
+
                 DateTime dateTimeRunningFrom = new DateTime();
                 DateTime dateTimeRunningTo = new DateTime();
 
@@ -1958,7 +1999,6 @@ namespace Ats.Database {
                     //Initialized
                     eventCode = (dataTableHistoricalData.Rows[no]["EventCode"] == System.DBNull.Value) ?
                        EventCode.TRACK_BY_TIME_INTERVAL : (EventCode)Enum.Parse(typeof(EventCode), (string)dataTableHistoricalData.Rows[no]["EventCode"], true);
-                    geofence.Append((dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "" : (string)dataTableHistoricalData.Rows[no]["Geofence"] + " | ");
                     speed = (int)dataTableHistoricalData.Rows[no]["Speed"];
                     distance = (double)dataTableHistoricalData.Rows[no]["Distance"];
                     double externalVolt = (double)dataTableHistoricalData.Rows[no]["ExternalVoltage"];
@@ -1976,7 +2016,7 @@ namespace Ats.Database {
                         dateTimeRunningFrom = dateTimeDateFrom;//(DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeFrom = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeFrom = (double)dataTableHistoricalData.Rows[no]["Longitude"];
-
+                        geofenceFrom = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
                         externalPowerStatusBefore = externalPowerStatusNow;
                     }
 
@@ -1986,6 +2026,7 @@ namespace Ats.Database {
                         dateTimeRunningTo = (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -2010,7 +2051,11 @@ namespace Ats.Database {
                         dataRowExternalPowerCutData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowExternalPowerCutData["Cost"] = ((double)dataRowExternalPowerCutData["Fuel"]) / Settings.Default.fuelLiterToCost;
 
-                        dataRowExternalPowerCutData["Geofences"] = geofence.ToString();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowExternalPowerCutData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowExternalPowerCutData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
                         dataRowExternalPowerCutData["SpeedMax"] = speedMax;
                         dataRowExternalPowerCutData["SpeedAve"] = speedAverage;
 
@@ -2021,13 +2066,14 @@ namespace Ats.Database {
                         latitudeFrom = latitudeTo;
                         dataTableExternalPowerCutData.Rows.Add(dataRowExternalPowerCutData);
                         externalPowerStatusBefore = externalPowerStatusNow;
-                        geofence.Clear();
+                      
                     }
                     if (no == dataTableHistoricalData.Rows.Count - 1) {
                         index++;
                         dateTimeRunningTo = dateTimeDateTo;// (DateTime)dataTableHistoricalData.Rows[no]["DateTime"];
                         latitudeTo = (double)dataTableHistoricalData.Rows[no]["Latitude"];
                         longitudeTo = (double)dataTableHistoricalData.Rows[no]["Longitude"];
+                        geofenceTo = (dataTableHistoricalData.Rows[no]["Geofence"] == System.DBNull.Value) ? "OUTSIDE" : (string)dataTableHistoricalData.Rows[no]["Geofence"];
 
                         timeSpan = dateTimeRunningTo - dateTimeRunningFrom;
 
@@ -2053,7 +2099,11 @@ namespace Ats.Database {
                         dataRowExternalPowerCutData["Fuel"] = distanceCovered / Settings.Default.fuelLiterToKilometer;
                         dataRowExternalPowerCutData["Cost"] = (double)dataRowExternalPowerCutData["Fuel"] / Settings.Default.fuelLiterToCost;
 
-                        dataRowExternalPowerCutData["Geofences"] = geofence.ToString();
+                        if (geofenceTo.Equals(geofenceFrom)) {
+                            dataRowExternalPowerCutData["Geofences"] = geofenceFrom;
+                        } else {
+                            dataRowExternalPowerCutData["Geofences"] = geofenceFrom + " to " + geofenceTo;
+                        }
                         dataRowExternalPowerCutData["SpeedMax"] = speedMax;
                         dataRowExternalPowerCutData["SpeedAve"] = speedAverage;
 
@@ -2065,7 +2115,7 @@ namespace Ats.Database {
 
                         dataTableExternalPowerCutData.Rows.Add(dataRowExternalPowerCutData);
                         externalPowerStatusBefore = externalPowerStatusNow;
-                        geofence.Clear();
+                     
                     }
                     //Accumulators : SpeedAve, SpeedMax, Distance 
                     speedDivisor++;
@@ -2094,7 +2144,7 @@ namespace Ats.Database {
 
                 bool overSpeedStatusNow = false;
                 int index = 0;
-                StringBuilder geofence = new StringBuilder();
+                String geofence = "";
 
 
                 foreach (DataRow dataRowNow in dataTableHistoricalData.Rows) {
@@ -2105,7 +2155,7 @@ namespace Ats.Database {
 
                         index++;
 
-                        geofence.Append((dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"] + " | ");
+                        geofence = ((dataRowNow["Geofence"] == System.DBNull.Value) ? "" : (string)dataRowNow["Geofence"]);
 
 
                         DataRow dataRowOverspeedData = dataTableOverSpeedData.NewRow();
@@ -2116,8 +2166,7 @@ namespace Ats.Database {
                         dataRowOverspeedData["Longitude"] = (double)dataRowNow["Longitude"];
                         dataRowOverspeedData["Speed"] = (int)dataRowNow["Speed"];
                         dataRowOverspeedData["Mileage"] = (double)dataRowNow["Mileage"];
-                        dataRowOverspeedData["Geofence"] = geofence.ToString();
-                        geofence.Clear();
+                        dataRowOverspeedData["Geofence"] = geofence;
                         dataTableOverSpeedData.Rows.Add(dataRowOverspeedData);
                     }
                 }
