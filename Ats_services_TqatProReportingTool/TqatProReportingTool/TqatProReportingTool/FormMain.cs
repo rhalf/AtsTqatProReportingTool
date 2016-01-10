@@ -44,7 +44,6 @@ namespace TqatProReportingTool {
 
 
         #endregion
-
         #region Initialization
 
         public FormMain(Company company, User user) {
@@ -151,7 +150,6 @@ namespace TqatProReportingTool {
         }
 
         #endregion
-
         #region Threads
 
         public void threadLoadFilters(object uncast) {
