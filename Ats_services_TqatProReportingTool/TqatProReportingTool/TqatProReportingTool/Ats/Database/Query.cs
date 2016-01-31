@@ -800,10 +800,19 @@ namespace Ats.Database {
 
                 mysqlConnection.Open();
 
-                string sql =
-                    "SELECT * " +
-                    "FROM cmp_" + company.DatabaseName + ".usrs " +
-                    "WHERE cmp_" + company.DatabaseName + ".usrs.upriv >= " + user.AccessLevel.ToString() + ";";
+                string sql = "";
+                if (user.AccessLevel == 1 || user.AccessLevel == 2) {
+                    sql =
+                        "SELECT * " +
+                        "FROM cmp_" + company.DatabaseName + ".usrs " +
+                        "WHERE cmp_" + company.DatabaseName + ".usrs.upriv >= " + user.AccessLevel.ToString() + ";";
+                } else {
+                    sql =
+                          "SELECT * " +
+                          "FROM cmp_" + company.DatabaseName + ".usrs " +
+                          "WHERE cmp_" + company.DatabaseName + ".usrs.upriv = " + user.AccessLevel.ToString() +
+                          " and cmp_" + company.DatabaseName + ".usrs.uname = " + user.Username + ";";
+                }
 
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
 

@@ -75,9 +75,9 @@ namespace TqatProReportingTool {
             } else if (radioButton.Name.Equals("radioButtonServer1")) {
                 //Ats Database Server
                 Settings.Default.DatabaseHost = "108.163.190.202";
-                Settings.Default.DatabaseUsername = "atstqatpro";
+                Settings.Default.DatabaseUsername = "tqatreport1";
                 Settings.Default.DatabasePort = 3306;
-                Settings.Default.DatabasePassword = "@t5tq@pr0!@#";
+                Settings.Default.DatabasePassword = "nWsMB5zyyjBR9XNw";
                 Settings.Default.DatabaseIndex = 1;
                 Settings.Default.Save();
             } else if (radioButton.Name.Equals("radioButtonServer2")) {

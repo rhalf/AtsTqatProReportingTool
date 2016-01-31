@@ -12,7 +12,7 @@ namespace TqatProReportingTool.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -37,7 +37,7 @@ namespace TqatProReportingTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("atstqatpro")]
+        [global::System.Configuration.DefaultSettingValueAttribute("tqatreport1")]
         public string DatabaseUsername {
             get {
                 return ((string)(this["DatabaseUsername"]));
@@ -49,7 +49,7 @@ namespace TqatProReportingTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("@t5tq@pr0!@#")]
+        [global::System.Configuration.DefaultSettingValueAttribute("nWsMB5zyyjBR9XNw")]
         public string DatabasePassword {
             get {
                 return ((string)(this["DatabasePassword"]));

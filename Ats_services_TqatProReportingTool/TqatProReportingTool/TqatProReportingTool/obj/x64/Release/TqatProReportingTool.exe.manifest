@@ -4,7 +4,7 @@
   <description asmv2:iconFile="favicon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="TqatProReportingTool" version="2.3.0.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="TqatProReportingTool" version="2.4.2.1" language="neutral" processorArchitecture="amd64" />
     <commandLine file="TqatProReportingTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1059328">
-      <assemblyIdentity name="TqatProReportingTool" version="2.3.0.0" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1060352">
+      <assemblyIdentity name="TqatProReportingTool" version="2.4.2.1" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>abwTzBayfVBLtkg3WgTh13yTuP0=</dsig:DigestValue>
+        <dsig:DigestValue>EPj+hyvtD8VL81JtZdtwG3CcbY8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -108,13 +108,13 @@
       <dsig:DigestValue>cdBdNW9biBm5OBagLljbeSOcdWM=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TqatProReportingTool.exe.config" size="9032">
+  <file name="TqatProReportingTool.exe.config" size="9037">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>YXnA1SXz6pJ3e1eCG2g5tENkLzY=</dsig:DigestValue>
+      <dsig:DigestValue>l63W0tO22/c/ign4tyjGFjXZAGE=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

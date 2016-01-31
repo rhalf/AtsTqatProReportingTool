@@ -2006,16 +2006,50 @@ namespace TqatProReportingTool {
         private void comboBoxCollection_SelectedIndexChanged(object sender, EventArgs e) {
             comboBoxTrackers.Items.Clear();
             checkedListBoxTrackers.Items.Clear();
-            foreach (Tracker tracker in company.Trackers) {
-                foreach (Collection collection in tracker.Collections) {
-                    Collection collectionSelected = (Collection)comboBoxCollection.SelectedItem;
-                    if (collectionSelected.Id == collection.Id) {
-                        checkedListBoxTrackers.Items.Add(tracker);
-                        comboBoxTrackers.Items.Add(tracker);
+
+
+            User userSelected = (User)comboBoxUser.SelectedItem;
+            Collection collectionSelected = (Collection)comboBoxCollection.SelectedItem;
+
+            List<Tracker> trackerUser = new List<Tracker>();
+            List<Tracker> trackerCollection = new List<Tracker>();
+
+            foreach (Tracker trackerNew in company.Trackers) {
+                foreach (User userNew in trackerNew.Users) {
+                    if (userSelected.Id == userNew.Id) {
+                        trackerUser.Add(trackerNew);
                     }
                 }
-
             }
+
+
+            foreach (Tracker trackerNew in trackerUser) {
+                foreach (Collection collectionNew in trackerNew.Collections) {
+                    if (comboBoxCollection.SelectedItem == null)
+                        break;
+
+                    if (collectionNew.Id == collectionSelected.Id) {
+                        //trackerCollection.Add(trackerNew);
+                        checkedListBoxTrackers.Items.Add(trackerNew);
+                        comboBoxTrackers.Items.Add(trackerNew);
+                    }
+                }
+            }
+
+
+
+            //foreach (Tracker tracker in company.Trackers) {
+            //    foreach (Collection collection in tracker.Collections) {
+            //        if (collectionSelected.Id == collection.Id) {
+            //            trackerCollection.Add()
+            //        }
+            //    }
+
+            //}
+
+
+            
+
             comboBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             checkedListBoxTrackers.DisplayMember = comboBoxTrackersDisplayMember.Text;
             groupBoxTrackers.Text = "Trackers " + checkedListBoxTrackers.Items.Count.ToString();

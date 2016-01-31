@@ -145,6 +145,15 @@ namespace TqatProReportingTool {
                     string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
                     log.write(logData);
                 }));
+            } catch (DatabaseException databaseException){
+                this.Invoke(new MethodInvoker(delegate {
+                    MessageBox.Show(this, databaseException.Message, "DatabaseException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
+                    string logData = DateTime.Now.ToString() + "\t\t DatabaseException \t\t" + databaseException.Message;
+                    log.write(logData);
+                }));
+            
             } finally {
                 try {
                     pictureBoxLoading.Invoke(new MethodInvoker(delegate {

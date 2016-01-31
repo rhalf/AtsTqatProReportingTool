@@ -6,10 +6,10 @@
       <Value Profile="(Default)">108.163.190.202</Value>
     </Setting>
     <Setting Name="DatabaseUsername" Type="System.String" Scope="User">
-      <Value Profile="(Default)">atstqatpro</Value>
+      <Value Profile="(Default)">tqatreport1</Value>
     </Setting>
     <Setting Name="DatabasePassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)">@t5tq@pr0!@#</Value>
+      <Value Profile="(Default)">nWsMB5zyyjBR9XNw</Value>
     </Setting>
     <Setting Name="DatabaseName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
