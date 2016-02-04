@@ -23,4 +23,3 @@ C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProRepo
 C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\obj\x64\Release\TqatProReportingTool.pdb
 C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\x64\Release\TqatProReportingTool.pdb
 C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\bin\x64\Release\MySql.Data.dll
-C:\Users\Ralph\Documents\GitHub\AtsTqatProReportingTool\Ats_services_TqatProReportingTool\TqatProReportingTool\TqatProReportingTool\obj\x64\Release\TqatProReportingTool.csprojResolveAssemblyReference.cache

@@ -310,11 +310,11 @@ namespace TqatProReportingTool {
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ALL_COMPANIES:
-                            //dataTableDetails = query.getAllCompanies();
+                            dataTableDetails = query.getAllCompanies();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                         case ReportType.ALL_TRACKERS:
-                            //dataTableDetails = query.getAllTrackers();
+                            dataTableDetails = query.getAllTrackers();
                             dataCount = dataTableDetails.Rows.Count;
                             break;
                     }
