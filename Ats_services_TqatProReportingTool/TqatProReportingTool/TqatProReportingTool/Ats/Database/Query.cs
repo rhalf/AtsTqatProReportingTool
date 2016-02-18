@@ -1125,11 +1125,13 @@ namespace Ats.Database {
                     //Conditions
                     if (acc == true && speed > 0) {
                         runningStatusNow = true;
-                    }
-
-                    if (acc = false || speed <= 0) {
+                    } else {
                         runningStatusNow = false;
                     }
+
+                    //if (acc = false || speed <= 0) {
+                    //    runningStatusNow = false;
+                    //}
 
                     //One time
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
