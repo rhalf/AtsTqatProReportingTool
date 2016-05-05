@@ -101,7 +101,7 @@ namespace TqatProReportingTool {
 
             //Limit
             comboBoxLimit.Items.Clear();
-            comboBoxLimit.Items.AddRange(new string[] { "10", "50", "100", "200", "300", "400" });
+            comboBoxLimit.Items.AddRange(new string[] { "10", "20", "50", "100", "200" });
             comboBoxLimit.SelectedItem = comboBoxLimit.Items[1];
 
 
@@ -195,7 +195,7 @@ namespace TqatProReportingTool {
                     MessageBox.Show(this, queryException.Message, "Query Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }));
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
+                string logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message + "\t\t\t" + queryException.StackTrace;
                 log.write(logData);
             } finally {
                 updateProgressBarStatus(100);
@@ -609,7 +609,7 @@ namespace TqatProReportingTool {
                     if (tracker != null)
                         logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + tracker.VehicleRegistration + " : " + queryException.Message;
                     else
-                        logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message;
+                        logData = DateTime.Now.ToString() + "\t\t queryException \t\t" + queryException.Message + "\t\t\t" + queryException.StackTrace;
 
                     log.write(logData);
                     break;
@@ -619,7 +619,7 @@ namespace TqatProReportingTool {
                     if (tracker != null)
                         logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + tracker.VehicleRegistration + " : " + mySqlException.Message;
                     else
-                        logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + mySqlException.Message;
+                        logData = DateTime.Now.ToString() + "\t\t mySqlException \t\t" + mySqlException.Message + "\t\t\t" + mySqlException.StackTrace;
                     log.write(logData);
                     if (mySqlException.ErrorCode == -2147467259) {
                         //requery
@@ -635,7 +635,8 @@ namespace TqatProReportingTool {
                     if (tracker != null) {
                         logData = DateTime.Now.ToString() + "\t\t exception \t\t" + tracker.VehicleRegistration + " : " + exception.Message;
                     } else {
-                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + exception.Message;
+                        logData = DateTime.Now.ToString() + "\t\t exception \t\t" + exception.Message + "\t\t\t" + exception.StackTrace;
+
                     }
                     log.write(logData);
                     break;
@@ -1353,7 +1354,7 @@ namespace TqatProReportingTool {
             } catch (Exception exception) {
                 MessageBox.Show(this, exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
-                string logData = DateTime.Now.ToString() + "\t\tException\t\t" + exception.Message;
+                string logData = DateTime.Now.ToString() + "\t\tException\t\t" + exception.Message + "\t\t\t" + exception.StackTrace;
                 log.write(logData);
             }
 
@@ -1553,7 +1554,6 @@ namespace TqatProReportingTool {
             Thread.Sleep(50);
         }
         #endregion
-
 
         #region comboBoxTrackers
 

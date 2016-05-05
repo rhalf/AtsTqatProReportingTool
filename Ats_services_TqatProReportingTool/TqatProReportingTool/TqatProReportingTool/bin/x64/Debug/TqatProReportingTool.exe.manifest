@@ -4,7 +4,7 @@
   <description asmv2:iconFile="favicon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="TqatProReportingTool" version="2.4.4.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="TqatProReportingTool" version="2.5.0.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="TqatProReportingTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -80,13 +80,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TqatProReportingTool.exe" size="1069568">
-      <assemblyIdentity name="TqatProReportingTool" version="2.4.4.0" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="TqatProReportingTool" version="2.5.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>38m9yoqujwMwUUjcmm9gA4RTEdI=</dsig:DigestValue>
+        <dsig:DigestValue>Uyl3U8+YzCiAmbe+dkGz2zxwaMw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

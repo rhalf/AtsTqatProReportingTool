@@ -16,6 +16,7 @@ using Ats.Devices.Meitrack;
 using Ats.Parser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Ats.Database {
 
@@ -28,7 +29,7 @@ namespace Ats.Database {
         String sql;
         //User account;
 
-        public Query(string sql, Database database) {
+        public Query (string sql, Database database) {
             if (database == null) {
                 throw new QueryException(1, "Database is null.");
             }
@@ -41,7 +42,7 @@ namespace Ats.Database {
             mysqlConnection = new MySqlConnection(this.database.getConnectionString());
         }
 
-        public Query(Database database) {
+        public Query (Database database) {
             if (database == null) {
                 throw new QueryException(1, "Database is null.");
             }
@@ -55,7 +56,7 @@ namespace Ats.Database {
 
 
 
-        public DataTable getAllCompanies() {
+        public DataTable getAllCompanies () {
             DataTable dataTable = this.getReportTable(ReportType.ALL_COMPANIES);
             try {
                 mysqlConnection.Open();
@@ -104,8 +105,7 @@ namespace Ats.Database {
             }
             return dataTable;
         }
-
-        public DataTable getAllTrackers() {
+        public DataTable getAllTrackers () {
             DataTable dataTable = this.getReportTable(ReportType.ALL_TRACKERS);
 
             try {
@@ -216,8 +216,7 @@ namespace Ats.Database {
                 mysqlConnection.Close();
             }
         }
-
-        public void fillTrackers(Company company) {
+        public void fillTrackers (Company company) {
             List<Tracker> trackers = new List<Tracker>();
 
             try {
@@ -331,7 +330,7 @@ namespace Ats.Database {
                 mysqlConnection.Close();
             }
         }
-        public DataTable getTrackers(Company company) {
+        public DataTable getTrackers (Company company) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
             this.fillTrackers(company);
             List<Tracker> trackers = company.Trackers;
@@ -377,126 +376,7 @@ namespace Ats.Database {
 
             return dataTable;
         }
-
-        //public DataTable getTrackers(Company company, User user, int userAccountId) {
-        //    DataTable dataTable = this.getReportTable(ReportType.TRACKERS);
-
-        //    try {
-        //        mysqlConnection.Open();
-
-        //        string sql =
-        //            "SELECT * " +
-        //            "FROM dbt_tracking_master.trks " +
-        //            "WHERE dbt_tracking_master.trks.tcmp = @sCompanyName " +
-        //            "AND dbt_tracking_master.trks.tusers LIKE @sUserId;";
-
-        //        MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
-
-        //        mySqlCommand.Parameters.AddWithValue("@sCompanyName", company.DatabaseName.Substring(4));
-        //        mySqlCommand.Parameters.AddWithValue("@sUserId", "%" + userAccountId.ToString() + "%");
-
-        //        MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-
-        //        if (!mySqlDataReader.HasRows) {
-        //            throw new QueryException(1, "Tracker's Collection is empty.");
-        //        } else {
-
-
-        //            Tracker tracker = new Tracker();
-        //            string dateTime;
-
-        //            while (mySqlDataReader.Read()) {
-
-        //                tracker.collections = (string)mySqlDataReader["tcollections"];
-        //                tracker.companyDatabaseName = (string)mySqlDataReader["tcmp"];
-        //                tracker.databaseHost = int.Parse((string)mySqlDataReader["tdbhost"]);
-        //                tracker.DatabaseName = (string)mySqlDataReader["tdbs"];
-
-        //                dateTime = (string)mySqlDataReader["tcreatedate"];
-        //                tracker.dateCreated = Converter.subStandardDateTimeToDateTime(dateTime);
-        //                dateTime = String.Empty;
-
-        //                dateTime = (string)mySqlDataReader["ttrackerexpiry"];
-        //                tracker.dateExpired = Converter.subStandardDateTimeToDateTime(dateTime);
-        //                dateTime = String.Empty;
-
-        //                tracker.trackerImei = (string)mySqlDataReader["tunit"];
-        //                tracker.devicePassword = (string)mySqlDataReader["tunitpassword"];
-        //                tracker.deviceType = int.Parse((string)mySqlDataReader["ttype"]);
-        //                tracker.driverName = (string)mySqlDataReader["tdrivername"];
-        //                tracker.emails = (string)mySqlDataReader["temails"];
-        //                tracker.httpHost = int.Parse((string)mySqlDataReader["thttphost"]);
-        //                tracker.id = (int)mySqlDataReader["tid"];
-        //                tracker.idlingTime = int.Parse((string)mySqlDataReader["tidlingtime"]);
-        //                tracker.imageNumber = int.Parse((string)mySqlDataReader["timg"]);
-        //                tracker.inputs = (string)mySqlDataReader["tinputs"];
-        //                tracker.mileageInitial = int.Parse((string)mySqlDataReader["tmileageInit"]);
-        //                tracker.mileageLimit = int.Parse((string)mySqlDataReader["tmileagelimit"]);
-        //                tracker.mobileDataProvider = int.Parse((string)mySqlDataReader["tprovider"]);
-        //                tracker.note = (string)mySqlDataReader["tnote"];
-        //                tracker.ownerName = (string)mySqlDataReader["townername"];
-        //                tracker.simImei = (string)mySqlDataReader["tsimsr"];
-        //                tracker.simNumber = (string)mySqlDataReader["tsimno"];
-        //                tracker.users = (string)mySqlDataReader["tusers"];
-        //                tracker.SpeedLimit = int.Parse((string)mySqlDataReader["tSpeedLimit"]);
-        //                tracker.vehicleModel = (string)mySqlDataReader["tvehiclemodel"];
-        //                tracker.vehicleRegistration = (string)mySqlDataReader["tvehiclereg"];
-
-
-        //                DataRow dataRow = dataTable.NewRow();
-        //                dataRow["id"] = tracker.id;
-        //                dataRow["vehicleRegistration"] = tracker.vehicleRegistration;
-        //                dataRow["vehicleModel"] = tracker.vehicleModel;
-        //                dataRow["ownerName"] = tracker.ownerName;
-        //                dataRow["driverName"] = tracker.driverName;
-
-        //                dataRow["simImei"] = tracker.simImei;
-        //                dataRow["simNumber"] = tracker.simNumber;
-        //                dataRow["mobileDataProvider"] = tracker.mobileDataProvider;
-
-        //                dataRow["deviceImei"] = tracker.trackerImei;
-        //                dataRow["devicePassword"] = tracker.devicePassword;
-        //                dataRow["deviceType"] = tracker.deviceType;
-
-        //                dataRow["emails"] = tracker.emails;
-        //                dataRow["users"] = tracker.users;
-
-        //                dataRow["mileageInitial"] = tracker.mileageInitial;
-        //                dataRow["mileageLimit"] = tracker.mileageLimit;
-        //                dataRow["SpeedLimit"] = tracker.SpeedLimit;
-
-        //                dataRow["idlingTime"] = tracker.idlingTime;
-        //                dataRow["inputs"] = tracker.inputs;
-        //                dataRow["imageNumber"] = tracker.imageNumber;
-        //                dataRow["note"] = tracker.note;
-
-        //                dataRow["collections"] = tracker.collections;
-        //                dataRow["companyDatabaseName"] = tracker.companyDatabaseName;
-        //                dataRow["databaseHost"] = tracker.databaseHost;
-        //                dataRow["DatabaseName"] = tracker.DatabaseName;
-        //                dataRow["httpHost"] = tracker.httpHost;
-        //                dataRow["dateCreated"] = tracker.dateCreated;
-        //                dataRow["dateExpired"] = tracker.dateExpired;
-
-        //                dataTable.Rows.Add(dataRow);
-        //            }
-
-
-        //            return dataTable;
-        //        }
-        //    } catch (QueryException queryException) {
-        //        throw queryException;
-        //    } catch (MySqlException mySqlException) {
-        //        throw new QueryException(1, mySqlException.Message);
-        //    } catch (Exception exception) {
-        //        throw new QueryException(1, exception.Message);
-        //    } finally {
-        //        mysqlConnection.Close();
-        //    }
-        //}
-
-
-        public void getCompany(Company company) {
+        public void getCompany (Company company) {
             try {
                 mysqlConnection.Open();
 
@@ -543,7 +423,7 @@ namespace Ats.Database {
             }
 
         }
-        public void getUser(Company company, User user) {
+        public void getUser (Company company, User user) {
             try {
                 mysqlConnection = new MySqlConnection(database.getConnectionString());
 
@@ -611,7 +491,7 @@ namespace Ats.Database {
                 mysqlConnection.Close();
             }
         }
-        public void fillUsers(Company company, User user) {
+        public void fillUsers (Company company, User user) {
             List<User> users = new List<User>();
             try {
                 mysqlConnection = new MySqlConnection(database.getConnectionString());
@@ -629,7 +509,7 @@ namespace Ats.Database {
                           "SELECT * " +
                           "FROM cmp_" + company.DatabaseName + ".usrs " +
                           "WHERE cmp_" + company.DatabaseName + ".usrs.upriv = " + user.AccessLevel.ToString() +
-                          " and cmp_" + company.DatabaseName + ".usrs.uname = " + user.Username + ";";
+                          " and cmp_" + company.DatabaseName + ".usrs.uname = '" + user.Username + "';";
                 }
 
                 MySqlCommand mySqlCommand = new MySqlCommand(sql, mysqlConnection);
@@ -687,8 +567,7 @@ namespace Ats.Database {
             }
             company.Users = users;
         }
-
-        public void fillCollection(Company company) {
+        public void fillCollection (Company company) {
             foreach (User user in company.Users) {
                 List<Collection> collections = new List<Collection>();
                 try {
@@ -741,7 +620,7 @@ namespace Ats.Database {
                 }
             }
         }
-        public void fillPois(Company company) {
+        public void fillPois (Company company) {
             foreach (User user in company.Users) {
                 List<Poi> pois = new List<Poi>();
                 try {
@@ -803,7 +682,7 @@ namespace Ats.Database {
                 }
             }
         }
-        public void fillGeofences(Company company) {
+        public void fillGeofences (Company company) {
             List<Geofence> geofences = new List<Geofence>();
 
             try {
@@ -857,7 +736,7 @@ namespace Ats.Database {
             }
         }
         //Based Reports
-        public int getTrackerHistoricalDataCount(User account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
+        public int getTrackerHistoricalDataCount (User account, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, Tracker tracker) {
             DataTable dataTable = new DataTable();
             try {
                 mysqlConnection.Open();
@@ -901,7 +780,7 @@ namespace Ats.Database {
 
 
         }
-        public DataTable getTrackerHistoricalData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerHistoricalData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTable = this.getReportTable(ReportType.HISTORICAL);
             dataTable.TableName = tracker.DatabaseName;
 
@@ -971,13 +850,20 @@ namespace Ats.Database {
                         dataRow["No"] = index;
                         dataRow["DateTime"] = Converter.unixTimeStampToDateTime(double.Parse((string)mySqlDataReader["gm_time"]));
 
-                        double latitude = double.Parse((string)mySqlDataReader["gm_lat"]);
-                        double longitude = double.Parse((string)mySqlDataReader["gm_lng"]);
+
+                        double latitude = 0;
+                        double.TryParse(mySqlDataReader.GetString("gm_lat"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out latitude);
+                        double longitude = 0;
+                        double.TryParse(mySqlDataReader.GetString("gm_lng"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out longitude);
+
 
                         dataRow["Latitude"] = latitude;
                         dataRow["Longitude"] = longitude;
                         dataRow["Speed"] = int.Parse((string)mySqlDataReader["gm_speed"]);
-                        dataRow["Mileage"] = double.Parse((string)mySqlDataReader["gm_mileage"]);
+
+                        double mileage = 0;
+                        double.TryParse(mySqlDataReader.GetString("gm_mileage"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out mileage);
+                        dataRow["Mileage"] = mileage;
 
                         if ((double)dataRow["Mileage"] < 0) {
                             dataRow["Mileage"] = ((double)dataRow["Mileage"]) * -1;
@@ -1014,6 +900,9 @@ namespace Ats.Database {
 
                         string gmData = (string)mySqlDataReader["gm_data"];
                         string[] data = gmData.Split(',');
+
+
+
                         dataRow["EventCode"] = Enum.GetName(typeof(EventCode), (EventCode)int.Parse(data[1]));
                         dataRow["GpsSatellites"] = int.Parse(data[2]);
                         dataRow["GsmSignal"] = int.Parse(data[3]);
@@ -1038,23 +927,33 @@ namespace Ats.Database {
                             }
                         }
 
-                        double batteryStrength = (double)int.Parse(data[28], System.Globalization.NumberStyles.AllowHexSpecifier);
-                        batteryStrength = ((batteryStrength - 2114f) * (100f / 492f));//*100.0;
 
-                        if (batteryStrength > 100) {
-                            batteryStrength = 100f;
-                        } else if (batteryStrength < 0) {
-                            batteryStrength = 0;
+                        if (data.Length <= 29) {
+                            return dataTable;
                         }
 
+
                         double batteryVoltage = (double)int.Parse(data[28], System.Globalization.NumberStyles.AllowHexSpecifier);
-                        batteryVoltage = (batteryVoltage * 3 * 2) / 1024;
+                        batteryVoltage = (batteryVoltage * 3.3 * 2) / 4096;
 
                         double externalVoltage = (double)int.Parse(data[29], System.Globalization.NumberStyles.AllowHexSpecifier);
-                        externalVoltage = (externalVoltage * 3 * 16) / 1024;
+                        externalVoltage = (externalVoltage * 3.3 * 16) / 4096;
 
+
+
+                        double batteryStrength = batteryVoltage - 3.5;
+                        batteryStrength = (batteryStrength / 0.8) * 100;
+
+                        if (batteryStrength < 0) {
+                            batteryStrength = 0;
+                        } else if (batteryStrength > 100) {
+                            batteryStrength = 100;
+                        }
+
+                        dataRow["EPC"] = (externalVoltage > 3) ? false : true;
 
                         dataRow["Battery"] = batteryStrength;
+
                         dataRow["BatteryVoltage"] = batteryVoltage;
                         dataRow["ExternalVoltage"] = externalVoltage;
 
@@ -1069,6 +968,8 @@ namespace Ats.Database {
             } catch (MySqlException mySqlException) {
                 throw mySqlException;
             } catch (Exception exception) {
+                Log log = new Log(LogFileType.TXT, LogType.EXCEPTION);
+                log.write(exception.StackTrace);
                 throw exception;
             } finally {
                 mysqlConnection.Close();
@@ -1077,7 +978,7 @@ namespace Ats.Database {
 
         }
         //Processed Reports
-        public DataTable getTrackerRunningData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerRunningData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableRunningData = this.getReportTable(ReportType.RUNNING);
             dataTableRunningData.TableName = tracker.DatabaseName;
@@ -1258,7 +1159,7 @@ namespace Ats.Database {
             return dataTableRunningData;
         }
 
-        public DataTable getTrackerIdlingData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerIdlingData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableIdleData = this.getReportTable(ReportType.IDLING);
             dataTableIdleData.TableName = tracker.DatabaseName;
@@ -1443,7 +1344,7 @@ namespace Ats.Database {
             return dataTableIdleData;
         }
 
-        public DataTable getTrackerGeofence(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerGeofence (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableGeofenceData = this.getReportTable(ReportType.GEOFENCE);
             dataTableGeofenceData.TableName = tracker.DatabaseName;
@@ -1610,7 +1511,7 @@ namespace Ats.Database {
             }
         }
 
-        public DataTable getTrackerAccData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerAccData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableIAccData = this.getReportTable(ReportType.ACC);
             dataTableIAccData.TableName = tracker.DatabaseName;
@@ -1785,7 +1686,7 @@ namespace Ats.Database {
             return dataTableIAccData;
         }
 
-        public DataTable getTrackerExternalPowerCutData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerExternalPowerCutData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableExternalPowerCutData = this.getReportTable(ReportType.EXTERNAL_POWER_CUT);
             dataTableExternalPowerCutData.TableName = tracker.DatabaseName;
@@ -1833,12 +1734,14 @@ namespace Ats.Database {
                     double externalVolt = (double)dataTableHistoricalData.Rows[no]["ExternalVoltage"];
 
                     //Conditions
-                    if (eventCode == EventCode.EXTERNAL_BATTERY_CUT || externalVolt < 12) {
-                        externalPowerStatusNow = true;
-                    }
-                    if (eventCode == EventCode.EXTERNAL_BATTERY_ON || externalVolt >= 12) {
-                        externalPowerStatusNow = false;
-                    }
+                    //if (eventCode == EventCode.EXTERNAL_BATTERY_CUT || externalVolt < 12) {
+                    //    externalPowerStatusNow = true;
+                    //}
+                    //if (eventCode == EventCode.EXTERNAL_BATTERY_ON || externalVolt >= 12) {
+                    //    externalPowerStatusNow = false;
+                    //}
+
+                    externalPowerStatusNow = (bool) dataTableHistoricalData.Rows[no]["EPC"];
 
                     //OneTime
                     if ((int)dataTableHistoricalData.Rows[no]["No"] == 1) {
@@ -1964,7 +1867,7 @@ namespace Ats.Database {
             return dataTableExternalPowerCutData;
         }
 
-        public DataTable getTrackerOverSpeedData(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
+        public DataTable getTrackerOverSpeedData (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, Tracker tracker) {
             DataTable dataTableHistoricalData = this.getTrackerHistoricalData(company, user, dateTimeDateFrom, dateTimeDateTo, limit, offset, tracker);
             DataTable dataTableOverSpeedData = this.getReportTable(ReportType.OVERSPEED);
             dataTableOverSpeedData.TableName = tracker.DatabaseName;
@@ -2009,7 +1912,7 @@ namespace Ats.Database {
             return dataTableOverSpeedData;
         }
 
-        public DataTable getTrackersGeofence(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
+        public DataTable getTrackersGeofence (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS_GEOFENCE);
             //dataTable.TableName = "";
             try {
@@ -2071,7 +1974,7 @@ namespace Ats.Database {
             }
         }
 
-        public DataTable getTrackersHistorical(Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
+        public DataTable getTrackersHistorical (Company company, User user, DateTime dateTimeDateFrom, DateTime dateTimeDateTo, int limit, int offset, List<Tracker> trackerList) {
             DataTable dataTable = this.getReportTable(ReportType.TRACKERS_HISTORICAL);
 
             try {
@@ -2128,6 +2031,7 @@ namespace Ats.Database {
                             dataRow["Geofence"] = dataRowItem["Geofence"];
                             dataRow["ACC"] = dataRowItem["ACC"];
                             dataRow["SOS"] = dataRowItem["SOS"];
+                            dataRow["EPC"] = dataRowItem["EPC"];
                             dataRow["OverSpeed"] = dataRowItem["OverSpeed"];
                             dataRow["Battery"] = dataRowItem["Battery"];
                             dataRow["BatteryVoltage"] = dataRowItem["BatteryVoltage"];
@@ -2150,7 +2054,7 @@ namespace Ats.Database {
         }
 
 
-        public DataTable getReportTable(ReportType reportType) {
+        public DataTable getReportTable (ReportType reportType) {
             DataTable dataTable = new DataTable();
             switch (reportType) {
                 case ReportType.HISTORICAL:
@@ -2172,6 +2076,7 @@ namespace Ats.Database {
                     dataTable.Columns.Add("Geofence", typeof(string));
                     dataTable.Columns.Add("ACC", typeof(bool));
                     dataTable.Columns.Add("SOS", typeof(bool));
+                    dataTable.Columns.Add("EPC", typeof(bool));
                     dataTable.Columns.Add("OverSpeed", typeof(bool));
                     dataTable.Columns.Add("Battery", typeof(double));
                     dataTable.Columns.Add("BatteryVoltage", typeof(double));
